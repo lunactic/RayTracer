@@ -1,0 +1,93 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{C3D6543C-82B6-48E2-8666-5CD37C762543}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>RayTracer</RootNamespace>
+    <AssemblyName>RayTracer</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="geometries\teapot.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Helper\ObjReader.cs" />
+    <Compile Include="SceneGraph\Camera.cs" />
+    <Compile Include="SceneGraph\Film.cs" />
+    <Compile Include="SceneGraph\HitRecord.cs" />
+    <Compile Include="SceneGraph\Integrators\BinaryIntegrator.cs" />
+    <Compile Include="SceneGraph\Integrators\IIntegrator.cs" />
+    <Compile Include="SceneGraph\Integrators\BlinnIntegrator.cs" />
+    <Compile Include="SceneGraph\Integrators\ShadowIntegrator.cs" />
+    <Compile Include="SceneGraph\Integrators\WhittedIntegrator.cs" />
+    <Compile Include="SceneGraph\Light\ILight.cs" />
+    <Compile Include="SceneGraph\Light\PointLight.cs" />
+    <Compile Include="SceneGraph\Materials\LambertMaterial.cs" />
+    <Compile Include="SceneGraph\Materials\BlinnPhongMaterial.cs" />
+    <Compile Include="SceneGraph\Materials\MirrorMaterial.cs" />
+    <Compile Include="SceneGraph\Objects\Aggregate.cs" />
+    <Compile Include="SceneGraph\Objects\IIntersectable.cs" />
+    <Compile Include="SceneGraph\Materials\Material.cs" />
+    <Compile Include="SceneGraph\Objects\Instance.cs" />
+    <Compile Include="SceneGraph\Objects\IntersectableList.cs" />
+    <Compile Include="SceneGraph\Objects\Mesh.cs" />
+    <Compile Include="SceneGraph\Objects\Plane.cs" />
+    <Compile Include="SceneGraph\Objects\Sphere.cs" />
+    <Compile Include="SceneGraph\Objects\Triangle.cs" />
+    <Compile Include="SceneGraph\Ray.cs" />
+    <Compile Include="SceneGraph\Scene.cs" />
+    <Compile Include="SceneGraph\Tonemapper.cs" />
+    <Compile Include="Structs\Color.cs" />
+    <Compile Include="Structs\Constants.cs" />
+    <Compile Include="Structs\MathHelper.cs" />
+    <Compile Include="Structs\Matrix4.cs" />
+    <Compile Include="Structs\Vector3.cs" />
+    <Compile Include="Structs\Vector4.cs" />
+    <Compile Include="Tracer\IRayTracer.cs" />
+    <Compile Include="Tracer\RayTracerBasic.cs" />
+    <Compile Include="Tracer\RayTracer.cs" />
+    <Compile Include="Tracer\RayTracerFirst.cs" />
+    <Compile Include="Tracer\RayTracerInstancing.cs" />
+    <Compile Include="Tracer\RayTracerMirror.cs" />
+    <Compile Include="Tracer\RayTracerSphereTest.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Drawing" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

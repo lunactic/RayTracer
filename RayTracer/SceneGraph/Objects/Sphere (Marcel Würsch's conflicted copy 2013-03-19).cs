@@ -1,0 +1,85 @@
+﻿using System.Diagnostics;
+using RayTracer.Structs;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using RayTracer.SceneGraph.Materials;
+
+namespace RayTracer.SceneGraph.Objects
+{
+    public class Sphere : IIntersectable
+    {
+
+        public Material Material { get; set; }
+        public Vector3 Center { get; private set; }
+        public float Radius { get; private set; }
+
+        public Sphere(Material material, Vector3 center, float radius)
+        {
+            Material = material;
+            Center = center;
+            Radius = radius;
+        }
+
+        /// <summary>
+        /// Calculates the Ray-Sphere Intersection, as described in <see cref="http://www.siggraph.org/education/materials/HyperGraph/raytrace/rtinter1.htm"/>
+        /// With information taken from this site: <see cref="http://wiki.cgsociety.org/index.php/Ray_Sphere_Intersection"/>
+        /// </summary>
+        /// <param name="ray">The ray to calculate the intersection for</param>
+        /// <returns>A new HitRecord if an intersection occurs, null otherwise</returns>
+        public void Intersect(Ray ray)
+        {
+            //Compute A,B,C
+            float a = Vector3.Dot(ray.Direction,ray.Direction);
+            float b = 2 * Vector3.Dot(ray.Direction,ray.Origin - Center);
+            float c = Vector3.Dot(ray.Origin-Center,ray.Origin-Center)-(Radius * Radius);
+            
+            //Calculate discriminant
+            float disc = b * b - 4 * a * c;
+
+            if (disc < 0)
+                return;
+
+            float discSqrt = (float)Math.Sqrt(disc);
+            
+            //Compute q
+            float q;
+            if (b < 0)
+                q = (-b + discSqrt) / 2.0f;
+            else
+                q = (-b - discSqrt) / 2.0f;
+            
+            //Compute t0,t1
+            float t0 = q / a;
+            float t1 = c / q;
+            float t;
+            if (t0 > t1)
+            {
+                float tmp = t0;
+                t0 = t1;
+                t1 = tmp;
+            }
+
+            if (t1 < 0)
+                return;
+            
+            if (t0 < 0)
+               t = t1;          
+            else
+                t=t0;
+            
+            ray.HitRecord.UpdateRecord(t,this);
+
+         
+        }
+
+        public Vector3 GetNormal(Vector3 hitPosition)
+        {
+            Vector3 normal = hitPosition - Center;
+            normal.Normalize();
+            return normal;
+        }
+    }
+}
