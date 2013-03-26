@@ -22,9 +22,6 @@ namespace RayTracer.SceneGraph
         #region AABB Intersection Helpers
         public Vector3 InvDirection { get; set; }
         public int[] Sign { get; set; }
-        public float Tmin { get; set; }
-        public float Tmax { get; set; }
-
         #endregion
 
         #endregion

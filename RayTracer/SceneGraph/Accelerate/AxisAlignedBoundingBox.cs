@@ -32,52 +32,44 @@ namespace RayTracer.SceneGraph.Accelerate
         /// </summary>
         /// <param name="otherBox">The BoundingBox to check against</param>
         /// <returns>An IntersectionType about which kind of intersection occured</returns>
-        public IntersectionType Intersect(IBoundingBox otherBox)
+        public bool Intersect(IBoundingBox otherBox)
         {
-            if (otherBox.MinVector.X >= MinVector.X && otherBox.MaxVector.X <= MaxVector.X &&
-                otherBox.MinVector.Y >= MinVector.Y && otherBox.MaxVector.Y <= MaxVector.Y &&
-                otherBox.MinVector.Z >= MinVector.Z && otherBox.MaxVector.Z <= MaxVector.Z)
-                return IntersectionType.Inside;
-
-            if (MaxVector.X < otherBox.MaxVector.X || MinVector.X > otherBox.MinVector.X)
-                return IntersectionType.Outside;
-            if (MaxVector.Y < otherBox.MaxVector.Y || MinVector.Y > otherBox.MinVector.Y)
-                return IntersectionType.Outside;
-            if (MaxVector.Z < otherBox.MaxVector.Z || MinVector.Z > otherBox.MinVector.Z)
-                return IntersectionType.Outside;
-
-            return IntersectionType.Intersection;
+            bool x, y, z;
+            x = otherBox.MinVector.X < MaxVector.X && otherBox.MaxVector.X > MinVector.X;
+            y = otherBox.MinVector.Y < MaxVector.Y && otherBox.MaxVector.Y > MinVector.Y;
+            z = otherBox.MinVector.Z < MaxVector.Z && otherBox.MaxVector.Z > MinVector.Z;
+            return x && y && z;
         }
 
-        public bool Intersect(Ray ray)
+        public float[] Intersect(Ray ray)
         {
-            Vector3 tMin = Vector3.Zero;
-            Vector3 tMax = Vector3.Zero;
             Vector3[] parameters = new Vector3[]{MinVector,MaxVector};
             float tymin;
             float tymax;
             float tzmin;
             float tzmax;
-
-            ray.Tmin = (parameters[    ray.Sign[0]].X - ray.Origin.X) * ray.InvDirection.X;
-            ray.Tmax = (parameters[1 - ray.Sign[0]].X - ray.Origin.X) * ray.InvDirection.X;
+            float tmin;
+            float tmax;
+            tmin = (parameters[    ray.Sign[0]].X - ray.Origin.X) * ray.InvDirection.X;
+            tmax = (parameters[1 - ray.Sign[0]].X - ray.Origin.X) * ray.InvDirection.X;
 
             tymin = (parameters[    ray.Sign[1]].Y - ray.Origin.Y) * ray.InvDirection.Y;
             tymax = (parameters[1 - ray.Sign[1]].Y - ray.Origin.Y) * ray.InvDirection.Y;
 
-            if (ray.Tmin > tymax || tymin > ray.Tmax) return false;
-            if (tymin > ray.Tmin) ray.Tmin = tymin;
-            if (tymax < ray.Tmax) ray.Tmax = tymax;
+            if (tmin > tymax || tymin > tmax) return null;
+            if (tymin > tmin) tmin = tymin;
+            if (tymax < tmax) tmax = tymax;
 
             tzmin = (parameters[  ray.Sign[2]].Z - ray.Origin.Z) * ray.InvDirection.Z;
             tzmax = (parameters[1-ray.Sign[2]].Z - ray.Origin.Z) * ray.InvDirection.Z;
 
-            if (ray.Tmin > tzmax || tzmin > ray.Tmax) return false;
-            if (tzmin > ray.Tmin) ray.Tmin = tzmin;
-            if (tzmax < ray.Tmax) ray.Tmax = tzmax;
+            if (tmin > tzmax || tzmin > tmax) return null;
+            if (tzmin > tmin) tmin = tzmin;
+            if (tzmax < tmax) tmax = tzmax;
 
-            //Maybe need a reference to the nearest intersection...
-            return (ray.Tmax > 0);
+            if (tmax < 0) return null;
+
+            return new float[] { tmin, tmax };
 
 
         }

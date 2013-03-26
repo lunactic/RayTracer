@@ -18,7 +18,7 @@ namespace RayTracer.SceneGraph.Accelerate
         public Boolean IsLeaf { get; private set; }
         public BspNode LeftNode { get; private set; }
         public BspNode RightNode { get; private set; }
-        public List<IIntersectable> Intersectables { get; private set; }
+        public Aggregate Intersectables { get; private set; }
         public IBoundingBox BoundingBox { get; set; }
 
 
@@ -27,22 +27,22 @@ namespace RayTracer.SceneGraph.Accelerate
             IsLeaf = false;
         }
 
-        public void BuildSubTree(List<IIntersectable> intersectables, IBoundingBox boundingBox, int maxTreeDepth, int currentTreeDetph)
+        public void BuildSubTree(Aggregate intersectables, IBoundingBox boundingBox, int maxTreeDepth, int currentTreeDetph)
         {
             Intersectables = intersectables;
             BoundingBox = boundingBox;
 
 
 
-            if (Intersectables.Count <= 5 || currentTreeDetph == maxTreeDepth)
+            if (Intersectables.Objects.Count <= 5 || currentTreeDetph == maxTreeDepth)
             {
                 IsLeaf = true;
 
             }
             else
             {
-                List<IIntersectable> leftIntersectables = new List<IIntersectable>();
-                List<IIntersectable> rightIntersectables = new List<IIntersectable>();
+                Aggregate leftIntersectables = new IntersectableList();
+                Aggregate rightIntersectables = new IntersectableList();
 
                 IBoundingBox leftBb = new AxisAlignedBoundingBox();
                 IBoundingBox rightBb = new AxisAlignedBoundingBox();
@@ -74,16 +74,15 @@ namespace RayTracer.SceneGraph.Accelerate
 
                 LeftNode = new BspNode();
                 RightNode = new BspNode();
-                foreach (IIntersectable intersectable in Intersectables)
+                foreach (IIntersectable intersectable in Intersectables.GetObjects())
                 {
-                    if (leftBb.Intersect(intersectable.BoundingBox) == IntersectionType.Inside || leftBb.Intersect(intersectable.BoundingBox) == IntersectionType.Intersection)
-                        leftIntersectables.Add(intersectable);
-                    else
-                        rightIntersectables.Add(intersectable);
+                    if (intersectable.BoundingBox.Intersect(leftBb)) leftIntersectables.Objects.Add(intersectable);
+                    if (intersectable.BoundingBox.Intersect(rightBb)) rightIntersectables.Objects.Add(intersectable);
+                    
                 }
                 LeftNode.BuildSubTree(leftIntersectables, leftBb, maxTreeDepth, currentTreeDetph + 1);
                 RightNode.BuildSubTree(rightIntersectables, rightBb, maxTreeDepth, currentTreeDetph + 1);
-                Intersectables.Clear(); //Clear up the intersectables in non leaf nodes to save space
+                Intersectables = null; //Clear up the intersectables in non leaf nodes to save space
             }
         }
 
@@ -95,7 +94,24 @@ namespace RayTracer.SceneGraph.Accelerate
             
             //Axis: X = 1; Y = 2; Z = 3
             //TODO: FIX THIS!
-            return (PlanePos[Axis] - ray.Origin[Axis]) * ray.InvDirection[Axis];
+            Vector3 rayOrigin = ray.Origin;
+            Vector3 rayDirection = ray.Direction;
+            Vector3 normal = Vector3.Zero;
+
+            switch (Axis)
+            {
+                case 0: normal = new Vector3(1, 0, 0); break;
+                case 1: normal = new Vector3(0, 1, 0); break;
+                case 2: normal = new Vector3(0, 0, 1); break;
+                default: break;
+            }
+
+            Vector3 p0 = new Vector3(normal);
+            p0 = p0*PlanePos[Axis];
+            p0 = p0 - rayOrigin;
+
+            return Vector3.Dot(p0,normal) / Vector3.Dot(rayDirection,normal);
+            //return (PlanePos[Axis] - ray.Origin[Axis]) * ray.InvDirection[Axis];
         }
     }
 }

@@ -10,6 +10,20 @@ namespace RayTracer.SceneGraph.Objects
 {
     public abstract class Aggregate
     {
+        public List<IIntersectable> Objects { get; set; }
         public abstract List<IIntersectable> GetObjects();
+       
+        public HitRecord Intersect(Ray ray)
+        {
+            HitRecord hit = null;
+            foreach (var intersectable in Objects)
+            {
+                HitRecord tempHit = intersectable.Intersect(ray);
+                if (tempHit != null)
+                    if (hit == null) hit = tempHit;
+                    else if (tempHit.Distance < hit.Distance) hit = tempHit;
+            }
+            return hit;
+        }
     }
 }

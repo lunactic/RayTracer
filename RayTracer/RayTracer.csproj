@@ -42,6 +42,7 @@
     <Compile Include="SceneGraph\Accelerate\AxisAlignedBoundingBox.cs" />
     <Compile Include="SceneGraph\Accelerate\BspAccelerator.cs" />
     <Compile Include="SceneGraph\Accelerate\BSPNode.cs" />
+    <Compile Include="SceneGraph\Accelerate\BspStackItem.cs" />
     <Compile Include="SceneGraph\Camera.cs" />
     <Compile Include="SceneGraph\Film.cs" />
     <Compile Include="SceneGraph\HitRecord.cs" />

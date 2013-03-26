@@ -12,24 +12,10 @@ namespace RayTracer.SceneGraph.Objects
     public class IntersectableList : Aggregate, IIntersectable
     {
         public Material Material {get; set; }
-        public List<IIntersectable> Objects { get; set; }
-
+  
         public IntersectableList()
         {
                Objects = new List<IIntersectable>();
-        }
-
-        public HitRecord Intersect(Ray ray)
-        {
-            HitRecord hit = null;
-            foreach (var intersectable in Objects)
-            {
-                HitRecord tempHit = intersectable.Intersect(ray);
-                if (tempHit != null)
-                    if (hit == null) hit = tempHit;
-                    else if (tempHit.Distance < hit.Distance) hit = tempHit;
-            }
-            return hit;
         }
 
         public Vector3 GetNormal(Vector3 hitPosition)
