@@ -20,6 +20,7 @@ namespace RayTracer.Tracer
 
         public RayTracerKdTree()
         {
+            NumberOfThreads = 4;
             FileName = "Assignment2_KDTree.jpg";
             scene = new Scene { BackgroundColor = Color.Black };
             integrator = new ShadowIntegrator(scene);
@@ -28,7 +29,7 @@ namespace RayTracer.Tracer
                 FieldOfView = 55f,
                 ScreenWidth = 512,
                 ScreenHeight = 512,
-                Eye = new Vector4(0, 0, 10, 1),
+                Eye = new Vector4(0, 0, 3, 1),
                 Up = new Vector4(0, 1, 0, 1),
                 LookAt = new Vector4(0, 0, 0, 1)
             };
@@ -79,8 +80,8 @@ namespace RayTracer.Tracer
             scene.IntersectableList.Objects.Add(p5);
             //scene.IntersectableList.Objects.Add(mesh);
             scene.IntersectableList.Objects.Add(accelerator);
-            ILight light = new PointLight(new Vector3(0.0f, 2.8f, 1.8f), new Color(.7f, .7f, .7f, 1f));
-            ILight light2 = new PointLight(new Vector3(-0.8f, 1.2f, 2f), new Color(.5f, .5f, .5f, 1f));
+            ILight light = new PointLight(new Vector3(0.0f, 0.8f, 0.8f), new Color(.7f, .7f, .7f, 1f));
+            ILight light2 = new PointLight(new Vector3(-0.8f, 0.2f, 1f), new Color(.5f, .5f, .5f, 1f));
             scene.Lights.Add(light);
             scene.Lights.Add(light2);
         }

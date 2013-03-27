@@ -80,6 +80,7 @@
     <Compile Include="Structs\Vector4.cs" />
     <Compile Include="Tracer\AbstractRayTracer.cs" />
     <Compile Include="Tracer\IRayTracer.cs" />
+    <Compile Include="Tracer\MultiThreadingRenderer.cs" />
     <Compile Include="Tracer\RayTracerBasic.cs" />
     <Compile Include="Tracer\RayTracer.cs" />
     <Compile Include="Tracer\RayTracerFirst.cs" />
