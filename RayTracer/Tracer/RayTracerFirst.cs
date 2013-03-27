@@ -12,16 +12,12 @@ using RayTracer.Structs;
 
 namespace RayTracer.Tracer
 {
-    public class RayTracerFirst : IRayTracer
+    public class RayTracerFirst : AbstractRayTracer
     {
-
-        private Scene scene;
-        private IIntegrator integrator;
-        private Film film;
-        private Camera camera;
 
         public RayTracerFirst()
         {
+            FileName = "Assignment1_First.jpg";
             scene = new Scene { BackgroundColor = Color.Black };
             integrator = new BinaryIntegrator(scene);
             camera = new Camera
@@ -41,21 +37,6 @@ namespace RayTracer.Tracer
             integrator = new BinaryIntegrator(scene);
 
 
-        }
-        public void Render()
-        {
-            for (int y = 0; y < camera.ScreenHeight; y++)
-            {
-                for (int x = 0; x < camera.ScreenWidth; x++)
-                {
-
-                    Ray ray = camera.CreateRay(x, y);
-                    Color color = integrator.Integrate(ray);
-                    film.SetPixel(x, y, color);
-
-                }
-            }
-            Tonemapper.SaveImage("C:\\Test\\RayTracerFirst.jpg", film);
         }
     }
 }

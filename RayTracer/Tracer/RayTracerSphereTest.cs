@@ -12,15 +12,11 @@ using RayTracer.Structs;
 
 namespace RayTracer.Tracer
 {
-    public class RayTracerSphereTest : IRayTracer
+    public class RayTracerSphereTest : AbstractRayTracer
     {
-        private Scene scene;
-        private IIntegrator integrator;
-        private Film film;
-        private Camera camera;
-
         public RayTracerSphereTest()
         {
+            FileName = "Assignment1_SphereTest.jpg";
             scene = new Scene { BackgroundColor = Color.Black };
             integrator = new BlinnIntegrator(scene);
             camera = new Camera
@@ -34,25 +30,11 @@ namespace RayTracer.Tracer
             };
             camera.PreProcess();
 
-            Sphere sphere = new Sphere(new BlinnPhongMaterial(Color.Red,Color.White,20.0f), new Vector3(0f,0f,-2f),1f);
+            Sphere sphere = new Sphere(new BlinnPhongMaterial(Color.Red, Color.White, 20.0f), new Vector3(0f, 0f, -2f), 1f);
             scene.IntersectableList.Objects.Add(sphere);
             film = new Film(camera.ScreenWidth, camera.ScreenHeight);
-            ILight light = new PointLight(new Vector3(0.75f,0.75f,0), Color.White);
+            ILight light = new PointLight(new Vector3(0.75f, 0.75f, 0), Color.White);
             scene.Lights.Add(light);
-        }
-
-        public void Render()
-        {
-            for (int y = 0; y < camera.ScreenHeight; y++)
-            {
-                for (int x = 0; x < camera.ScreenWidth; x++)
-                {
-                    Ray ray = camera.CreateRay(x, y);
-                    Color color = integrator.Integrate(ray);
-                    film.SetPixel(x, y, color);
-                }
-            }
-            Tonemapper.SaveImage("C:\\Test\\RayTracerSphereTest.jpg", film);
         }
     }
 }

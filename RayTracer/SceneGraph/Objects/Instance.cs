@@ -8,7 +8,7 @@ using RayTracer.SceneGraph.Materials;
 
 namespace RayTracer.SceneGraph.Objects
 {
-    public class Instance : IIntersectable
+    public class Instance : Aggregate,IIntersectable
     {
         public IIntersectable Intersectable { get; private set; }
         /// <summary>
@@ -95,6 +95,14 @@ namespace RayTracer.SceneGraph.Objects
         public void BuildBoundingBox()
         {
             Intersectable.BuildBoundingBox();
+        }
+
+        public override List<IIntersectable> GetObjects()
+        {
+            if (Intersectable is Aggregate)
+                return ((Aggregate)Intersectable).GetObjects();
+            else
+                return null;
         }
     }
 }

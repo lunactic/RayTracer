@@ -15,23 +15,20 @@ using RayTracer.Structs;
 
 namespace RayTracer.Tracer
 {
-    class RayTracerKdTree: IRayTracer
+    class RayTracerKdTree: AbstractRayTracer
     {
-        private Scene scene;
-        private IIntegrator integrator;
-        private Film film;
-        private Camera camera;
 
         public RayTracerKdTree()
         {
+            FileName = "Assignment2_KDTree.jpg";
             scene = new Scene { BackgroundColor = Color.Black };
             integrator = new ShadowIntegrator(scene);
             camera = new Camera
             {
-                FieldOfView = 60f,
-                ScreenWidth = 256,
-                ScreenHeight = 256,
-                Eye = new Vector4(0, 0, 2, 1),
+                FieldOfView = 55f,
+                ScreenWidth = 512,
+                ScreenHeight = 512,
+                Eye = new Vector4(0, 0, 10, 1),
                 Up = new Vector4(0, 1, 0, 1),
                 LookAt = new Vector4(0, 0, 0, 1)
             };
@@ -66,8 +63,10 @@ namespace RayTracer.Tracer
                 Material = new LambertMaterial(new Color(0.8f, 0.8f, 0.8f, 1.0f))
             };
 
-            Mesh mesh = new Mesh() { Material = new LambertMaterial(new Color(0.5f, 0.5f, 0.5f, 1.0f)) };
-            mesh.CreateMeshFromObjectFile("./geometries/teapot.obj", 1.0f);
+            Mesh mesh = new Mesh() { Material = new LambertMaterial(Color.Red) };
+            mesh.CreateMeshFromObjectFile("./geometries/bunny.obj", 1.0f);
+            //Matrix4 m1 = Matrix4.Scale(0.5f);
+            //Instance i = new Instance(mesh, m1);
 
             BspAccelerator accelerator = new BspAccelerator();
             mesh.BuildBoundingBox();
@@ -80,30 +79,10 @@ namespace RayTracer.Tracer
             scene.IntersectableList.Objects.Add(p5);
             //scene.IntersectableList.Objects.Add(mesh);
             scene.IntersectableList.Objects.Add(accelerator);
-            ILight light = new PointLight(new Vector3(0.0f, 0.8f, 0.8f), new Color(.7f, .7f, .7f, 1f));
-            ILight light2 = new PointLight(new Vector3(-0.8f, 0.2f, 1f), new Color(.5f, .5f, .5f, 1f));
+            ILight light = new PointLight(new Vector3(0.0f, 2.8f, 1.8f), new Color(.7f, .7f, .7f, 1f));
+            ILight light2 = new PointLight(new Vector3(-0.8f, 1.2f, 2f), new Color(.5f, .5f, .5f, 1f));
             scene.Lights.Add(light);
             scene.Lights.Add(light2);
-        }
-
-        public void Render()
-        {
-            Stopwatch stopwatch = new Stopwatch();
-            stopwatch.Start();
-            for (int i = 0; i < camera.ScreenWidth; i++)
-            {
-                for (int j = 0; j < camera.ScreenHeight; j++)
-                {
-
-                    Ray ray = camera.CreateRay(i, j);
-                    Color color = integrator.Integrate(ray);
-                    film.SetPixel(i, j, color);
-
-                }
-            }
-            stopwatch.Stop();
-            Debug.WriteLine("Finished rendering in: " + stopwatch.ElapsedMilliseconds + " ms.");
-            Tonemapper.SaveImage("C:\\Test\\Kd_Tree.jpg", film);
         }
     }
 }

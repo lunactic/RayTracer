@@ -12,15 +12,12 @@ using System.Threading.Tasks;
 
 namespace RayTracer.Tracer
 {
-    public class RayTracerMirror : IRayTracer
+    public class RayTracerMirror : AbstractRayTracer
     {
-        private Scene scene;
-        private IIntegrator integrator;
-        private Film film;
-        private Camera camera;
-
+  
         public RayTracerMirror()
         {
+            FileName = "Assignment1_Mirror.jpg";
             scene = new Scene { BackgroundColor = Color.Black };
             integrator = new WhittedIntegrator(scene);
             camera = new Camera
@@ -81,22 +78,6 @@ namespace RayTracer.Tracer
 
             scene.Lights.Add(light2);
             scene.Lights.Add(light);
-        }
-
-        public void Render()
-        {
-            for (int y = 0; y < camera.ScreenHeight; y++)
-            {
-                for (int x = 0; x < camera.ScreenWidth; x++)
-                {
-
-                    Ray ray = camera.CreateRay(x, y);
-                    Color color = integrator.Integrate(ray);
-                    film.SetPixel(x, y, color);
-
-                }
-            }
-            Tonemapper.SaveImage("C:\\Test\\RayTracerMirror.jpg", film);
         }
 
     }

@@ -12,16 +12,12 @@ using System.Threading.Tasks;
 
 namespace RayTracer.Tracer
 {
-    public class RayTracerInstancing : IRayTracer
+    public class RayTracerInstancing : AbstractRayTracer
     {
-
-        private Scene scene;
-        private IIntegrator integrator;
-        private Film film;
-        private Camera camera;
 
         public RayTracerInstancing()
         {
+            FileName = "Assignment1_Instancing.jpg";
             scene = new Scene { BackgroundColor = Color.Black };
             integrator = new ShadowIntegrator(scene);
             camera = new Camera
@@ -94,20 +90,5 @@ namespace RayTracer.Tracer
             scene.Lights.Add(light2);
         }
 
-        public void Render()
-        {
-            for (int i = 0; i < camera.ScreenWidth; i++)
-            {
-                for (int j = 0; j < camera.ScreenHeight; j++)
-                {
-
-                    Ray ray = camera.CreateRay(i, j);
-                    Color color = integrator.Integrate(ray);
-                    film.SetPixel(i, j, color);
-
-                }
-            }
-            Tonemapper.SaveImage("C:\\Test\\RayTracer_Instancing.jpg", film);
-        }
     }
 }

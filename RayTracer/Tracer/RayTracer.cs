@@ -19,7 +19,6 @@ namespace RayTracer.Tracer
 
         }
 
-
         static void Main()
         {
             IRayTracer rayTracer = null;
