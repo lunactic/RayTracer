@@ -1,23 +1,21 @@
-﻿using RayTracer.SceneGraph.Accelerate;
+﻿ using RayTracer.SceneGraph.Accelerate;
 using RayTracer.Structs;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using RayTracer.SceneGraph.Materials;
 
 namespace RayTracer.SceneGraph.Objects
 {
     public class Triangle : IIntersectable
     {
+        public Material Material { get; set; }
+
+        public IBoundingBox BoundingBox { get; set; }
+
         public Vector3 A { get; private set; }
         public Vector3 B { get; private set; }
         public Vector3 C { get; private set; }
 
         public Vector3 Normal { get; private set; }
-
-        public Material Material { get; set; }
 
         //Vertex normal
         public Vector3 N1 { get; private set; }
@@ -39,10 +37,12 @@ namespace RayTracer.SceneGraph.Objects
             Normal = Vector3.Cross(edge1, edge2);
             Normal.Normalize();
             BoundingBox = new AxisAlignedBoundingBox();
+        
         }
 
         public Triangle(Vector3 a, Vector3 n1, Vector3 b, Vector3 n2, Vector3 c, Vector3 n3)
         {
+            
             A = a;
             B = b;
             C = c;
@@ -55,11 +55,11 @@ namespace RayTracer.SceneGraph.Objects
             Normal = Vector3.Cross(edge1, edge2);
             Normal.Normalize();
             BoundingBox = new AxisAlignedBoundingBox();
-        }
+ }
 
         public HitRecord Intersect(Ray ray)
         {
-       
+
             Vector3 rayDir = ray.Direction;
             
             if (Equals(Normal.Length, 0.0f)) return null;
@@ -73,7 +73,7 @@ namespace RayTracer.SceneGraph.Objects
             float t = a/b;
             if (t < 0) return null;
 
-            Vector3 hitPoint = ray.Origin + (ray.Direction*t);
+            Vector3 hitPoint = ray.Origin + (ray.Direction * t);
             float uu = Vector3.Dot(edge1, edge1);
             float uv = Vector3.Dot(edge1, edge2);
             float vv = Vector3.Dot(edge2, edge2);
@@ -101,15 +101,9 @@ namespace RayTracer.SceneGraph.Objects
                     
                 }
             }
+
             return new HitRecord(t, hitPoint, normal, this, Material, rayDir);
         }
-
-        public Vector3 GetNormal(Vector3 hitPosition)
-        {
-            return Normal;
-        }
-
-        public IBoundingBox BoundingBox { get; set; }
 
         public void BuildBoundingBox()
         {
@@ -136,6 +130,7 @@ namespace RayTracer.SceneGraph.Objects
 
             BoundingBox.MinVector = minVector;
             BoundingBox.MaxVector = maxVector;
+
         }
     }
 }

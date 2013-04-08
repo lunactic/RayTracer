@@ -25,13 +25,13 @@ namespace RayTracer.SceneGraph.Integrators
             HitRecord record = scene.Intersect(ray);
 
             Color returnColor = Color.Black;
-            if (record.HitObject != null)
+            if (record != null)
             {
                 foreach (ILight light in scene.Lights)
                 {
                     Vector3 lightDirection = light.GetLightDirection(record.IntersectionPoint);
                     Vector3 hitPos = record.IntersectionPoint;
-                    Vector3 offset = ray.Direction;
+                    Vector3 offset = record.RayDirection;
                     offset = -offset;
                     offset *= 0.001f;
                     hitPos += offset;

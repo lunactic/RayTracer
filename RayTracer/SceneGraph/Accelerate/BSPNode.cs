@@ -10,7 +10,7 @@ namespace RayTracer.SceneGraph.Accelerate
 {
     public class BspNode
     {
-        public Vector3 PlanePos { get; set; }
+        public float PlanePos { get; set; }
         /// <summary>
         /// The Split Axis (0 = X-Axis, 1 = Y-Axis, 2 = Z-Axis)
         /// </summary>
@@ -32,8 +32,6 @@ namespace RayTracer.SceneGraph.Accelerate
             Intersectables = intersectables;
             BoundingBox = boundingBox;
 
-
-
             if (Intersectables.Objects.Count <= 5 || currentTreeDetph == maxTreeDepth)
             {
                 IsLeaf = true;
@@ -43,42 +41,50 @@ namespace RayTracer.SceneGraph.Accelerate
             {
                 Aggregate leftIntersectables = new IntersectableList();
                 Aggregate rightIntersectables = new IntersectableList();
+                //Find the maximal Axis
+                Axis = 0;
 
+                float max = BoundingBox.Dimension.X;
+                if (BoundingBox.Dimension.Y > max)
+                    Axis = 1;
+                if (BoundingBox.Dimension.Z > max)
+                    Axis = 2;
+                
+                //Axis = currentTreeDetph%3;
+                PlanePos = BoundingBox.MaxVector[Axis] - (BoundingBox.MaxVector[Axis] - BoundingBox.MinVector[Axis])/2;
                 IBoundingBox leftBb = new AxisAlignedBoundingBox();
                 IBoundingBox rightBb = new AxisAlignedBoundingBox();
-                PlanePos = BoundingBox.Center;
-                if (BoundingBox.Dimension.X > BoundingBox.Dimension.Y)
+
+                switch (Axis)
                 {
-                    //Split along the x-Axis
-                    Axis = 0;
-                     
-                    leftBb.MinVector = BoundingBox.MinVector;
-                    leftBb.MaxVector = new Vector3(BoundingBox.MaxVector.X - BoundingBox.Dimension.X / 2, BoundingBox.MaxVector.Y, BoundingBox.MaxVector.Z);
-
-                    rightBb.MaxVector = BoundingBox.MaxVector;
-                    rightBb.MinVector = new Vector3(BoundingBox.MinVector.X + BoundingBox.Dimension.X / 2, BoundingBox.MinVector.Y, BoundingBox.MinVector.Z);
-
-    
-                }
-                else
-                {   //Split along the y-Axis
-                    Axis = 1;
-
-                    leftBb.MinVector = BoundingBox.MinVector;
-                    leftBb.MaxVector = new Vector3(BoundingBox.MaxVector.X,BoundingBox.MaxVector.Y- BoundingBox.Dimension.Y /2,BoundingBox.MaxVector.Z);
-
-                    rightBb.MaxVector = BoundingBox.MaxVector;
-                    rightBb.MinVector = new Vector3(BoundingBox.MinVector.X,BoundingBox.MinVector.Y + BoundingBox.Dimension.Y / 2, BoundingBox.MinVector.Z);
+                    case 0:
+                        leftBb.MinVector = new Vector3(PlanePos,BoundingBox.MinVector.Y,BoundingBox.MinVector.Z);
+                        leftBb.MaxVector = new Vector3(BoundingBox.MaxVector);
+                        rightBb.MinVector = new Vector3(BoundingBox.MinVector);
+                        rightBb.MaxVector = new Vector3(PlanePos,BoundingBox.MaxVector.Y,BoundingBox.MaxVector.Z);
+                        break;
+                    case 1:
+                        leftBb.MinVector = new Vector3(BoundingBox.MinVector.X, PlanePos, BoundingBox.MinVector.Z);
+                        leftBb.MaxVector = new Vector3(BoundingBox.MaxVector);
+                        rightBb.MinVector = new Vector3(BoundingBox.MinVector);
+                        rightBb.MaxVector = new Vector3(BoundingBox.MaxVector.X, PlanePos, BoundingBox.MaxVector.Z);
+                        break;
+                    case 2:
+                        leftBb.MinVector = new Vector3(BoundingBox.MinVector.X, BoundingBox.MinVector.Y, PlanePos);
+                        leftBb.MaxVector = new Vector3(BoundingBox.MaxVector);
+                        rightBb.MinVector = new Vector3(BoundingBox.MinVector);
+                        rightBb.MaxVector = new Vector3(BoundingBox.MaxVector.X, BoundingBox.MaxVector.Y, PlanePos);
+                        break;
                 }
 
-
+              
                 LeftNode = new BspNode();
                 RightNode = new BspNode();
                 foreach (IIntersectable intersectable in Intersectables.GetObjects())
                 {
                     if (intersectable.BoundingBox.Intersect(leftBb)) leftIntersectables.Objects.Add(intersectable);
                     if (intersectable.BoundingBox.Intersect(rightBb)) rightIntersectables.Objects.Add(intersectable);
-                    
+
                 }
                 LeftNode.BuildSubTree(leftIntersectables, leftBb, maxTreeDepth, currentTreeDetph + 1);
                 RightNode.BuildSubTree(rightIntersectables, rightBb, maxTreeDepth, currentTreeDetph + 1);
@@ -89,11 +95,6 @@ namespace RayTracer.SceneGraph.Accelerate
         public float DistanceToSplitPlane(Ray ray)
         {
 
-            //int axis = node.SplitAxis();
-            //float tplane = (node.SplitPos() - ray.Origin[axis]) * invDir[axis];
-            
-            //Axis: X = 1; Y = 2; Z = 3
-            //TODO: FIX THIS!
             Vector3 rayOrigin = ray.Origin;
             Vector3 rayDirection = ray.Direction;
             Vector3 normal = Vector3.Zero;
@@ -103,15 +104,13 @@ namespace RayTracer.SceneGraph.Accelerate
                 case 0: normal = new Vector3(1, 0, 0); break;
                 case 1: normal = new Vector3(0, 1, 0); break;
                 case 2: normal = new Vector3(0, 0, 1); break;
-                default: break;
             }
 
             Vector3 p0 = new Vector3(normal);
-            p0 = p0*PlanePos[Axis];
+            p0 = p0 * PlanePos;
             p0 = p0 - rayOrigin;
 
-            return Vector3.Dot(p0,normal) / Vector3.Dot(rayDirection,normal);
-            //return (PlanePos[Axis] - ray.Origin[Axis]) * ray.InvDirection[Axis];
+            return Vector3.Dot(p0, normal) / Vector3.Dot(rayDirection, normal);
         }
     }
 }

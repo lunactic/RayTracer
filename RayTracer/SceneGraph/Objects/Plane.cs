@@ -9,6 +9,7 @@ namespace RayTracer.SceneGraph.Objects
 {
     public class Plane : IIntersectable
     {
+
         //Debug purposes
         public String Name { get; set; }
         /// <summary>
@@ -27,9 +28,11 @@ namespace RayTracer.SceneGraph.Objects
 
         public Plane(double offset, Vector3 normal)
         {
+            
             Normal = normal;
             Normal.Normalize();
             Offset = offset;
+           
         }
 
         /// <summary>
@@ -44,21 +47,16 @@ namespace RayTracer.SceneGraph.Objects
             n = n*(float)Offset;
             n = n - ray.Origin;
             float vd = Vector3.Dot(n, Normal);
-            float vn = Vector3.Dot(ray.Direction,Normal);
+            float vn = Vector3.Dot(ray.Direction, Normal);
 
             float t = vd / vn;
             
             if (t > 0)
             {
-                Vector3 hitPoint = ray.Origin + (ray.Direction*t);
-                return new HitRecord(t, hitPoint, Normal, this, Material, ray.Direction);
+                Vector3 hitPoint = ray.Origin + (ray.Direction * t);
+                return new HitRecord(t, hitPoint, Normal, this, Material, ray.Direction); ;
             }
             return null;
-        }
-
-        public Vector3 GetNormal(Vector3 hitPosition)
-        {
-            return Normal;
         }
 
         public Accelerate.IBoundingBox BoundingBox

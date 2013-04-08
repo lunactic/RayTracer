@@ -33,7 +33,19 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="geometries\armadillo.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="geometries\bunny.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="geometries\bunny70.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="geometries\cow.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="geometries\dragon.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="geometries\teapot.obj">
@@ -42,6 +54,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Helper\ObjReader.cs" />
+    <Compile Include="Helper\Refractions.cs" />
+    <Compile Include="Samplers\ISampler.cs" />
+    <Compile Include="Samplers\Sample.cs" />
+    <Compile Include="Samplers\StratifiedSampler.cs" />
+    <Compile Include="Samplers\RandomSampler.cs" />
     <Compile Include="SceneGraph\Accelerate\AxisAlignedBoundingBox.cs" />
     <Compile Include="SceneGraph\Accelerate\BspAccelerator.cs" />
     <Compile Include="SceneGraph\Accelerate\BSPNode.cs" />
@@ -52,6 +69,7 @@
     <Compile Include="SceneGraph\Integrators\BinaryIntegrator.cs" />
     <Compile Include="SceneGraph\Integrators\IIntegrator.cs" />
     <Compile Include="SceneGraph\Integrators\BlinnIntegrator.cs" />
+    <Compile Include="SceneGraph\Integrators\RefractionIntegrator.cs" />
     <Compile Include="SceneGraph\Integrators\ShadowIntegrator.cs" />
     <Compile Include="SceneGraph\Integrators\WhittedIntegrator.cs" />
     <Compile Include="SceneGraph\Light\ILight.cs" />
@@ -59,6 +77,8 @@
     <Compile Include="SceneGraph\Materials\LambertMaterial.cs" />
     <Compile Include="SceneGraph\Materials\BlinnPhongMaterial.cs" />
     <Compile Include="SceneGraph\Materials\MirrorMaterial.cs" />
+    <Compile Include="Helper\RayTransformer.cs" />
+    <Compile Include="SceneGraph\Materials\RefractiveMaterial.cs" />
     <Compile Include="SceneGraph\Objects\Aggregate.cs" />
     <Compile Include="SceneGraph\Accelerate\IBoundingBox.cs" />
     <Compile Include="SceneGraph\Objects\IIntersectable.cs" />
@@ -88,6 +108,7 @@
     <Compile Include="Tracer\RayTracerKdTree.cs" />
     <Compile Include="Tracer\RayTracerMirror.cs" />
     <Compile Include="Tracer\RayTracerSphereTest.cs" />
+    <Compile Include="Tracer\RayTracerRefraction.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

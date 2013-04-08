@@ -14,8 +14,7 @@ namespace RayTracer.SceneGraph.Objects
         IBoundingBox BoundingBox { get; set; }
         Material Material { get; set; }
         HitRecord Intersect(Ray ray);
-        Vector3 GetNormal(Vector3 hitPosition);
         void BuildBoundingBox();
-        
+
     }
 }

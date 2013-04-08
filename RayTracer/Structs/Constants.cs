@@ -9,6 +9,6 @@ namespace RayTracer.Structs
     public static class Constants
     {
         public const double EPSILON = 1e-6;
-        public const int MAXIMUM_NUMBER_OF_BOUNCES = 10;
+        public const int MAXIMUM_NUMBER_OF_BOUNCES = 4;
     }
 }

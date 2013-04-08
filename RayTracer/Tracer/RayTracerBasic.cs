@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using RayTracer.Samplers;
 using RayTracer.SceneGraph;
 using RayTracer.SceneGraph.Integrators;
 using RayTracer.SceneGraph.Light;
@@ -17,6 +18,7 @@ namespace RayTracer.Tracer
 
         public RayTracerBasic()
         {
+            sampler = new RandomSampler(5);
             FileName = "Assignment1_Basic.jpg";
             scene = new Scene { BackgroundColor = Color.Black };
             integrator = new BlinnIntegrator(scene);
@@ -34,8 +36,8 @@ namespace RayTracer.Tracer
             film = new Film(camera.ScreenWidth, camera.ScreenHeight);
 
             //List of objects
-            Sphere sphere = new Sphere(new LambertMaterial(new Color(0.8f, 0.8f, 0.8f, 1.0f)), new Vector3(0f, 0f, 0f), 0.2f);
-            
+            Sphere sphere = new Sphere(new LambertMaterial(new Color(0.8f, 0.8f, 0.8f, 1.0f)), new Vector3(0f, 0f, 0f), 0.5f);
+
             Plane p1 = new Plane(1f, new Vector3(0, 1, 0))
                 {
                     Name = "P1",
@@ -63,7 +65,7 @@ namespace RayTracer.Tracer
                     Material = new LambertMaterial(new Color(0.8f, 0.8f, 0.8f, 1.0f))
                 };
 
-
+            
             scene.IntersectableList.Objects.Add(sphere);
             scene.IntersectableList.Objects.Add(p1);
             scene.IntersectableList.Objects.Add(p2);

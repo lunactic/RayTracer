@@ -17,6 +17,7 @@ namespace RayTracer.Tracer
 
         public RayTracerInstancing()
         {
+            NumberOfThreads = 8;
             FileName = "Assignment1_Instancing.jpg";
             scene = new Scene { BackgroundColor = Color.Black };
             integrator = new ShadowIntegrator(scene);

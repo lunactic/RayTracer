@@ -12,15 +12,12 @@ namespace RayTracer.SceneGraph.Objects
     public class IntersectableList : Aggregate, IIntersectable
     {
         public Material Material {get; set; }
-  
+        public Matrix4 TransformationMatrix { get; set; }
+        public Matrix4 InvTransformationMatrix { get; set; }
+        public Matrix4 TransposedTransformationMatrix { get; set; }
         public IntersectableList()
         {
                Objects = new List<IIntersectable>();
-        }
-
-        public Vector3 GetNormal(Vector3 hitPosition)
-        {
-            throw new NotImplementedException();
         }
 
         public Accelerate.IBoundingBox BoundingBox

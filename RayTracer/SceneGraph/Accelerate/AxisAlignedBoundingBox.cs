@@ -13,6 +13,7 @@ namespace RayTracer.SceneGraph.Accelerate
 
         public Vector3 MinVector { get; set; }
         public Vector3 MaxVector { get; set; }
+     
         public Vector3 Center
         {
             get { return (MinVector + MaxVector) / 2f; }
@@ -27,6 +28,7 @@ namespace RayTracer.SceneGraph.Accelerate
             MinVector = Vector3.Zero;
             MaxVector = Vector3.Zero;
         }
+
         /// <summary>
         /// Checks if this Bounding Box intersects with the other BoundingBox.
         /// </summary>
@@ -34,44 +36,34 @@ namespace RayTracer.SceneGraph.Accelerate
         /// <returns>An IntersectionType about which kind of intersection occured</returns>
         public bool Intersect(IBoundingBox otherBox)
         {
-            bool x, y, z;
-            x = otherBox.MinVector.X < MaxVector.X && otherBox.MaxVector.X > MinVector.X;
-            y = otherBox.MinVector.Y < MaxVector.Y && otherBox.MaxVector.Y > MinVector.Y;
-            z = otherBox.MinVector.Z < MaxVector.Z && otherBox.MaxVector.Z > MinVector.Z;
+            bool x = otherBox.MinVector.X < MaxVector.X && otherBox.MaxVector.X > MinVector.X;
+            bool y = otherBox.MinVector.Y < MaxVector.Y && otherBox.MaxVector.Y > MinVector.Y;
+            bool z = otherBox.MinVector.Z < MaxVector.Z && otherBox.MaxVector.Z > MinVector.Z;
             return x && y && z;
         }
 
         public float[] Intersect(Ray ray)
         {
-            Vector3[] parameters = new Vector3[]{MinVector,MaxVector};
-            float tymin;
-            float tymax;
-            float tzmin;
-            float tzmax;
-            float tmin;
-            float tmax;
-            tmin = (parameters[    ray.Sign[0]].X - ray.Origin.X) * ray.InvDirection.X;
-            tmax = (parameters[1 - ray.Sign[0]].X - ray.Origin.X) * ray.InvDirection.X;
+            Vector3[] parameters = new[] { MinVector, MaxVector };
+            float tmin = (parameters[    ray.Sign[0]].X - ray.Origin.X) * ray.InvDirection.X;
+            float tmax = (parameters[1 - ray.Sign[0]].X - ray.Origin.X) * ray.InvDirection.X;
 
-            tymin = (parameters[    ray.Sign[1]].Y - ray.Origin.Y) * ray.InvDirection.Y;
-            tymax = (parameters[1 - ray.Sign[1]].Y - ray.Origin.Y) * ray.InvDirection.Y;
+            float tymin = (parameters[    ray.Sign[1]].Y - ray.Origin.Y) * ray.InvDirection.Y;
+            float tymax = (parameters[1 - ray.Sign[1]].Y - ray.Origin.Y) * ray.InvDirection.Y;
 
             if (tmin > tymax || tymin > tmax) return null;
             if (tymin > tmin) tmin = tymin;
             if (tymax < tmax) tmax = tymax;
 
-            tzmin = (parameters[  ray.Sign[2]].Z - ray.Origin.Z) * ray.InvDirection.Z;
-            tzmax = (parameters[1-ray.Sign[2]].Z - ray.Origin.Z) * ray.InvDirection.Z;
+            float tzmin = (parameters[  ray.Sign[2]].Z - ray.Origin.Z) * ray.InvDirection.Z;
+            float tzmax = (parameters[1-ray.Sign[2]].Z - ray.Origin.Z) * ray.InvDirection.Z;
 
             if (tmin > tzmax || tzmin > tmax) return null;
             if (tzmin > tmin) tmin = tzmin;
             if (tzmax < tmax) tmax = tzmax;
 
-            if (tmax < 0) return null;
-
-            return new float[] { tmin, tmax };
-
-
+            return tmax < 0 ? null : new[] { tmin, tmax };
         }
+
     }
 }

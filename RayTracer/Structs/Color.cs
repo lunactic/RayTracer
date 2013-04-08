@@ -52,7 +52,12 @@ namespace RayTracer.Structs
             int g = (int)Math.Floor((double)((G) >= 1.0 ? 255 : (int)((G) * 256.0)));
             int b = (int)Math.Floor((double)((B) >= 1.0 ? 255 : (int)((B) * 256.0)));
             int a = (int)Math.Floor((double)((A) >= 1.0 ? 255 : (int)((A) * 256.0)));
-
+            r = Math.Min(r, 255);
+            g = Math.Min(g, 255);
+            b = Math.Min(b, 255);
+            r = Math.Max(0, r);
+            g = Math.Max(0, g);
+            b = Math.Max(0, b);
             return System.Drawing.Color.FromArgb(a, r, g, b);
         }
 
@@ -115,6 +120,11 @@ namespace RayTracer.Structs
             return new Color(l.R * r.R, l.G * r.G, l.B * r.B, l.A);
         }
         
+        public static Color operator /(Color l, int num)
+        {
+            return new Color(l.R/num,l.G/num,l.B/num,l.A);
+        }
+
         /// <summary>
         /// Returns a hash code for this instance.
         /// </summary>

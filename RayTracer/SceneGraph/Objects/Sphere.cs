@@ -24,6 +24,7 @@ namespace RayTracer.SceneGraph.Objects
             Radius = radius;
         }
 
+
         /// <summary>
         /// Calculates the Ray-Sphere Intersection, as described in <see cref="http://www.siggraph.org/education/materials/HyperGraph/raytrace/rtinter1.htm"/>
         /// With information taken from this site: <see cref="http://wiki.cgsociety.org/index.php/Ray_Sphere_Intersection"/>
@@ -32,6 +33,7 @@ namespace RayTracer.SceneGraph.Objects
         /// <returns>A new HitRecord if an intersection occurs, null otherwise</returns>
         public HitRecord Intersect(Ray ray)
         {
+
             //Compute A,B,C
             float a = Vector3.Dot(ray.Direction, ray.Direction);
             float b = 2 * Vector3.Dot(ray.Direction, ray.Origin - Center);
@@ -70,17 +72,21 @@ namespace RayTracer.SceneGraph.Objects
                 t = t1;
             else
                 t = t0;
-           
-            Vector3 hitPoint = ray.Origin + (ray.Direction*t);
-            return new HitRecord(t,hitPoint,GetNormal(hitPoint),this,Material,ray.Direction);
 
+            if (float.IsNaN(t))
+                return null;
+
+            Vector3 hitPoint = ray.Origin + (ray.Direction * t);
+            return new HitRecord(t,hitPoint,GetNormal(hitPoint),this,Material,ray.Direction);
+             
 
         }
 
-        public Vector3 GetNormal(Vector3 hitPosition)
+        private Vector3 GetNormal(Vector3 hitPosition)
         {
             Vector3 normal = hitPosition - Center;
-            normal.Normalize();
+            normal *= (1/Radius);
+            
             return normal;
         }
 

@@ -34,8 +34,8 @@ namespace RayTracer.Tracer
             film = new Film(camera.ScreenWidth, camera.ScreenHeight);
 
             //List of objects
-            Sphere sphere = new Sphere(new BlinnPhongMaterial(Color.Red,Color.White, 30f), new Vector3(0f, 0f, 0f), 0.2f);
-            
+            Sphere sphere = new Sphere(new BlinnPhongMaterial(Color.Red, Color.White, 30f), new Vector3(0f, 0f, 0f), 0.2f);
+
             Sphere sphere2 = new Sphere(new MirrorMaterial(new Color(0.8f, 0.8f, 0.8f, 1.0f)), new Vector3(0.4f, 0.2f, -0.3f), .3f);
             Plane p1 = new Plane(1f, new Vector3(0, 1, 0))
             {

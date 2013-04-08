@@ -22,7 +22,7 @@ namespace RayTracer.Tracer
         static void Main()
         {
             IRayTracer rayTracer = null;
-            const int sceneSelector = 4;
+            const int sceneSelector = 6;
 
             switch (sceneSelector)
             {
@@ -35,6 +35,10 @@ namespace RayTracer.Tracer
                 case 3: rayTracer = new RayTracerMirror();
                     break;
                 case 4: rayTracer = new RayTracerKdTree();
+                    break;
+                case 5: rayTracer = new RayTracerSphereTest();
+                    break;
+                case 6: rayTracer = new RayTracerRefraction();
                     break;
             }
 

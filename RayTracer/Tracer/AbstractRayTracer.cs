@@ -1,4 +1,5 @@
-﻿using RayTracer.SceneGraph;
+﻿using RayTracer.Samplers;
+using RayTracer.SceneGraph;
 using RayTracer.SceneGraph.Integrators;
 using RayTracer.Structs;
 using System;
@@ -20,6 +21,8 @@ namespace RayTracer.Tracer
         protected Camera camera;
         protected int NumberOfThreads = 0;
 
+        protected ISampler sampler = null;
+
         private int finishedThreads;
         
         Stopwatch stopwatch = new Stopwatch();
@@ -34,11 +37,24 @@ namespace RayTracer.Tracer
                 {
                     for (int j = 0; j < camera.ScreenHeight; j++)
                     {
-
-                        Ray ray = camera.CreateRay(i, j);
-                        Color color = integrator.Integrate(ray);
-                        film.SetPixel(i, j, color);
-
+                        if(sampler != null)
+                        {
+                            List<Sample> samples = sampler.CreateSamples(i, j);
+                            Color c = Color.Black;
+                            foreach (Sample sample in samples)
+                            {
+                                Ray ray = camera.CreateRay(sample.X, sample.Y);
+                                c += integrator.Integrate(ray);
+                            }
+                            c = c/samples.Count;
+                            film.SetPixel(i,j,c);
+                        }
+                        else
+                        {
+                            Ray ray = camera.CreateRay(i, j);
+                            Color color = integrator.Integrate(ray);
+                            film.SetPixel(i, j, color);
+                        }
                     }
                 }
                 stopwatch.Stop();

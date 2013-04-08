@@ -15,14 +15,16 @@ namespace RayTracer.SceneGraph.Objects
         
         public Material Material { get; set; }
         public List<Triangle> Triangles { get; private set; }
+      
         public IBoundingBox BoundingBox { get; set; }
         public List<float[]> Vertices { get; private set; }
         public List<float[]> Normals { get; private set; }
-
         public Mesh()
         {
+           
             Triangles = new List<Triangle>();
             BoundingBox = new AxisAlignedBoundingBox();
+
         }
 
         public HitRecord Intersect(Ray ray)
@@ -42,11 +44,6 @@ namespace RayTracer.SceneGraph.Objects
             return hit;
         }
 
-
-        public Vector3 GetNormal(Vector3 hitPosition)
-        {
-            throw new NotSupportedException();
-        }
 
         public void CreateMeshFromObjectFile(String filename, float scale)
         {
@@ -85,7 +82,7 @@ namespace RayTracer.SceneGraph.Objects
                 }
                 else
                 {
-                    Triangle t = new Triangle(p1,p2,p3){Material = Material};
+                    Triangle t = new Triangle(p1, p2, p3) { Material = Material };
                     t.BuildBoundingBox();
                     Triangles.Add(t);
                     
@@ -99,22 +96,22 @@ namespace RayTracer.SceneGraph.Objects
             Vector3 minVector = new Vector3(float.MaxValue,float.MaxValue,float.MaxValue);
             Vector3 maxVector = new Vector3(float.MinValue,float.MinValue,float.MinValue);
 
-            foreach (float[] vertex in Vertices)
+            foreach (Triangle t in Triangles)
             {
                 //x component
-                if (vertex[0] <= minVector.X) minVector.X = vertex[0];
-                if (vertex[0] >= maxVector.X) maxVector.X = vertex[0];
+                IBoundingBox box = t.BoundingBox;
+                minVector.X = Math.Min(minVector.X, box.MinVector.X);
+                minVector.Y = Math.Min(minVector.Y, box.MinVector.Y);
+                minVector.Z = Math.Min(minVector.Z, box.MinVector.Z);
 
-                //y component
-                if (vertex[1] <= minVector.Y) minVector.Y = vertex[1];
-                if (vertex[1] >= maxVector.Y) maxVector.Y = vertex[1];
-
-                //z component
-                if (vertex[2] <= minVector.Z) minVector.Z = vertex[2];
-                if (vertex[2] >= maxVector.Z) maxVector.Z = vertex[2];
+                maxVector.X = Math.Max(maxVector.X, box.MaxVector.X);
+                maxVector.Y = Math.Max(maxVector.Y, box.MaxVector.Y);
+                maxVector.Z = Math.Max(maxVector.Z, box.MaxVector.Z);
+            
             }
             BoundingBox.MaxVector = maxVector;
             BoundingBox.MinVector = minVector;
+            
         }
 
         public override List<IIntersectable> GetObjects()

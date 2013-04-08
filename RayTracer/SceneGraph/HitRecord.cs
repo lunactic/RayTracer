@@ -12,8 +12,8 @@ namespace RayTracer.SceneGraph
 
     public class HitRecord
     {
-        public Ray Ray { get; set; }
         public Vector3 RayDirection { get; set; }
+        public Vector3 InvRayDirection { get; set; }
         public Material Material { get; set; }
         public Vector3 SurfaceNormal { get; set; }
         public Vector3 IntersectionPoint { get; set; }
@@ -21,12 +21,6 @@ namespace RayTracer.SceneGraph
         public float Distance { get; set; }
         public HitRecord()
         {
-            Distance = float.MaxValue;
-        }
-
-        public HitRecord(Ray ray)
-        {
-            Ray = ray;
             Distance = float.MaxValue;
         }
 
@@ -39,15 +33,13 @@ namespace RayTracer.SceneGraph
             HitObject = hitObject;
             Material = material;
             RayDirection = rayDirection;
+            InvRayDirection = new Vector3(1 / RayDirection.X, 1 / RayDirection.Y, 1 / RayDirection.Z);
         }
         
         public Ray CreateReflectedRay()
         {
-            float dDotN = Vector3.Dot(RayDirection, SurfaceNormal);
-            Vector3 direction = SurfaceNormal;
-            direction = direction * 2 * dDotN;
-            direction = RayDirection - direction;
-            direction.Normalize();
+            float cosI = -Vector3.Dot(SurfaceNormal, RayDirection);
+            Vector3 direction = RayDirection + (SurfaceNormal*cosI*2);
 
             Vector3 newOrigin = IntersectionPoint;
             Vector3 offset = direction * 0.001f;
