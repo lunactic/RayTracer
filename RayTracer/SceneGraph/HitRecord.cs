@@ -40,7 +40,7 @@ namespace RayTracer.SceneGraph
         {
             float cosI = -Vector3.Dot(SurfaceNormal, RayDirection);
             Vector3 direction = RayDirection + (SurfaceNormal*cosI*2);
-
+            direction.Normalize();
             Vector3 newOrigin = IntersectionPoint;
             Vector3 offset = direction * 0.001f;
             newOrigin += offset;

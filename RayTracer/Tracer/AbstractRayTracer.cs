@@ -68,7 +68,7 @@ namespace RayTracer.Tracer
                 finishedThreads = 0;
                 for (int i = 0; i < NumberOfThreads; i++)
                 {
-                    MultiThreadingRenderer renderer = new MultiThreadingRenderer(i,scene,camera,integrator,film,NumberOfThreads);
+                    MultiThreadingRenderer renderer = new MultiThreadingRenderer(i,scene,camera,integrator,film,NumberOfThreads,sampler);
                     renderer.ThreadDone += HandleThreadDone;
                     Thread t = new Thread(renderer.Render);
                     t.Start();
