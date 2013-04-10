@@ -29,19 +29,19 @@ namespace RayTracer.SceneGraph.Materials
         {
             Vector3 hitPosition = record.IntersectionPoint;
             Vector3 normal = record.SurfaceNormal;
+            normal.Normalize();
             Color pixelColor = Color.Black;
             Vector3 rayDirection = record.RayDirection;
             rayDirection.Normalize();
 
 
-            Color cLi = light.GetIncidentColor(hitPosition);
             Vector3 lightDirection = light.GetLightDirection(hitPosition);
             float nDotL = Vector3.Dot(normal, lightDirection);
 
             if (nDotL > 0)
             {
                 //add Diffuse Light
-                pixelColor += cLi * nDotL * Diffuse;
+                pixelColor += Diffuse * nDotL;
                 //Calculate the Blinn halfVector
                 Vector3 h = lightDirection - rayDirection;
                 h.Normalize();
@@ -51,10 +51,10 @@ namespace RayTracer.SceneGraph.Materials
                 if (nDotH > 0)
                 {
                     float pow = (float)Math.Pow(nDotH, Shininess);
-                    pixelColor += cLi * pow * Specular;
+                    pixelColor +=  Specular * pow;
                 }
             }
-            pixelColor += scene.Ambient * cLi;
+            pixelColor += scene.Ambient;
             pixelColor.Clamp(0f, 1f);
             return pixelColor;
         }

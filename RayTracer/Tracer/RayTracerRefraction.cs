@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using RayTracer.Helper;
+using RayTracer.Samplers;
 using RayTracer.SceneGraph;
-using RayTracer.SceneGraph.Accelerate;
 using RayTracer.SceneGraph.Integrators;
 using RayTracer.SceneGraph.Light;
 using RayTracer.SceneGraph.Materials;
@@ -15,16 +13,15 @@ using RayTracer.Structs;
 
 namespace RayTracer.Tracer
 {
-    class RayTracerKdTree : AbstractRayTracer
+    public class RayTracerRefraction : AbstractRayTracer
     {
-
-        public RayTracerKdTree()
+        public RayTracerRefraction()
         {
-
-            NumberOfThreads = 8;
-            FileName = "Assignment2_KdTree.jpg";
+            NumberOfThreads = 0;
+            //sampler = new RandomSampler(5);
+            FileName = "Assignment1_Refraction.jpg";
             scene = new Scene { BackgroundColor = Color.Black };
-            integrator = new ShadowIntegrator(scene);
+            integrator = new RefractionIntegrator(scene);
             camera = new Camera
             {
                 FieldOfView = 60f,
@@ -38,6 +35,9 @@ namespace RayTracer.Tracer
 
             film = new Film(camera.ScreenWidth, camera.ScreenHeight);
 
+            //List of objects
+            Sphere sphere1 = new Sphere(new RefractiveMaterial(1.5f), new Vector3(0f, 0f, 0f), 0.4f);
+            Sphere sphere2 = new Sphere(new BlinnPhongMaterial(new Color(0.8f,0f,0f,1f),new Color(0.8f,0.8f,0.8f,1f),30f),new Vector3(0.4f,0.2f,-0.3f),0.3f );
             Plane p1 = new Plane(1f, new Vector3(0, 1, 0))
             {
                 Name = "P1",
@@ -65,41 +65,22 @@ namespace RayTracer.Tracer
                 Material = new LambertMaterial(new Color(0.8f, 0.8f, 0.8f, 1.0f))
             };
 
-            Mesh mesh = new Mesh() { Material = new LambertMaterial(new Color(0.5f, 0.5f, 0.5f, 1.0f)) };
-            mesh.CreateMeshFromObjectFile("./geometries/buddha.obj", 1.0f);
 
-            BspAccelerator tree = new BspAccelerator();
-            tree.Construct(mesh);
-
-            //Matrix4 m1 = Matrix4.Scale(0.5f);
-            //m1.Translation = new Vector4(0, -0.25f, 0, 1);
-
-
-            Matrix4 m2 = Matrix4.Scale(0.5f);
-            m2.Translation = new Vector4(0, 0.25f, 0, 1);
-
-
-            
-            Instance i1 = new Instance(tree, Matrix4.Identity);
-            //Instance i2 = new Instance(tree, m2);
-            
-            /*
-            Instance i1 = new Instance(mesh, m1);
-            Instance i2 = new Instance(mesh, m2);
-            */
-
+            scene.IntersectableList.Objects.Add(sphere1);
+            scene.IntersectableList.Objects.Add(sphere2);
             scene.IntersectableList.Objects.Add(p1);
             scene.IntersectableList.Objects.Add(p2);
             scene.IntersectableList.Objects.Add(p3);
             scene.IntersectableList.Objects.Add(p4);
             scene.IntersectableList.Objects.Add(p5);
-            scene.IntersectableList.Objects.Add(i1);
-            //scene.IntersectableList.Objects.Add(i2);
 
-            ILight light = new PointLight(new Vector3(0.0f, 0.8f, 0.8f), new Color(.7f, .7f, .7f, 1f));
-            ILight light2 = new PointLight(new Vector3(-0.8f, 0.2f, 1f), new Color(.5f, .5f, .5f, 1f));
-            scene.Lights.Add(light);
-            scene.Lights.Add(light2);
+            ILight light1 = new PointLight(new Vector3(0.0f, 0.8f, 0.8f), new Color(0.7f, 0.7f, 0.7f, 1f));
+            ILight light2 = new PointLight(new Vector3(-0.8f, 0.2f, 0f), new Color(0.5f, 0.5f, 0.5f, 1f));
+            scene.Lights.Add(light1);
+            scene.Lights.Add(light2);    
+
         }
+        
+
     }
 }
