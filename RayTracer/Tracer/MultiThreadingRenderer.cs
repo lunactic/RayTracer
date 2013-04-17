@@ -30,6 +30,7 @@ namespace RayTracer.Tracer
             this.integrator = integrator;
             this.film = film;
             this.numberOfThreads = numberOfThreads;
+            
 
         }
         public void Render()
@@ -41,11 +42,11 @@ namespace RayTracer.Tracer
 
                     if (sampler != null)
                     {
-                        List<Sample> samples = sampler.CreateSamples(i, j);
+                        List<Sample> samples = sampler.CreateSamples();
                         Color c = Color.Black;
                         foreach (Sample sample in samples)
                         {
-                            Ray ray = camera.CreateRay(sample.X, sample.Y);
+                            Ray ray = camera.CreateRay(i+sample.X, j+sample.Y);
                             c += integrator.Integrate(ray);
                         }
                         c = c / samples.Count;

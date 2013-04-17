@@ -41,7 +41,7 @@ namespace RayTracer.SceneGraph.Integrators
 
                     if (shadowHit != null && (shadowHit.Distance > distance.Length))
                     {
-                        returnColor += record.HitObject.Material.Shade(record, scene, light) * light.GetIncidentColor(record.IntersectionPoint);
+                        returnColor += record.HitObject.Material.Shade(record, light.GetLightDirection(record.IntersectionPoint)) * light.GetIncidentColor(record.IntersectionPoint);
                     }
 
                 }

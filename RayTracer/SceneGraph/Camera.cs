@@ -71,7 +71,7 @@ namespace RayTracer.SceneGraph
         /// <param name="x">x position of the pixel</param>
         /// <param name="y">y position of the pixel</param>
         /// <returns>A Ray from the Camera center trough the pixel</returns>
-        public Ray CreateRay(int x, int y)
+        public Ray CreateRay(float x, float y)
         {
             
             //Calculate Ray in pixel coordinates

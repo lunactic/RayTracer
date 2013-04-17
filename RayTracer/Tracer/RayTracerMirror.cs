@@ -1,4 +1,5 @@
-﻿using RayTracer.SceneGraph;
+﻿using RayTracer.Samplers;
+using RayTracer.SceneGraph;
 using RayTracer.SceneGraph.Integrators;
 using RayTracer.SceneGraph.Light;
 using RayTracer.SceneGraph.Materials;
@@ -14,12 +15,13 @@ namespace RayTracer.Tracer
 {
     public class RayTracerMirror : AbstractRayTracer
     {
-  
+
         public RayTracerMirror()
         {
+            NumberOfThreads = 8;
             FileName = "Assignment1_Mirror.jpg";
             scene = new Scene { BackgroundColor = Color.Black };
-            integrator = new WhittedIntegrator(scene);
+            integrator = new RefractionIntegrator(scene, Constants.Sampler);
             camera = new Camera
             {
                 FieldOfView = 60f,
@@ -36,7 +38,7 @@ namespace RayTracer.Tracer
             //List of objects
             Sphere sphere = new Sphere(new BlinnPhongMaterial(Color.Red, Color.White, 30f), new Vector3(0f, 0f, 0f), 0.2f);
 
-            Sphere sphere2 = new Sphere(new MirrorMaterial(new Color(0.8f, 0.8f, 0.8f, 1.0f)), new Vector3(0.4f, 0.2f, -0.3f), .3f);
+            Sphere sphere2 = new Sphere(new MirrorMaterial(0.8f), new Vector3(0.4f, 0.2f, -0.3f), .3f);
             Plane p1 = new Plane(1f, new Vector3(0, 1, 0))
             {
                 Name = "P1",
@@ -64,7 +66,12 @@ namespace RayTracer.Tracer
                 Material = new LambertMaterial(new Color(0.8f, 0.8f, 0.8f, 1.0f))
             };
 
+            Rectangle rect = new Rectangle(new Vector3(-0.2f, .99f, 0f), new Vector3(.5f, 0, 0), new Vector3(0, 0, 0.5f))
+                {
+                    Material = new LambertMaterial(new Color(0, 0, 1, 1))
+                };
 
+            scene.IntersectableList.Objects.Add(rect);
             scene.IntersectableList.Objects.Add(sphere);
             scene.IntersectableList.Objects.Add(sphere2);
             scene.IntersectableList.Objects.Add(p1);
@@ -75,9 +82,10 @@ namespace RayTracer.Tracer
 
             ILight light = new PointLight(new Vector3(0.0f, 0.8f, 0.8f), new Color(0.7f, 0.7f, 0.7f, 1f));
             ILight light2 = new PointLight(new Vector3(-0.8f, 0.2f, 0.0f), new Color(.5f, .5f, .5f, 1f));
-
-            scene.Lights.Add(light2);
-            scene.Lights.Add(light);
+            ILight light3 = new AreaLight(new Color(10,10,10,1), rect);
+            scene.Lights.Add(light3);
+            //scene.Lights.Add(light2);
+            //scene.Lights.Add(light);
         }
 
     }

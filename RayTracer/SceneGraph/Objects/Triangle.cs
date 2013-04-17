@@ -2,11 +2,15 @@
 using RayTracer.Structs;
 using System;
 using RayTracer.SceneGraph.Materials;
+using RayTracer.SceneGraph.Light;
 
 namespace RayTracer.SceneGraph.Objects
 {
     public class Triangle : IIntersectable
     {
+
+        public ILight Light { get; set; }
+
         public Material Material { get; set; }
 
         public IBoundingBox BoundingBox { get; set; }
@@ -68,7 +72,7 @@ namespace RayTracer.SceneGraph.Objects
             float a = -Vector3.Dot(Normal, w0);
             float b = Vector3.Dot(Normal, rayDir);
 
-            if (Math.Abs(b) < Constants.EPSILON) return null;
+            if (Math.Abs(b) < Constants.Epsilon) return null;
 
             float t = a/b;
             if (t < 0) return null;
@@ -89,7 +93,7 @@ namespace RayTracer.SceneGraph.Objects
             if (gamma < 0 || (beta + gamma) > 1) return null;
             float alpha = 1 - beta - gamma;
             Vector3 normal = Normal;
-            if (t > Constants.EPSILON)
+            if (t > Constants.Epsilon)
             {
                 if (hasVertexNormals)
                 {
@@ -131,6 +135,22 @@ namespace RayTracer.SceneGraph.Objects
             BoundingBox.MinVector = minVector;
             BoundingBox.MaxVector = maxVector;
 
+        }
+
+
+        public Vector3 GetSamplePoint(float x, float y)
+        {
+            throw new NotSupportedException();
+        }
+
+        public float GetArea()
+        {
+            return 0f;
+        }
+
+        public Vector3 GetSampledNormal(float x, float y)
+        {
+            throw new NotSupportedException();
         }
     }
 }

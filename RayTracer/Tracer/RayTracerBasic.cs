@@ -18,7 +18,7 @@ namespace RayTracer.Tracer
 
         public RayTracerBasic()
         {
-            sampler = new RandomSampler(5);
+            //sampler = new StratifiedSampler(5);
             FileName = "Assignment1_Basic.jpg";
             scene = new Scene { BackgroundColor = Color.Black };
             integrator = new BlinnIntegrator(scene);

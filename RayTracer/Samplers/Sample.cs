@@ -8,10 +8,10 @@ namespace RayTracer.Samplers
 {
     public class Sample
     {
-        public int X { get; private set; }
-        public int Y { get; private set; }
+        public float X { get; private set; }
+        public float Y { get; private set; }
 
-        public Sample(int x, int y)
+        public Sample(float x, float y)
         {
             X = x;
             Y = y;

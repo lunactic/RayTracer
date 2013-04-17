@@ -21,12 +21,15 @@ namespace RayTracer.Tracer
         protected Camera camera;
         protected int NumberOfThreads = 0;
 
-        protected ISampler sampler = null;
-
         private int finishedThreads;
         
         Stopwatch stopwatch = new Stopwatch();
         
+        protected AbstractRayTracer()
+        {
+            if(Constants.IsLightSamplingOn) Constants.Sampler.CreateLightSamples();
+        }
+
         public void Render()
         {
             stopwatch.Reset();   
@@ -37,13 +40,13 @@ namespace RayTracer.Tracer
                 {
                     for (int j = 0; j < camera.ScreenHeight; j++)
                     {
-                        if(sampler != null)
+                        if(Constants.IsLightSamplingOn)
                         {
-                            List<Sample> samples = sampler.CreateSamples(i, j);
+                            List<Sample> samples = Constants.Sampler.CreateSamples();
                             Color c = Color.Black;
                             foreach (Sample sample in samples)
                             {
-                                Ray ray = camera.CreateRay(sample.X, sample.Y);
+                                Ray ray = camera.CreateRay(i+sample.X, j+sample.Y);
                                 c += integrator.Integrate(ray);
                             }
                             c = c/samples.Count;
@@ -68,6 +71,7 @@ namespace RayTracer.Tracer
                 finishedThreads = 0;
                 for (int i = 0; i < NumberOfThreads; i++)
                 {
+                    ISampler sampler = Constants.Sampler;
                     MultiThreadingRenderer renderer = new MultiThreadingRenderer(i,scene,camera,integrator,film,NumberOfThreads,sampler);
                     renderer.ThreadDone += HandleThreadDone;
                     Thread t = new Thread(renderer.Render);

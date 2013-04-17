@@ -1,4 +1,5 @@
-﻿using RayTracer.Structs;
+﻿using RayTracer.Samplers;
+using RayTracer.Structs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,5 +14,7 @@ namespace RayTracer.SceneGraph.Light
         Color GetIncidentColor(Vector3 v);
         Vector3 GetLightDirection(Vector3 v);
         float GetLightDistance(Vector3 v);
+        void Sample(HitRecord record, LightSample sample);
+        Color LightColor { get; set; }
     }
 }

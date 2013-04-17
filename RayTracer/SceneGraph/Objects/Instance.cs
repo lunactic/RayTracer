@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using RayTracer.Structs;
 using RayTracer.SceneGraph.Materials;
+using RayTracer.SceneGraph.Light;
 
 namespace RayTracer.SceneGraph.Objects
 {
@@ -74,6 +75,34 @@ namespace RayTracer.SceneGraph.Objects
                 return ((Aggregate)Intersectable).GetObjects();
 
             return null;
+        }
+
+
+        public ILight Light
+        {
+            get
+            {
+                return Intersectable.Light;
+            }
+            set
+            {
+                Intersectable.Light = value;
+            }
+        }
+
+        public Vector3 GetSamplePoint(float x, float y)
+        {
+            return Intersectable.GetSamplePoint(x, y);
+        }
+
+        public float GetArea()
+        {
+            return Intersectable.GetArea();
+        }
+
+        public Vector3 GetSampledNormal(float x, float y)
+        {
+            return Intersectable.GetSampledNormal(x,y);
         }
     }
 }

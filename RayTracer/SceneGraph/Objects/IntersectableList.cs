@@ -6,11 +6,24 @@ using System.Text;
 using System.Threading.Tasks;
 using RayTracer.Structs;
 using RayTracer.SceneGraph.Materials;
+using RayTracer.SceneGraph.Light;
 
 namespace RayTracer.SceneGraph.Objects
 {
     public class IntersectableList : Aggregate, IIntersectable
     {
+        public ILight Light
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
         public Material Material {get; set; }
         public Matrix4 TransformationMatrix { get; set; }
         public Matrix4 InvTransformationMatrix { get; set; }
@@ -40,6 +53,21 @@ namespace RayTracer.SceneGraph.Objects
         public override List<IIntersectable> GetObjects()
         {
             return Objects;
+        }
+
+        public Vector3 GetSamplePoint(float x, float y)
+        {
+            throw new NotSupportedException();
+        }
+
+        public float GetArea()
+        {
+            return 0f;
+        }
+
+        public Vector3 GetSampledNormal(float x, float y)
+        {
+            throw new NotSupportedException();
         }
     }
 }

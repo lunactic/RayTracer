@@ -15,6 +15,7 @@ namespace RayTracer.SceneGraph.Materials
         public Color Ambient { get; set; }
         public float Shininess { get; set; }
         public float RefractionIndex { get; set; }
+        public float Ks { get; set; }
 
         public Material()
         {
@@ -23,19 +24,19 @@ namespace RayTracer.SceneGraph.Materials
             Ambient = Color.Black;
             Shininess = 0f;
             RefractionIndex = 1f;
+            Ks = 1;
         }
 
-        public Color Shade(HitRecord record, Scene scene, ILight light)
+        public Color Shade(HitRecord record, Vector3 lightDirection)
         {
-            Vector3 hitPosition = record.IntersectionPoint;
-            Vector3 normal = record.SurfaceNormal;
-            normal.Normalize();
+           
             Color pixelColor = Color.Black;
             Vector3 rayDirection = record.RayDirection;
             rayDirection.Normalize();
+            Vector3 normal = record.SurfaceNormal;
+            normal.Normalize();
 
-
-            Vector3 lightDirection = light.GetLightDirection(hitPosition);
+           
             float nDotL = Vector3.Dot(normal, lightDirection);
 
             if (nDotL > 0)
@@ -47,14 +48,14 @@ namespace RayTracer.SceneGraph.Materials
                 h.Normalize();
 
 
-                float nDotH = Vector3.Dot(normal, h);
-                if (nDotH > 0)
+                float hDotN = Vector3.Dot(h, normal);
+                if (hDotN > 0)
                 {
-                    float pow = (float)Math.Pow(nDotH, Shininess);
+                    float pow = (float)Math.Pow(hDotN, Shininess);
                     pixelColor +=  Specular * pow;
                 }
             }
-            pixelColor += scene.Ambient;
+            pixelColor += Ambient;
             pixelColor.Clamp(0f, 1f);
             return pixelColor;
         }

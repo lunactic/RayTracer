@@ -11,11 +11,10 @@ namespace RayTracer.SceneGraph.Materials
     public class MirrorMaterial : Material
     {
  
-        public MirrorMaterial(Color specular)
+        public MirrorMaterial(float ks)
         {
-            Specular = specular;
-            Shininess = 35f;
-            
+            Ks = ks;
+            Shininess = 35f;     
         }
     }
 }

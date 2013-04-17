@@ -12,16 +12,19 @@ namespace RayTracer.SceneGraph.Objects
 {
     public class Mesh : Aggregate, IIntersectable
     {
-        
+
         public Material Material { get; set; }
         public List<Triangle> Triangles { get; private set; }
-      
+
+        public Light.ILight Light { get; set; }
+
+
         public IBoundingBox BoundingBox { get; set; }
         public List<float[]> Vertices { get; private set; }
         public List<float[]> Normals { get; private set; }
         public Mesh()
         {
-           
+
             Triangles = new List<Triangle>();
             BoundingBox = new AxisAlignedBoundingBox();
 
@@ -76,7 +79,7 @@ namespace RayTracer.SceneGraph.Objects
                     Vector3 n2 = new Vector3(normal[0], normal[1], normal[2]);
                     normal = normals[face[2, 2] - 1];
                     Vector3 n3 = new Vector3(normal[0], normal[1], normal[2]);
-                    Triangle t = new Triangle(p1,n1,p2,n2,p3,n3){Material = Material};
+                    Triangle t = new Triangle(p1, n1, p2, n2, p3, n3) { Material = Material };
                     t.BuildBoundingBox();
                     Triangles.Add(t);
                 }
@@ -85,7 +88,7 @@ namespace RayTracer.SceneGraph.Objects
                     Triangle t = new Triangle(p1, p2, p3) { Material = Material };
                     t.BuildBoundingBox();
                     Triangles.Add(t);
-                    
+
                 }
             }
             BuildBoundingBox();
@@ -93,8 +96,8 @@ namespace RayTracer.SceneGraph.Objects
 
         public void BuildBoundingBox()
         {
-            Vector3 minVector = new Vector3(float.MaxValue,float.MaxValue,float.MaxValue);
-            Vector3 maxVector = new Vector3(float.MinValue,float.MinValue,float.MinValue);
+            Vector3 minVector = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
+            Vector3 maxVector = new Vector3(float.MinValue, float.MinValue, float.MinValue);
 
             foreach (Triangle t in Triangles)
             {
@@ -107,16 +110,33 @@ namespace RayTracer.SceneGraph.Objects
                 maxVector.X = Math.Max(maxVector.X, box.MaxVector.X);
                 maxVector.Y = Math.Max(maxVector.Y, box.MaxVector.Y);
                 maxVector.Z = Math.Max(maxVector.Z, box.MaxVector.Z);
-            
+
             }
             BoundingBox.MaxVector = maxVector;
             BoundingBox.MinVector = minVector;
-            
+
         }
 
         public override List<IIntersectable> GetObjects()
         {
             return new List<IIntersectable>(Triangles);
+        }
+
+
+
+        public Vector3 GetSamplePoint(float x, float y)
+        {
+            throw new NotSupportedException();
+        }
+
+        public float GetArea()
+        {
+            return 0f;
+        }
+
+        public Vector3 GetSampledNormal(float x, float y)
+        {
+            throw new NotSupportedException();
         }
     }
 }

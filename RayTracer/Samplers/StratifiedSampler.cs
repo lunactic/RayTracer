@@ -3,31 +3,61 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using RayTracer.Structs;
 
 namespace RayTracer.Samplers
 {
     public class StratifiedSampler : ISampler
     {
         public int NumberOfSamples { get; set; }
-        public StratifiedSampler(int numOfSamples)
+        private Random random;
+        private List<LightSample> lightSamples;
+        public StratifiedSampler()
         {
-            NumberOfSamples = numOfSamples;
+            random = new Random();
         }
 
        
-        public List<Sample> CreateSamples(int x, int y)
+        public List<Sample> CreateSamples()
         {
             List<Sample> samples = new List<Sample>();
-
-            for (int dy = -NumberOfSamples/2; dy < (NumberOfSamples + 1)/2; dy++)
+            int gridW = (int)Math.Floor(Math.Sqrt(Constants.NumberOfSamples));
+            int gridH = gridW;
+            float stratW = 1f / gridW;
+            float stratH = stratW;
+            
+            for (float w = 0; w < 1; w += stratW)
             {
-                for (int dx = -NumberOfSamples/2; dx < (NumberOfSamples + 1)/2; dx++)
+                for (float h = 0; h < 1; h += stratH)
                 {
-                    Sample s = new Sample(x + dx, y + dy);
-                    samples.Add(s);
+                    samples.Add(new Sample(w + (float)random.NextDouble() / gridW, h + (float)random.NextDouble() / gridH));
                 }
             }
             return samples;
+        }
+
+        public void CreateLightSamples()
+        {
+            lightSamples = new List<LightSample>();
+            int gridW = (int)Math.Floor(Math.Sqrt(Constants.NumberOfSamples * Constants.NumberOfLightSamples));
+            int gridH = gridW;
+            float stratW = 1f / gridW;
+            float stratH = stratW;
+
+            for (float w = 0; w < 1; w += stratW)
+            {
+                for (float h = 0; h < 1; h += stratH)
+                {
+                    lightSamples.Add(new LightSample(w + (float)random.NextDouble() / gridW, h + (float)random.NextDouble() / gridH));
+                }
+            }
+        
+        }
+
+     
+        public List<LightSample> GetLightSamples()
+        {
+            return lightSamples;
         }
     }
 }

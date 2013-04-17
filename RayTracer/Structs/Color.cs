@@ -45,10 +45,19 @@ namespace RayTracer.Structs
         /// The alpha component
         /// </summary>
         public float A;
-        
+
+        public float Power
+        {
+            get
+            {
+                Vector3 v = new Vector3(R, G, B);
+                return v.Length * v.Length;
+            }
+        }
+
         public System.Drawing.Color GetSystemColor()
         {
-            int r = (int) Math.Floor((double) ((R) >= 1.0 ? 255 : (int)((R)*256.0)));
+            int r = (int)Math.Floor((double)((R) >= 1.0 ? 255 : (int)((R) * 256.0)));
             int g = (int)Math.Floor((double)((G) >= 1.0 ? 255 : (int)((G) * 256.0)));
             int b = (int)Math.Floor((double)((B) >= 1.0 ? 255 : (int)((B) * 256.0)));
             int a = (int)Math.Floor((double)((A) >= 1.0 ? 255 : (int)((A) * 256.0)));
@@ -95,7 +104,6 @@ namespace RayTracer.Structs
         public static Color operator *(Color c, float scale)
         {
             return new Color(c.R * scale, c.G * scale, c.B * scale, c.A);
-  
         }
 
         /// <summary>
@@ -108,7 +116,7 @@ namespace RayTracer.Structs
         {
             return new Color(l.R + r.R, l.G + r.G, l.B + r.B, l.A);
         }
-    
+
         /// <summary>
         /// Multiplies two colors
         /// </summary>
@@ -119,10 +127,10 @@ namespace RayTracer.Structs
         {
             return new Color(l.R * r.R, l.G * r.G, l.B * r.B, l.A);
         }
-        
+
         public static Color operator /(Color l, int num)
         {
-            return new Color(l.R/num,l.G/num,l.B/num,l.A);
+            return new Color(l.R / num, l.G / num, l.B / num, l.A);
         }
 
         /// <summary>
@@ -152,7 +160,7 @@ namespace RayTracer.Structs
             }
             return false;
         }
-        
+
         public void Clamp(float min, float max)
         {
             A = Math.Max(A, min);

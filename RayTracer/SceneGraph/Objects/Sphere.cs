@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using RayTracer.SceneGraph.Materials;
+using RayTracer.SceneGraph.Light;
 
 namespace RayTracer.SceneGraph.Objects
 {
@@ -16,6 +17,9 @@ namespace RayTracer.SceneGraph.Objects
         public Material Material { get; set; }
         public Vector3 Center { get; private set; }
         public float Radius { get; private set; }
+
+        public ILight Light { get; set; }
+
 
         public Sphere(Material material, Vector3 center, float radius)
         {
@@ -77,16 +81,16 @@ namespace RayTracer.SceneGraph.Objects
                 return null;
 
             Vector3 hitPoint = ray.Origin + (ray.Direction * t);
-            return new HitRecord(t,hitPoint,GetNormal(hitPoint),this,Material,ray.Direction);
-             
+            return new HitRecord(t, hitPoint, GetNormal(hitPoint), this, Material, ray.Direction);
+
 
         }
 
         private Vector3 GetNormal(Vector3 hitPosition)
         {
             Vector3 normal = hitPosition - Center;
-            normal *= (1/Radius);
-            
+            normal *= (1 / Radius);
+
             return normal;
         }
 
@@ -94,6 +98,23 @@ namespace RayTracer.SceneGraph.Objects
         {
             BoundingBox.MinVector = new Vector3(-Radius, -Radius, -Radius);
             BoundingBox.MaxVector = new Vector3(Radius, Radius, Radius);
+        }
+
+
+
+        public Vector3 GetSamplePoint(float x, float y)
+        {
+            throw new NotSupportedException();
+        }
+
+        public float GetArea()
+        {
+            return 0f;
+        }
+
+        public Vector3 GetSampledNormal(float x, float y)
+        {
+            throw new NotSupportedException();
         }
     }
 }

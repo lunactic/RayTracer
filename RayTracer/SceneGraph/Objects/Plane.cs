@@ -5,11 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 using RayTracer.Structs;
 using RayTracer.SceneGraph.Materials;
+using RayTracer.SceneGraph.Light;
 namespace RayTracer.SceneGraph.Objects
 {
     public class Plane : IIntersectable
     {
-
+        public ILight Light { get; set; }
         //Debug purposes
         public String Name { get; set; }
         /// <summary>
@@ -74,6 +75,21 @@ namespace RayTracer.SceneGraph.Objects
         public void BuildBoundingBox()
         {
             throw new NotImplementedException();
+        }
+
+        public Vector3 GetSamplePoint(float x, float y)
+        {
+            throw new NotSupportedException();
+        }
+
+        public float GetArea()
+        {
+            return 0f;
+        }
+
+        public Vector3 GetSampledNormal(float x, float y)
+        {
+            throw new NotSupportedException();
         }
     }
 }

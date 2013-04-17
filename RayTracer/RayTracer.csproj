@@ -62,6 +62,7 @@
     <Compile Include="Helper\ObjReader.cs" />
     <Compile Include="Helper\Refractions.cs" />
     <Compile Include="Samplers\ISampler.cs" />
+    <Compile Include="Samplers\LightSample.cs" />
     <Compile Include="Samplers\Sample.cs" />
     <Compile Include="Samplers\StratifiedSampler.cs" />
     <Compile Include="Samplers\RandomSampler.cs" />
@@ -75,9 +76,12 @@
     <Compile Include="SceneGraph\Integrators\BinaryIntegrator.cs" />
     <Compile Include="SceneGraph\Integrators\IIntegrator.cs" />
     <Compile Include="SceneGraph\Integrators\BlinnIntegrator.cs" />
+    <Compile Include="SceneGraph\Integrators\PathTraceIntegrator.cs" />
     <Compile Include="SceneGraph\Integrators\RefractionIntegrator.cs" />
     <Compile Include="SceneGraph\Integrators\ShadowIntegrator.cs" />
     <Compile Include="SceneGraph\Integrators\WhittedIntegrator.cs" />
+    <Compile Include="SceneGraph\Light\AreaLight.cs" />
+    <Compile Include="SceneGraph\Light\DirectionalLight.cs" />
     <Compile Include="SceneGraph\Light\ILight.cs" />
     <Compile Include="SceneGraph\Light\PointLight.cs" />
     <Compile Include="SceneGraph\Materials\LambertMaterial.cs" />
@@ -93,13 +97,14 @@
     <Compile Include="SceneGraph\Objects\IntersectableList.cs" />
     <Compile Include="SceneGraph\Objects\Mesh.cs" />
     <Compile Include="SceneGraph\Objects\Plane.cs" />
+    <Compile Include="SceneGraph\Objects\Rectangle.cs" />
     <Compile Include="SceneGraph\Objects\Sphere.cs" />
     <Compile Include="SceneGraph\Objects\Triangle.cs" />
     <Compile Include="SceneGraph\Ray.cs" />
     <Compile Include="SceneGraph\Scene.cs" />
     <Compile Include="SceneGraph\Tonemapper.cs" />
     <Compile Include="Structs\Color.cs" />
-    <Compile Include="Structs\Constants.cs" />
+    <Compile Include="Helper\Constants.cs" />
     <Compile Include="Structs\MathHelper.cs" />
     <Compile Include="Structs\Matrix4.cs" />
     <Compile Include="Structs\Vector3.cs" />
@@ -107,6 +112,7 @@
     <Compile Include="Tracer\AbstractRayTracer.cs" />
     <Compile Include="Tracer\IRayTracer.cs" />
     <Compile Include="Tracer\MultiThreadingRenderer.cs" />
+    <Compile Include="Tracer\RayTracerAreaLight.cs" />
     <Compile Include="Tracer\RayTracerBasic.cs" />
     <Compile Include="Tracer\RayTracer.cs" />
     <Compile Include="Tracer\RayTracerFirst.cs" />

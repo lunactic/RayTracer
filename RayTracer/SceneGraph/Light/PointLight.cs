@@ -1,4 +1,5 @@
-﻿using RayTracer.Structs;
+﻿using RayTracer.Samplers;
+using RayTracer.Structs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,11 +10,11 @@ namespace RayTracer.SceneGraph.Light
 {
     public class PointLight : ILight
     {
-        public Color Color { get; set; }
+        public Color LightColor { get; set; }
         public Vector3 Position { get; set; }
         public PointLight(Vector3 position, Color color)
         {
-            Color = color;
+            LightColor = color;
             Position = position;
         }
 
@@ -21,7 +22,7 @@ namespace RayTracer.SceneGraph.Light
         {
             Vector3 length = Vector3.Subtract(Position, v);
             float dist = length.Length*length.Length;
-            return Color * (1/dist);
+            return LightColor * (1 / dist);
         }
 
         public Vector3 GetLightDirection(Vector3 v)
@@ -33,6 +34,21 @@ namespace RayTracer.SceneGraph.Light
         public float GetLightDistance(Vector3 v)
         {
             return Vector3.Subtract(Position, v).Length;
+        }
+
+
+        public void Sample(HitRecord record, LightSample sample)
+        {
+            Vector3 wi = new Vector3(Position);
+            wi -= record.IntersectionPoint;
+            wi.Normalize();
+            Vector3 dist = Vector3.Subtract(Position, record.IntersectionPoint);
+            float ldist = dist.Length;
+
+            sample.LightColor = LightColor*(1f/(ldist*ldist));
+            sample.Wi = wi;
+            sample.Distance = ldist;
+            sample.Position = Position;
         }
     }
 }

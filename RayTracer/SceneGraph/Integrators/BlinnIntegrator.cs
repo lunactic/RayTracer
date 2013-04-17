@@ -27,7 +27,7 @@ namespace RayTracer.SceneGraph.Integrators
 
             if (record != null && record.Distance > 0 && record.Distance < float.PositiveInfinity)
             {
-                returnColor = scene.Lights.Aggregate(returnColor, (current, light) => current + record.HitObject.Material.Shade(record, scene, light));
+                returnColor = scene.Lights.Aggregate(returnColor, (current, light) => current + record.HitObject.Material.Shade(record,light.GetLightDirection(record.IntersectionPoint))*light.GetIncidentColor(record.IntersectionPoint));
             }
             return returnColor;
         }

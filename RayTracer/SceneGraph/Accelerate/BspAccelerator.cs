@@ -6,15 +6,16 @@ using System.Threading.Tasks;
 using RayTracer.SceneGraph.Materials;
 using RayTracer.SceneGraph.Objects;
 using RayTracer.Structs;
+using RayTracer.SceneGraph.Light;
 
 namespace RayTracer.SceneGraph.Accelerate
 {
     public class BspAccelerator : IIntersectable
     {
         public enum OrderType { XOrdered, YOrdered }
-
+        public ILight Light { get; set; }
         public BspNode RootNode { get; private set; }
-        public IBoundingBox BoundingBox{get;set;}
+        public IBoundingBox BoundingBox { get; set; }
         public Material Material { get; set; }
         public Matrix4 TransformationMatrix { get; set; }
         public Matrix4 InvTransformationMatrix { get; set; }
@@ -24,7 +25,7 @@ namespace RayTracer.SceneGraph.Accelerate
 
         public void Construct(Aggregate aggregate)
         {
-            Material = ((IIntersectable) aggregate).Material;
+            Material = ((IIntersectable)aggregate).Material;
             Aggregate objects = new IntersectableList();
             objects.Objects.AddRange(aggregate.GetObjects());
             BoundingBox = ((IIntersectable)aggregate).BoundingBox;
@@ -116,7 +117,7 @@ namespace RayTracer.SceneGraph.Accelerate
                         node = null;
                 }
             }
-          
+
             return hit;
 
             #endregion
@@ -161,6 +162,22 @@ namespace RayTracer.SceneGraph.Accelerate
         }
 
         public void BuildBoundingBox()
+        {
+            throw new NotSupportedException();
+        }
+
+
+        public Vector3 GetSamplePoint(float x, float y)
+        {
+            throw new NotSupportedException();
+        }
+
+        public float GetArea()
+        {
+            return 0f;
+        }
+
+        public Vector3 GetSampledNormal(float x, float y)
         {
             throw new NotSupportedException();
         }

@@ -39,7 +39,7 @@ namespace RayTracer.SceneGraph.Integrators
         private Color Reflection(Ray ray, HitRecord record, int noOfBounce, Color color)
         {
             Color ks = record.Material.Specular;
-            if (noOfBounce == Constants.MAXIMUM_NUMBER_OF_BOUNCES)
+            if (noOfBounce == Constants.MaximumRecursionDepth)
                 return shadowIntegrator.Integrate(ray) * ks;
 
             Ray reflectedRay = record.CreateReflectedRay();

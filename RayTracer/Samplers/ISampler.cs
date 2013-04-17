@@ -8,7 +8,9 @@ namespace RayTracer.Samplers
 {
     public interface ISampler
     {
+        void CreateLightSamples();
         int NumberOfSamples { get; set; }
-        List<Sample> CreateSamples(int x, int y); 
+        List<Sample> CreateSamples();
+        List<LightSample> GetLightSamples();
     }
 }
