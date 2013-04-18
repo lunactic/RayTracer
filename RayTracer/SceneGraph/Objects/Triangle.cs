@@ -41,6 +41,7 @@ namespace RayTracer.SceneGraph.Objects
             Normal = Vector3.Cross(edge1, edge2);
             Normal.Normalize();
             BoundingBox = new AxisAlignedBoundingBox();
+            BuildBoundingBox();
         
         }
 

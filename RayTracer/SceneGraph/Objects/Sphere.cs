@@ -26,6 +26,8 @@ namespace RayTracer.SceneGraph.Objects
             Material = material;
             Center = center;
             Radius = radius;
+            BoundingBox = new AxisAlignedBoundingBox();
+            BuildBoundingBox();
         }
 
 

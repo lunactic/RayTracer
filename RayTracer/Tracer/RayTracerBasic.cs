@@ -20,8 +20,8 @@ namespace RayTracer.Tracer
         {
             //sampler = new StratifiedSampler(5);
             FileName = "Assignment1_Basic.jpg";
-            scene = new Scene { BackgroundColor = Color.Black };
-            integrator = new BlinnIntegrator(scene);
+            //scene = new Scene { BackgroundColor = Color.Black };
+            integrator = new BlinnIntegrator();
             camera = new Camera
             {
                 FieldOfView = 60f,

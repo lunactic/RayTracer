@@ -7,15 +7,18 @@ using RayTracer.Samplers;
 
 namespace RayTracer.Structs
 {
-    public static class Constants
+    public class Constants
     {
-        public const double Epsilon = 1e-6;
-        public const int MaximumRecursionDepth = 8;
+        public static readonly double Epsilon = 1e-6;
+        public static readonly int MaximumRecursionDepth = 8;
 
-        public const bool IsLightSamplingOn = true;
-        public const int NumberOfLightSamples = 12;
-        public const int NumberOfSamples = 64;
-
+        public static readonly bool IsLightSamplingOn = true;
+        public static readonly bool IsSamplingOn = true;
+        public static readonly int NumberOfLightSamples = 12;
+        public static readonly int NumberOfSamples = 30;
         public static readonly ISampler Sampler = new StratifiedSampler();
+
+        public static int SceneIndex = 1;
+        public static int NumberOfThreads = 8;
     }
 }

@@ -8,6 +8,7 @@ using RayTracer.SceneGraph.Integrators;
 using RayTracer.SceneGraph.Light;
 using RayTracer.SceneGraph.Materials;
 using RayTracer.SceneGraph.Objects;
+using RayTracer.SceneGraph.Scenes;
 using RayTracer.Structs;
 using RayTracer.Samplers;
 
@@ -19,8 +20,8 @@ namespace RayTracer.Tracer
         {
             NumberOfThreads = 4;
             FileName = "Assignment2_AreaLight.jpg";
-            scene = new Scene { BackgroundColor = Color.Black };
-            integrator = new RefractionIntegrator(scene,Constants.Sampler);
+            //scene = new Scene { BackgroundColor = Color.Black };
+            integrator = new RefractionIntegrator();
             camera = new Camera
             {
                 FieldOfView = 60.0f,

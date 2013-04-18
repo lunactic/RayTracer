@@ -17,10 +17,10 @@ namespace RayTracer.Tracer
     {
         public RayTracerRefraction()
         {
-            NumberOfThreads = 0;
+            NumberOfThreads = 8;
             FileName = "Assignment1_Refraction.jpg";
-            scene = new Scene { BackgroundColor = Color.Black };
-            integrator = new RefractionIntegrator(scene,Constants.Sampler);
+            //scene = new Scene { BackgroundColor = Color.Black };
+            integrator = new RefractionIntegrator();
             camera = new Camera
             {
                 FieldOfView = 60f,

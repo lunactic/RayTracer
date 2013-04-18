@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,8 +10,7 @@ namespace RayTracer.Samplers
     public interface ISampler
     {
         void CreateLightSamples();
-        int NumberOfSamples { get; set; }
         List<Sample> CreateSamples();
         List<LightSample> GetLightSamples();
-    }
+   }
 }

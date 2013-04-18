@@ -10,6 +10,5 @@ namespace RayTracer.SceneGraph.Accelerate
         Vector3 Dimension { get; }
         bool Intersect(IBoundingBox otherBox);
         float[] Intersect(Ray ray);
-
     }
 }

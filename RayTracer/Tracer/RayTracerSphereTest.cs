@@ -8,6 +8,7 @@ using RayTracer.SceneGraph.Integrators;
 using RayTracer.SceneGraph.Light;
 using RayTracer.SceneGraph.Materials;
 using RayTracer.SceneGraph.Objects;
+using RayTracer.SceneGraph.Scenes;
 using RayTracer.Structs;
 
 namespace RayTracer.Tracer
@@ -17,8 +18,8 @@ namespace RayTracer.Tracer
         public RayTracerSphereTest()
         {
             FileName = "Assignment1_SphereTest.jpg";
-            scene = new Scene { BackgroundColor = Color.Black };
-            integrator = new BlinnIntegrator(scene);
+            //scene = new Scene { BackgroundColor = Color.Black };
+            integrator = new BlinnIntegrator();
             camera = new Camera
             {
                 FieldOfView = 60.0f,

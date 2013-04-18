@@ -1,39 +1,34 @@
-﻿using RayTracer.Samplers;
-using RayTracer.SceneGraph;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using RayTracer.SceneGraph.Integrators;
 using RayTracer.SceneGraph.Light;
 using RayTracer.SceneGraph.Materials;
 using RayTracer.SceneGraph.Objects;
 using RayTracer.Structs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace RayTracer.Tracer
+namespace RayTracer.SceneGraph.Scenes
 {
-    public class RayTracerMirror : AbstractRayTracer
+    public class MirrorScene : Scene
     {
-
-        public RayTracerMirror()
+        public MirrorScene()
         {
-            NumberOfThreads = 4;
             FileName = "Assignment1_Mirror.jpg";
-            //scene = new Scene { BackgroundColor = Color.Black };
-            integrator = new RefractionIntegrator();
-            camera = new Camera
+            Integrator = new RefractionIntegrator();
+            Camera = new Camera
             {
                 FieldOfView = 60f,
-                ScreenWidth = 128,
-                ScreenHeight = 128,
+                ScreenWidth = 300,
+                ScreenHeight = 300,
                 Eye = new Vector4(0, 0, 2, 1),
                 Up = new Vector4(0, 1, 0, 1),
                 LookAt = new Vector4(0, 0, 0, 1)
             };
-            camera.PreProcess();
+            Camera.PreProcess();
 
-            film = new Film(camera.ScreenWidth, camera.ScreenHeight);
+            Film = new Film(Camera.ScreenWidth, Camera.ScreenHeight);
 
             //List of objects
             Sphere sphere = new Sphere(new BlinnPhongMaterial(Color.Red, Color.White, 30f), new Vector3(0f, 0f, 0f), 0.2f);
@@ -67,26 +62,26 @@ namespace RayTracer.Tracer
             };
 
             Rectangle rect = new Rectangle(new Vector3(-0.2f, .99f, 0f), new Vector3(.5f, 0, 0), new Vector3(0, 0, 0.5f))
-                {
-                    Material = new LambertMaterial(new Color(0, 0, 1, 1))
-                };
+            {
+                Material = new LambertMaterial(new Color(0, 0, 1, 1))
+            };
+            IntersectableList = new IntersectableList();
+            IntersectableList.Objects.Add(rect);
+            IntersectableList.Objects.Add(sphere);
+            IntersectableList.Objects.Add(sphere2);
+            IntersectableList.Objects.Add(p1);
+            IntersectableList.Objects.Add(p2);
+            IntersectableList.Objects.Add(p3);
+            IntersectableList.Objects.Add(p4);
+            IntersectableList.Objects.Add(p5);
 
-            scene.IntersectableList.Objects.Add(rect);
-            scene.IntersectableList.Objects.Add(sphere);
-            scene.IntersectableList.Objects.Add(sphere2);
-            scene.IntersectableList.Objects.Add(p1);
-            scene.IntersectableList.Objects.Add(p2);
-            scene.IntersectableList.Objects.Add(p3);
-            scene.IntersectableList.Objects.Add(p4);
-            scene.IntersectableList.Objects.Add(p5);
-
+            Lights = new List<ILight>();
             ILight light = new PointLight(new Vector3(0.0f, 0.8f, 0.8f), new Color(0.7f, 0.7f, 0.7f, 1f));
             ILight light2 = new PointLight(new Vector3(-0.8f, 0.2f, 0.0f), new Color(.5f, .5f, .5f, 1f));
-            ILight light3 = new AreaLight(new Color(10,10,10,1), rect);
-            scene.Lights.Add(light3);
-            //scene.Lights.Add(light2);
-            //scene.Lights.Add(light);
+            ILight light3 = new AreaLight(new Color(10, 10, 10, 1), rect);
+            Lights.Add(light3);
+            //Lights.Add(light2);
+            //Lights.Add(light);
         }
-
     }
 }

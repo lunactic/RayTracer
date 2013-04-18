@@ -1,5 +1,8 @@
-﻿using RayTracer.SceneGraph.Light;
+﻿using RayTracer.Samplers;
+using RayTracer.SceneGraph.Light;
 using RayTracer.SceneGraph.Materials;
+using RayTracer.SceneGraph.Objects;
+using RayTracer.SceneGraph.Scenes;
 using RayTracer.Structs;
 using System;
 using System.Collections.Generic;
@@ -11,23 +14,17 @@ namespace RayTracer.SceneGraph.Integrators
 {
     public class PathTraceIntegrator : IIntegrator
     {
-        private Scene scene;
-        public PathTraceIntegrator(Scene scene)
+        public Color Integrate(Ray ray, IntersectableList objects, List<ILight> lights, ISampler sampler)
         {
-            this.scene = scene;
+            return PathTrace(ray, 0, objects, sampler);
         }
 
-        public Color Integrate(Ray ray)
+        private Color PathTrace(Ray ray, int depth, IntersectableList objects, ISampler sampler)
         {
-            return PathTrace(ray, 0);
-        }
-
-        private Color PathTrace(Ray ray, int depth)
-        {
-            HitRecord record = scene.Intersect(ray);
+            HitRecord record = objects.Intersect(ray);
 
             if (record == null)
-                return scene.BackgroundColor;
+                return Color.Black;
 
             //Shade The intersection
             Material mat = record.Material;
@@ -71,7 +68,7 @@ namespace RayTracer.SceneGraph.Integrators
 
         }
 
-        private Color DirectIllumination(HitRecord record, Ray ray)
+        private Color DirectIllumination(HitRecord record, Ray ray,Scene scene)
         {
             Material mat = record.Material;
             Color pointColor = Color.Black;

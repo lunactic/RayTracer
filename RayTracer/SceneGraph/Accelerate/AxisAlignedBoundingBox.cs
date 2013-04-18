@@ -45,6 +45,9 @@ namespace RayTracer.SceneGraph.Accelerate
         public float[] Intersect(Ray ray)
         {
             Vector3[] parameters = new[] { MinVector, MaxVector };
+
+            if (MinVector.X == MaxVector.X || MinVector.Y == MaxVector.Y || MinVector.Z == MaxVector.Z) return null;
+            
             float tmin = (parameters[    ray.Sign[0]].X - ray.Origin.X) * ray.InvDirection.X;
             float tmax = (parameters[1 - ray.Sign[0]].X - ray.Origin.X) * ray.InvDirection.X;
 
@@ -65,5 +68,6 @@ namespace RayTracer.SceneGraph.Accelerate
             return tmax < 0 ? null : new[] { tmin, tmax };
         }
 
-    }
+
+        }
 }

@@ -49,16 +49,16 @@ namespace RayTracer.SceneGraph.Objects
         {
             Vector3 rayOrig = ray.Origin;
             Vector3 rayDir = ray.Direction;
-            Vector3 point = P0 - rayOrig;
+            Vector3 point = Vector3.Subtract(P0,rayOrig);
 
             Vector3 n = Normal * (1f / Vector3.Dot(rayDir, Normal));
             float t = Vector3.Dot(point, n);
 
-            if (t <= Constants.Epsilon) return null;
+            if (t <= 0.000001f) return null;
 
             rayDir = rayDir * t;
             rayOrig += rayDir;
-            rayOrig -= P0;
+            rayOrig -= P0; 
 
             float ddota = Vector3.Dot(rayOrig, A);
             if (ddota < 0f || ddota > A.Length * A.Length) return null;
@@ -91,7 +91,7 @@ namespace RayTracer.SceneGraph.Objects
 
         public Vector3 GetSamplePoint(float x, float y)
         {
-            Vector3 samplePoint = new Vector3(P0);
+            Vector3 samplePoint = P0;
             Vector3 aScaled = A*x;
             Vector3 bScaled = B*y;
             

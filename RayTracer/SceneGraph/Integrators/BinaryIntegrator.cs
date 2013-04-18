@@ -3,21 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using RayTracer.SceneGraph.Light;
+using RayTracer.SceneGraph.Objects;
+using RayTracer.SceneGraph.Scenes;
 using RayTracer.Structs;
+using RayTracer.Samplers;
 
 namespace RayTracer.SceneGraph.Integrators
 {
     public class BinaryIntegrator : IIntegrator
     {
-        private Scene scene;
-        public BinaryIntegrator(Scene scene)
-        {
-            this.scene = scene;
-        }
 
-        public Color Integrate(Ray ray)
+        public Color Integrate(Ray ray, IntersectableList objects, List<ILight> lights, ISampler sampler)
         {
-            HitRecord record = scene.Intersect(ray);
+            HitRecord record = objects.Intersect(ray);
             if (record != null)
                 return Color.White;
             else

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RayTracer.Structs
 {
-    public struct Color
+    public class Color
     {
         /// <summary>
         /// Red Color
@@ -105,7 +105,16 @@ namespace RayTracer.Structs
         {
             return new Color(c.R * scale, c.G * scale, c.B * scale, c.A);
         }
-
+        /// <summary>
+        /// Divides a color value with a constant (without changing the ambient value!)
+        /// </summary>
+        /// <param name="c">The color</param>
+        /// <param name="scale">The scale factor</param>
+        /// <returns>The scaled color value</returns>
+        public static Color operator /(Color c, float scale)
+        {
+            return new Color(c.R / scale, c.G / scale, c.B / scale, c.A);
+        }
         /// <summary>
         /// Adds two colors togheter
         /// </summary>
@@ -115,6 +124,14 @@ namespace RayTracer.Structs
         public static Color operator +(Color l, Color r)
         {
             return new Color(l.R + r.R, l.G + r.G, l.B + r.B, l.A);
+        }
+
+        public void Append(Color c)
+        {
+            R += c.R;
+            G += c.G;
+            B += c.B;
+
         }
 
         /// <summary>

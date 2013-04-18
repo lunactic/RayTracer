@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using RayTracer.SceneGraph.Accelerate;
 using RayTracer.Structs;
 using RayTracer.SceneGraph.Materials;
 using RayTracer.SceneGraph.Light;
@@ -10,6 +11,9 @@ namespace RayTracer.SceneGraph.Objects
 {
     public class Plane : IIntersectable
     {
+
+        public IBoundingBox BoundingBox { get; set; }
+
         public ILight Light { get; set; }
         //Debug purposes
         public String Name { get; set; }
@@ -33,7 +37,8 @@ namespace RayTracer.SceneGraph.Objects
             Normal = normal;
             Normal.Normalize();
             Offset = offset;
-           
+            BoundingBox = new AxisAlignedBoundingBox();
+            BuildBoundingBox();
         }
 
         /// <summary>
@@ -60,21 +65,10 @@ namespace RayTracer.SceneGraph.Objects
             return null;
         }
 
-        public Accelerate.IBoundingBox BoundingBox
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
-
         public void BuildBoundingBox()
         {
-            throw new NotImplementedException();
+            BoundingBox.MinVector = new Vector3(float.NegativeInfinity,float.NegativeInfinity,float.NegativeInfinity);
+            BoundingBox.MaxVector = new Vector3(float.PositiveInfinity,float.PositiveInfinity,float.PositiveInfinity);
         }
 
         public Vector3 GetSamplePoint(float x, float y)

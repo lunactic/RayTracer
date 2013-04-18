@@ -18,8 +18,8 @@ namespace RayTracer.Tracer
         public RayTracerFirst()
         {
             FileName = "Assignment1_First.jpg";
-            scene = new Scene { BackgroundColor = Color.Black };
-            integrator = new BinaryIntegrator(scene);
+            //scene = new Scene { BackgroundColor = Color.Black };
+            integrator = new BinaryIntegrator();
             camera = new Camera
             {
                 FieldOfView = 60.0f,
@@ -34,7 +34,7 @@ namespace RayTracer.Tracer
             Plane p = new Plane(1.0f,new Vector3(0,1,0));
             scene.IntersectableList.Objects.Add(p);
             film = new Film(camera.ScreenWidth, camera.ScreenHeight);
-            integrator = new BinaryIntegrator(scene);
+            integrator = new BinaryIntegrator();
 
 
         }

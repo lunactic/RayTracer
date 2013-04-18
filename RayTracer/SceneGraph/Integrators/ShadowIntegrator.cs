@@ -7,27 +7,21 @@ using System.Threading.Tasks;
 using RayTracer.SceneGraph.Light;
 using RayTracer.SceneGraph.Objects;
 using RayTracer.Structs;
+using RayTracer.Samplers;
 
 namespace RayTracer.SceneGraph.Integrators
 {
     public class ShadowIntegrator : IIntegrator
     {
 
-        private Scene scene;
-
-        public ShadowIntegrator(Scene scene)
+        public Color Integrate(Ray ray, IntersectableList objects, List<ILight> lights, ISampler sampler)
         {
-            this.scene = scene;
-        }
-
-        public Color Integrate(Ray ray)
-        {
-            HitRecord record = scene.Intersect(ray);
+            HitRecord record = objects.Intersect(ray);
 
             Color returnColor = Color.Black;
             if (record != null)
             {
-                foreach (ILight light in scene.Lights)
+                foreach (ILight light in lights)
                 {
                     Vector3 lightDirection = light.GetLightDirection(record.IntersectionPoint);
                     Vector3 hitPos = record.IntersectionPoint;
@@ -36,7 +30,7 @@ namespace RayTracer.SceneGraph.Integrators
                     offset *= 0.001f;
                     hitPos += offset;
                     Ray shadowRay = new Ray(hitPos, lightDirection);
-                    HitRecord shadowHit = scene.Intersect(shadowRay);
+                    HitRecord shadowHit = objects.Intersect(shadowRay);
                     Vector3 distance = Vector3.Subtract(light.Position, hitPos);
 
                     if (shadowHit != null && (shadowHit.Distance > distance.Length))
