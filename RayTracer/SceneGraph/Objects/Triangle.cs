@@ -1,4 +1,5 @@
-﻿ using RayTracer.SceneGraph.Accelerate;
+﻿using RayTracer.Helper;
+using RayTracer.SceneGraph.Accelerate;
 using RayTracer.Structs;
 using System;
 using RayTracer.SceneGraph.Materials;
@@ -29,6 +30,9 @@ namespace RayTracer.SceneGraph.Objects
         private Vector3 edge1;
         private Vector3 edge2;
         private bool hasVertexNormals;
+
+        private float area;
+
         public Triangle(Vector3 a, Vector3 b, Vector3 c)
         {
             hasVertexNormals = false;
@@ -42,12 +46,12 @@ namespace RayTracer.SceneGraph.Objects
             Normal.Normalize();
             BoundingBox = new AxisAlignedBoundingBox();
             BuildBoundingBox();
-        
+            area = CalculateArea();
         }
 
         public Triangle(Vector3 a, Vector3 n1, Vector3 b, Vector3 n2, Vector3 c, Vector3 n3)
         {
-            
+
             A = a;
             B = b;
             C = c;
@@ -60,13 +64,14 @@ namespace RayTracer.SceneGraph.Objects
             Normal = Vector3.Cross(edge1, edge2);
             Normal.Normalize();
             BoundingBox = new AxisAlignedBoundingBox();
- }
+            area = CalculateArea();
+        }
 
         public HitRecord Intersect(Ray ray)
         {
 
             Vector3 rayDir = ray.Direction;
-            
+
             if (Equals(Normal.Length, 0.0f)) return null;
 
             Vector3 w0 = Vector3.Subtract(ray.Origin, A);
@@ -75,7 +80,7 @@ namespace RayTracer.SceneGraph.Objects
 
             if (Math.Abs(b) < Constants.Epsilon) return null;
 
-            float t = a/b;
+            float t = a / b;
             if (t < 0) return null;
 
             Vector3 hitPoint = ray.Origin + (ray.Direction * t);
@@ -87,10 +92,10 @@ namespace RayTracer.SceneGraph.Objects
             float wu = Vector3.Dot(w, edge1);
             float wv = Vector3.Dot(w, edge2);
 
-            float D = uv*uv - uu*vv;
-            float beta = (uv*wv - vv*wu)/D;
+            float D = uv * uv - uu * vv;
+            float beta = (uv * wv - vv * wu) / D;
             if (beta < 0 || beta > 1) return null;
-            float gamma = (uv*wu - uu*wv)/D;
+            float gamma = (uv * wu - uu * wv) / D;
             if (gamma < 0 || (beta + gamma) > 1) return null;
             float alpha = 1 - beta - gamma;
             Vector3 normal = Normal;
@@ -98,12 +103,12 @@ namespace RayTracer.SceneGraph.Objects
             {
                 if (hasVertexNormals)
                 {
-                    Vector3 n1Interpolated = N1*alpha;
-                    Vector3 n2Interpolated = N2*beta;
-                    Vector3 n3Interpolated = N3*gamma;
+                    Vector3 n1Interpolated = N1 * alpha;
+                    Vector3 n2Interpolated = N2 * beta;
+                    Vector3 n3Interpolated = N3 * gamma;
 
                     normal = n1Interpolated + n2Interpolated + n3Interpolated;
-                    
+
                 }
             }
 
@@ -141,17 +146,32 @@ namespace RayTracer.SceneGraph.Objects
 
         public Vector3 GetSamplePoint(float x, float y)
         {
-            throw new NotSupportedException();
+            float sqrtX = (float)Math.Sqrt(x);
+            x = 1 - sqrtX;
+            y = y*sqrtX;
+
+            Vector3 aScaled = A*x;
+            Vector3 bScaled = B*y;
+            Vector3 cScaled = C*(1 - (x + y));
+
+            return aScaled + bScaled + cScaled;
         }
 
         public float GetArea()
         {
-            return 0f;
+            return area;
         }
 
         public Vector3 GetSampledNormal(float x, float y)
         {
-            throw new NotSupportedException();
+            return Normal;
+        }
+
+        private float CalculateArea()
+        {
+            Vector3 ab = Vector3.Add(A, B);
+            Vector3 ac = Vector3.Add(A, C);
+            return (float) (0.5f*Math.Sqrt(ab.Length*ab.Length*ac.Length*ac.Length - Math.Pow(Vector3.Dot(ab, ac), 2)));
         }
     }
 }

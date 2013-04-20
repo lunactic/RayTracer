@@ -27,10 +27,15 @@ namespace RayTracer.SceneGraph.Accelerate
         {
             Material = ((IIntersectable)aggregate).Material;
             Aggregate objects = new IntersectableList();
-            objects.Objects.AddRange(aggregate.GetObjects());
+      
+            foreach (IIntersectable intersectable in aggregate.GetObjects())
+            {
+                objects.Add(intersectable);
+            }
+
             BoundingBox = ((IIntersectable)aggregate).BoundingBox;
             //Calculate max treed depth = 8+1.3*log(n);
-            maxTreeDepth = (int)Math.Ceiling(8 + (1.3 * Math.Log(objects.Objects.Count)));
+            maxTreeDepth = (int)Math.Ceiling(8 + (1.3 * Math.Log(objects.Intersectables.Count)));
 
             RootNode = new BspNode();
 

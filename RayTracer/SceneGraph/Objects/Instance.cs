@@ -25,13 +25,6 @@ namespace RayTracer.SceneGraph.Objects
         /// </summary>
         public Matrix4 TransposedTransformationMatrix { get; set; }
 
-        public Accelerate.IBoundingBox BoundingBox
-        {
-            get { return Intersectable.BoundingBox; }
-            set { Intersectable.BoundingBox = value; }
-        }
-
-
         public Instance(IIntersectable intersectable, Matrix4 transMatrix)
         {
             TransformationMatrix = transMatrix;
@@ -46,7 +39,7 @@ namespace RayTracer.SceneGraph.Objects
             get; set;
         }
 
-        public HitRecord Intersect(Ray ray)
+        public new HitRecord Intersect(Ray ray)
         {
 
             //Transform ray to object coordinate system
@@ -64,20 +57,11 @@ namespace RayTracer.SceneGraph.Objects
             return hit;
         }
 
-        public void BuildBoundingBox()
+        public override void BuildBoundingBox()
         {
             Intersectable.BuildBoundingBox();
         }
-
-        public override List<IIntersectable> GetObjects()
-        {
-            if (Intersectable is Aggregate)
-                return ((Aggregate)Intersectable).GetObjects();
-
-            return null;
-        }
-
-
+        
         public ILight Light
         {
             get

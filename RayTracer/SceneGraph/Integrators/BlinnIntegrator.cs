@@ -13,9 +13,9 @@ namespace RayTracer.SceneGraph.Integrators
 {
     public class BlinnIntegrator : IIntegrator
     {
-        public Color Integrate(Ray ray, IntersectableList objects, List<ILight> lights, ISampler sampler)
+        public Color Integrate(Ray ray, IIntersectable objects, List<ILight> lights, ISampler sampler)
         {
-            Color returnColor = Color.Black;
+            Color returnColor = new Color(0,0,0);
             /*
              * Core Ray Tracing algorithm
              */
@@ -23,7 +23,10 @@ namespace RayTracer.SceneGraph.Integrators
 
             if (record != null && record.Distance > 0 && record.Distance < float.PositiveInfinity)
             {
-                returnColor = lights.Aggregate(returnColor, (current, light) => current + record.HitObject.Material.Shade(record,light.GetLightDirection(record.IntersectionPoint))*light.GetIncidentColor(record.IntersectionPoint));
+                foreach (ILight light in lights)
+                {
+                    returnColor.Append(record.Material.Shade(record,light.GetLightDirection(record.IntersectionPoint)).Mult(light.GetIncidentColor(record.IntersectionPoint)));
+                }
             }
             return returnColor;
         }

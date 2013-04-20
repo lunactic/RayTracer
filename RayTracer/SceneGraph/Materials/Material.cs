@@ -19,9 +19,9 @@ namespace RayTracer.SceneGraph.Materials
 
         public Material()
         {
-            Specular = Color.Black;
-            Diffuse = Color.Black;
-            Ambient = Color.Black;
+            Specular = new Color(0,0,0);
+            Diffuse = new Color(0,0,0);
+            Ambient = new Color(0,0,0);
             Shininess = 0f;
             RefractionIndex = 1f;
             Ks = 1;
@@ -30,7 +30,7 @@ namespace RayTracer.SceneGraph.Materials
         public Color Shade(HitRecord record, Vector3 lightDirection)
         {
            
-            Color pixelColor = Color.Black;
+            Color pixelColor = new Color(0,0,0);
             Vector3 rayDirection = record.RayDirection;
             rayDirection.Normalize();
             Vector3 normal = record.SurfaceNormal;
@@ -42,7 +42,7 @@ namespace RayTracer.SceneGraph.Materials
             if (nDotL > 0)
             {
                 //add Diffuse Light
-                pixelColor += Diffuse * nDotL;
+                pixelColor.Append(Diffuse.Mult(nDotL));
                 //Calculate the Blinn halfVector
                 Vector3 h = lightDirection - rayDirection;
                 h.Normalize();
@@ -52,10 +52,10 @@ namespace RayTracer.SceneGraph.Materials
                 if (hDotN > 0)
                 {
                     float pow = (float)Math.Pow(hDotN, Shininess);
-                    pixelColor +=  Specular * pow;
+                    pixelColor.Append(Specular.Mult(pow));
                 }
             }
-            pixelColor += Ambient;
+            pixelColor.Append(Ambient);
             pixelColor.Clamp(0f, 1f);
             return pixelColor;
         }

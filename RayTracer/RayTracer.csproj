@@ -125,17 +125,8 @@
     <Compile Include="Structs\Matrix4.cs" />
     <Compile Include="Structs\Vector3.cs" />
     <Compile Include="Structs\Vector4.cs" />
-    <Compile Include="Tracer\AbstractRayTracer.cs" />
     <Compile Include="Tracer\MultiThreadingRenderer.cs" />
-    <Compile Include="Tracer\RayTracerAreaLight.cs" />
-    <Compile Include="Tracer\RayTracerBasic.cs" />
     <Compile Include="Tracer\RayTracer.cs" />
-    <Compile Include="Tracer\RayTracerFirst.cs" />
-    <Compile Include="Tracer\RayTracerInstancing.cs" />
-    <Compile Include="Tracer\RayTracerKdTree.cs" />
-    <Compile Include="Tracer\RayTracerMirror.cs" />
-    <Compile Include="Tracer\RayTracerSphereTest.cs" />
-    <Compile Include="Tracer\RayTracerRefraction.cs" />
     <Compile Include="Tracer\Starter.cs" />
   </ItemGroup>
   <ItemGroup>

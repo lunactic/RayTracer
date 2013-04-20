@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using RayTracer.Helper;
 using RayTracer.Structs;
 
 namespace RayTracer.Samplers
@@ -52,8 +53,6 @@ namespace RayTracer.Samplers
                     lightSamples.Add(new LightSample(w + (float)random.NextDouble() / gridW, h + (float)random.NextDouble() / gridH));
                 }
             }
-
-
         }
 
 

@@ -32,7 +32,7 @@ namespace RayTracer.SceneGraph.Accelerate
             Intersectables = intersectables;
             BoundingBox = boundingBox;
 
-            if (Intersectables.Objects.Count <= 5 || currentTreeDetph == maxTreeDepth)
+            if (Intersectables.Intersectables.Count <= 5 || currentTreeDetph == maxTreeDepth)
             {
                 IsLeaf = true;
 
@@ -82,8 +82,8 @@ namespace RayTracer.SceneGraph.Accelerate
                 RightNode = new BspNode();
                 foreach (IIntersectable intersectable in Intersectables.GetObjects())
                 {
-                    if (intersectable.BoundingBox.Intersect(leftBb)) leftIntersectables.Objects.Add(intersectable);
-                    if (intersectable.BoundingBox.Intersect(rightBb)) rightIntersectables.Objects.Add(intersectable);
+                    if (intersectable.BoundingBox.Intersect(leftBb)) leftIntersectables.Intersectables.Add(intersectable);
+                    if (intersectable.BoundingBox.Intersect(rightBb)) rightIntersectables.Intersectables.Add(intersectable);
 
                 }
                 LeftNode.BuildSubTree(leftIntersectables, leftBb, maxTreeDepth, currentTreeDetph + 1);

@@ -22,7 +22,7 @@ namespace RayTracer.SceneGraph.Light
         {
             Vector3 length = Vector3.Subtract(Position, v);
             float dist = length.Length*length.Length;
-            return LightColor * (1 / dist);
+            return LightColor.Div(dist);
         }
 
         public Vector3 GetLightDirection(Vector3 v)
@@ -45,7 +45,7 @@ namespace RayTracer.SceneGraph.Light
             Vector3 dist = Vector3.Subtract(Position, record.IntersectionPoint);
             float ldist = dist.Length;
 
-            sample.LightColor = LightColor*(1f/(ldist*ldist));
+            sample.LightColor = LightColor.Div(ldist*ldist);
             sample.Wi = wi;
             sample.Distance = ldist;
             sample.Position = Position;

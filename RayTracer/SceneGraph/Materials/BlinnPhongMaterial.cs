@@ -21,7 +21,7 @@ namespace RayTracer.SceneGraph.Materials
         public BlinnPhongMaterial(Color diffuse)
         {
             Diffuse = diffuse;
-            Specular = Color.White;
+            Specular = new Color(1,1,1);
             Shininess = 32f;
         }
     }

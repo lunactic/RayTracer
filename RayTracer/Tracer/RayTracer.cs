@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using RayTracer.Helper;
 using RayTracer.Samplers;
 using RayTracer.SceneGraph;
 using RayTracer.SceneGraph.Scenes;
@@ -20,10 +21,10 @@ namespace RayTracer.Tracer
         private Scene scene;
         private Stopwatch stopwatch;
         private int finishedThreads;
+
         public RayTracer(Scene scene)
         {
             this.scene = scene;
-            
         }
 
         public void Render()
@@ -32,27 +33,37 @@ namespace RayTracer.Tracer
             stopwatch.Reset();
             if (Constants.NumberOfThreads == 1) //One Thread
             {
+
                 stopwatch.Start();
-                for (int i = 0; i < scene.Camera.ScreenWidth; i++)
+                ISampler sampler = Constants.Sampler;
+                if (Constants.IsSamplingOn && Constants.NumberOfSamples > 0)
                 {
-                    for (int j = 0; j < scene.Camera.ScreenHeight; j++)
+                    Console.WriteLine("Using Supersampling with: " + Constants.NumberOfSamples + " samples!");
+
+                    for (int i = 0; i < scene.Film.Width; i++)
                     {
-                        if (Constants.IsLightSamplingOn)
+                        for (int j = 0; j < scene.Film.Height; j++)
                         {
-                            List<Sample> samples = Constants.Sampler.CreateSamples();
-                            Color c = Color.Black;
+                            List<Sample> samples = sampler.CreateSamples();
+                            Color c = new Color(0, 0, 0);
                             foreach (Sample sample in samples)
                             {
                                 Ray ray = scene.Camera.CreateRay(i + sample.X, j + sample.Y);
-                                c += scene.Integrator.Integrate(ray, scene.IntersectableList,scene.Lights, Constants.Sampler);
+                                c.Append(scene.Integrator.Integrate(ray, scene.Objects, scene.Lights, sampler));
                             }
-                            c = c / samples.Count;
+                            c.VoidDiv(samples.Count);
                             scene.Film.SetPixel(i, j, c);
                         }
-                        else
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < scene.Film.Width; i++)
+                    {
+                        for (int j = 0; j < scene.Film.Height; j++)
                         {
                             Ray ray = scene.Camera.CreateRay(i, j);
-                            Color color = scene.Integrator.Integrate(ray, scene.IntersectableList,scene.Lights, Constants.Sampler);
+                            Color color = scene.Integrator.Integrate(ray, scene.Objects, scene.Lights, Constants.Sampler);
                             scene.Film.SetPixel(i, j, color);
                         }
                     }
@@ -63,20 +74,42 @@ namespace RayTracer.Tracer
             }
             else //More than 1 thread
             {
-                Debug.WriteLine("Start rendering with: " + Constants.NumberOfThreads + " Threads");
-                stopwatch.Start();
-                finishedThreads = 0;
-                for (int i = 0; i < Constants.NumberOfThreads; i++)
+                if (Constants.IsSamplingOn && Constants.NumberOfSamples > 0)
                 {
-                    ISampler sampler = new StratifiedSampler();
-                    MultiThreadingRenderer renderer = new MultiThreadingRenderer(i, scene.IntersectableList,scene.Lights, scene.Camera, scene.Integrator, scene.Film, Constants.NumberOfThreads, sampler);
-                    renderer.ThreadDone += HandleThreadDone;
-                    Thread t = new Thread(renderer.Render);
-                    t.Start();
+                    Debug.WriteLine("Start rendering with: " + Constants.NumberOfThreads + " Threads");
+                    stopwatch.Start();
+                    finishedThreads = 0;
+                    for (int i = 0; i < Constants.NumberOfThreads; i++)
+                    {
+                        ISampler sampler = new StratifiedSampler();
+                        MultiThreadingRenderer renderer = new MultiThreadingRenderer(i, scene.Objects, scene.Lights,
+                                                                                     scene.Camera, scene.Integrator,
+                                                                                     scene.Film,
+                                                                                     Constants.NumberOfThreads, sampler);
+                        renderer.ThreadDone += HandleThreadDone;
+                        Thread t = new Thread(renderer.Render);
+                        t.Start();
+                    }
+                }
+                else
+                {
+                    stopwatch.Start();
+                    finishedThreads = 0;
+                    for (int i = 0; i < Constants.NumberOfThreads; i++)
+                    {
+                        MultiThreadingRenderer renderer = new MultiThreadingRenderer(i, scene.Objects, scene.Lights,
+                                                                                     scene.Camera, scene.Integrator,
+                                                                                     scene.Film,
+                                                                                     Constants.NumberOfThreads, null);
+                        renderer.ThreadDone += HandleThreadDone;
+                        Thread t = new Thread(renderer.Render);
+                        t.Start();
+                    }
                 }
             }
         }
-        void HandleThreadDone(object sender, EventArgs e)
+
+        private void HandleThreadDone(object sender, EventArgs e)
         {
             finishedThreads++;
             if (finishedThreads == Constants.NumberOfThreads)
@@ -86,6 +119,5 @@ namespace RayTracer.Tracer
                 Tonemapper.SaveImage("C:\\Test\\" + scene.FileName, scene.Film);
             }
         }
-
     }
 }

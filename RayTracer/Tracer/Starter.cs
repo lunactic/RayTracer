@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using RayTracer.Helper;
 using RayTracer.SceneGraph.Scenes;
 using RayTracer.Structs;
 

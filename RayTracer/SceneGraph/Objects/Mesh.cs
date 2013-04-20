@@ -16,10 +16,7 @@ namespace RayTracer.SceneGraph.Objects
         public Material Material { get; set; }
         public List<Triangle> Triangles { get; private set; }
 
-        public Light.ILight Light { get; set; }
-
-
-        public IBoundingBox BoundingBox { get; set; }
+    
         public List<float[]> Vertices { get; private set; }
         public List<float[]> Normals { get; private set; }
         public Mesh()
@@ -30,7 +27,7 @@ namespace RayTracer.SceneGraph.Objects
 
         }
 
-        public HitRecord Intersect(Ray ray)
+        public new HitRecord Intersect(Ray ray)
         {
             HitRecord hit = null;
             HitRecord tempHit;
@@ -94,7 +91,7 @@ namespace RayTracer.SceneGraph.Objects
             BuildBoundingBox();
         }
 
-        public void BuildBoundingBox()
+        public override void BuildBoundingBox()
         {
             Vector3 minVector = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
             Vector3 maxVector = new Vector3(float.MinValue, float.MinValue, float.MinValue);
@@ -115,28 +112,6 @@ namespace RayTracer.SceneGraph.Objects
             BoundingBox.MaxVector = maxVector;
             BoundingBox.MinVector = minVector;
 
-        }
-
-        public override List<IIntersectable> GetObjects()
-        {
-            return new List<IIntersectable>(Triangles);
-        }
-
-
-
-        public Vector3 GetSamplePoint(float x, float y)
-        {
-            throw new NotSupportedException();
-        }
-
-        public float GetArea()
-        {
-            return 0f;
-        }
-
-        public Vector3 GetSampledNormal(float x, float y)
-        {
-            throw new NotSupportedException();
         }
     }
 }

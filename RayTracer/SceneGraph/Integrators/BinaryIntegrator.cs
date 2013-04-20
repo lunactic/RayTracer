@@ -14,13 +14,13 @@ namespace RayTracer.SceneGraph.Integrators
     public class BinaryIntegrator : IIntegrator
     {
 
-        public Color Integrate(Ray ray, IntersectableList objects, List<ILight> lights, ISampler sampler)
+        public Color Integrate(Ray ray, IIntersectable objects, List<ILight> lights, ISampler sampler)
         {
             HitRecord record = objects.Intersect(ray);
             if (record != null)
-                return Color.White;
+                return new Color(1,1,1);
             else
-                return Color.Black;
+                return new Color(0,0,0);
         }
     }
 }

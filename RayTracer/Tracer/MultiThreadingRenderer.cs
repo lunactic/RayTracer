@@ -1,4 +1,5 @@
-﻿using RayTracer.Samplers;
+﻿using RayTracer.Helper;
+using RayTracer.Samplers;
 using RayTracer.SceneGraph;
 using RayTracer.SceneGraph.Integrators;
 using RayTracer.SceneGraph.Light;
@@ -20,18 +21,18 @@ namespace RayTracer.Tracer
         private readonly IIntegrator integrator;
         private readonly Film film;
         private readonly ISampler sampler;
-        private readonly IntersectableList objects;
+        private readonly Aggregate objects;
         private readonly List<ILight> lights; 
 
 
         public event EventHandler ThreadDone;
-        public MultiThreadingRenderer(int i, IntersectableList objects,List<ILight> lights , Camera camera, IIntegrator integrator, Film film, int numberOfThreads, ISampler sampler)
+        public MultiThreadingRenderer(int i, Aggregate objects,List<ILight> lights , Camera camera, IIntegrator integrator, Film film, int numberOfThreads, ISampler sampler)
         {
             threadId = i;
             this.camera = camera;
-            this.integrator = integrator;
+            this.integrator = new RefractionIntegrator();
             this.film = film;
-            this.sampler = sampler;
+            this.sampler = new StratifiedSampler();
             this.objects = objects;
             this.lights = lights;
         }
@@ -45,13 +46,13 @@ namespace RayTracer.Tracer
                     if (Constants.IsSamplingOn)
                     {
                         List<Sample> samples = sampler.CreateSamples();
-                        Color c = Color.Black;
+                        Color c = new Color(0, 0, 0);
                         foreach (Sample sample in samples)
                         {
                             Ray ray = camera.CreateRay(i + sample.X, j + sample.Y);
-                            c += integrator.Integrate(ray,objects,lights,sampler);
+                            c.Append(integrator.Integrate(ray,objects,lights,sampler));
                         }
-                        c = c / samples.Count;
+                        c.VoidDiv(samples.Count);
                         film.SetPixel(i, j, c);
                     }
                     else

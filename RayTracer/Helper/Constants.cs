@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using RayTracer.Samplers;
 
-namespace RayTracer.Structs
+namespace RayTracer.Helper
 {
     public class Constants
     {
@@ -15,7 +15,7 @@ namespace RayTracer.Structs
         public static readonly bool IsLightSamplingOn = true;
         public static readonly bool IsSamplingOn = true;
         public static readonly int NumberOfLightSamples = 12;
-        public static readonly int NumberOfSamples = 30;
+        public static readonly int NumberOfSamples = 100;
         public static readonly ISampler Sampler = new StratifiedSampler();
 
         public static int SceneIndex = 1;

@@ -13,7 +13,7 @@ namespace RayTracer.SceneGraph.Scenes
 {
     public abstract class Scene
     {
-        public IntersectableList IntersectableList { get; set; }
+        public Aggregate Objects { get; set; }
         public List<ILight> Lights { get; set; }
         public Color BackgroundColor { get; set; }
         public Color Ambient { get; set; }
