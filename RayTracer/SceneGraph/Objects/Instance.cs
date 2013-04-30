@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using RayTracer.Structs;
 using RayTracer.SceneGraph.Materials;
 using RayTracer.SceneGraph.Light;
+using RayTracer.Samplers;
 
 namespace RayTracer.SceneGraph.Objects
 {
@@ -62,7 +63,7 @@ namespace RayTracer.SceneGraph.Objects
             Intersectable.BuildBoundingBox();
         }
         
-        public ILight Light
+        public new ILight Light
         {
             get
             {
@@ -74,19 +75,15 @@ namespace RayTracer.SceneGraph.Objects
             }
         }
 
-        public Vector3 GetSamplePoint(float x, float y)
+        public new Vector3 GetSamplePoint(LightSample sample)
         {
-            return Intersectable.GetSamplePoint(x, y);
+            return Intersectable.GetSamplePoint(sample);
         }
 
-        public float GetArea()
+        public new float GetArea()
         {
             return Intersectable.GetArea();
         }
 
-        public Vector3 GetSampledNormal(float x, float y)
-        {
-            return Intersectable.GetSampledNormal(x,y);
-        }
     }
 }

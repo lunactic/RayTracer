@@ -19,6 +19,8 @@ namespace RayTracer.Samplers
         public float X { get; set; }
         public float Y { get; set; }
         public float Distance { get; set; }
+        public float Area { get; set; }
+
 
         public LightSample(float x, float y)
         {

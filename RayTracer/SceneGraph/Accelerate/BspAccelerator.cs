@@ -7,6 +7,7 @@ using RayTracer.SceneGraph.Materials;
 using RayTracer.SceneGraph.Objects;
 using RayTracer.Structs;
 using RayTracer.SceneGraph.Light;
+using RayTracer.Samplers;
 
 namespace RayTracer.SceneGraph.Accelerate
 {
@@ -172,7 +173,7 @@ namespace RayTracer.SceneGraph.Accelerate
         }
 
 
-        public Vector3 GetSamplePoint(float x, float y)
+        public Vector3 GetSamplePoint(LightSample sample)
         {
             throw new NotSupportedException();
         }
@@ -182,9 +183,5 @@ namespace RayTracer.SceneGraph.Accelerate
             return 0f;
         }
 
-        public Vector3 GetSampledNormal(float x, float y)
-        {
-            throw new NotSupportedException();
-        }
     }
 }

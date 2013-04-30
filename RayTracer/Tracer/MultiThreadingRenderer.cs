@@ -26,13 +26,13 @@ namespace RayTracer.Tracer
 
 
         public event EventHandler ThreadDone;
-        public MultiThreadingRenderer(int i, Aggregate objects,List<ILight> lights , Camera camera, IIntegrator integrator, Film film, int numberOfThreads, ISampler sampler)
+        public MultiThreadingRenderer(int i, Aggregate objects,List<ILight> lights , Camera camera,Film film)
         {
             threadId = i;
             this.camera = camera;
-            this.integrator = new RefractionIntegrator();
+            this.integrator = (IIntegrator)Activator.CreateInstance(Constants.Integrator);
             this.film = film;
-            this.sampler = new StratifiedSampler();
+            this.sampler = (ISampler)Activator.CreateInstance(Constants.Sampler);
             this.objects = objects;
             this.lights = lights;
         }
@@ -42,7 +42,6 @@ namespace RayTracer.Tracer
             {
                 for (int j = threadId; j < camera.ScreenHeight; j += Constants.NumberOfThreads)
                 {
-
                     if (Constants.IsSamplingOn)
                     {
                         List<Sample> samples = sampler.CreateSamples();

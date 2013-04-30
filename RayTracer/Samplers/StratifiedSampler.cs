@@ -12,16 +12,10 @@ namespace RayTracer.Samplers
 {
     public class StratifiedSampler : ISampler
     {
-        private volatile List<LightSample> lightSamples = new List<LightSample>();
-
-        public StratifiedSampler()
-        {
-            CreateLightSamples();
-        }
-
+        private Random random = new Random();
+    
         public List<Sample> CreateSamples()
         {
-            Random random = new Random();
             List<Sample> samples = new List<Sample>();
             int gridW = (int)Math.Floor(Math.Sqrt(Constants.NumberOfSamples));
             int gridH = gridW;
@@ -37,10 +31,11 @@ namespace RayTracer.Samplers
             }
             return samples;
         }
-
-        public void CreateLightSamples()
-        {
-            Random random = new Random();
+    
+        public List<LightSample> GetLightSamples()
+        {   
+            List<LightSample> lightSamples = new List<LightSample>();
+     
             int gridW = (int)Math.Floor(Math.Sqrt(Constants.NumberOfSamples * Constants.NumberOfLightSamples));
             int gridH = gridW;
             float stratW = 1f / gridW;
@@ -53,13 +48,7 @@ namespace RayTracer.Samplers
                     lightSamples.Add(new LightSample(w + (float)random.NextDouble() / gridW, h + (float)random.NextDouble() / gridH));
                 }
             }
-        }
-
-
-        public List<LightSample> GetLightSamples()
-        {
             return lightSamples;
-            
         }
     }
 }

@@ -7,6 +7,7 @@ using RayTracer.SceneGraph.Accelerate;
 using RayTracer.Structs;
 using RayTracer.SceneGraph.Materials;
 using RayTracer.SceneGraph.Light;
+using RayTracer.Samplers;
 namespace RayTracer.SceneGraph.Objects
 {
     public class Plane : IIntersectable
@@ -71,7 +72,7 @@ namespace RayTracer.SceneGraph.Objects
             BoundingBox.MaxVector = new Vector3(float.PositiveInfinity,float.PositiveInfinity,float.PositiveInfinity);
         }
 
-        public Vector3 GetSamplePoint(float x, float y)
+        public Vector3 GetSamplePoint(LightSample sample)
         {
             throw new NotSupportedException();
         }
@@ -79,11 +80,6 @@ namespace RayTracer.SceneGraph.Objects
         public float GetArea()
         {
             return 0f;
-        }
-
-        public Vector3 GetSampledNormal(float x, float y)
-        {
-            throw new NotSupportedException();
         }
     }
 }

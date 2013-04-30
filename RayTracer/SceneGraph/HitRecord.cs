@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using RayTracer.Structs;
 using RayTracer.SceneGraph.Objects;
 using RayTracer.SceneGraph.Materials;
+using RayTracer.Helper;
 namespace RayTracer.SceneGraph
 {
 
@@ -46,6 +47,48 @@ namespace RayTracer.SceneGraph
             newOrigin += offset;
 
             return new Ray(newOrigin, direction);
+        }
+        public Ray CreateRefractedRay()
+        {
+            Vector3 incident = new Vector3(CreateReflectedRay().Direction);
+            Vector3 normal = new Vector3(SurfaceNormal);
+            float n1, n2;
+            float cosI = Vector3.Dot(normal, incident);
+            if (cosI < 0)
+            {
+                //Material to Air
+                n1 = Material.RefractionIndex;
+                n2 = Refractions.AIR;
+                normal = -normal;
+                cosI = Vector3.Dot(normal, incident);
+            }
+            else
+            {
+                //Air to Material
+                n1 = Refractions.AIR;
+                n2 = Material.RefractionIndex;
+            }
+
+            float n = n1 / n2;
+
+            float sinT2 = (float)(n * n * (1.0 - cosI * cosI));
+
+            if (sinT2 > 1.0) return new Ray(IntersectionPoint, CreateReflectedRay().Direction); //TIR
+
+            float cosT = (float)Math.Sqrt(1.0 - sinT2);
+
+            Vector3 dir = RayDirection;
+            dir.Normalize();
+            dir = dir * n;
+            normal = normal * (float)(n * cosI - cosT);
+            dir += normal;
+
+            Vector3 pos = IntersectionPoint;
+            Vector3 offset = dir;
+            offset *= 0.0001f;
+            pos += offset;
+
+            return new Ray(pos, dir);
         }
     }
 }

@@ -44,13 +44,12 @@ namespace RayTracer.SceneGraph
             AspectRation = ScreenWidth / ScreenHeight;
             LookDirection = LookAt - Eye;
             LookDirection.Normalize();
-            FieldOfView = (float)(FieldOfView * 2 * Math.PI / 180f);
+            FieldOfView = (float)(FieldOfView*2 * Math.PI / 180f);
             w = Eye - LookAt;
             w.Normalize();
             u = new Vector4(Vector3.Cross(Up,w));
             u.Normalize();
             v = new Vector4(Vector3.Cross(w,u));
-
 
             transformationMatrix = new Matrix4()
                 {
@@ -75,8 +74,8 @@ namespace RayTracer.SceneGraph
         {
             
             //Calculate Ray in pixel coordinates
-            float rU = (float)(l + (r - l) * (x + 0.5) / ScreenWidth);
-            float rV = (float)(b + (t - b) * (y + 0.5) / ScreenHeight);
+            float rU = (l + (r - l) * (x + 0.5f) / ScreenWidth);
+            float rV = (b + (t - b) * (y + 0.5f) / ScreenHeight);
             
             Vector4 cameraRay = new Vector4(rU, rV, -1,0);
             Vector4 direction = Vector4.Transform(cameraRay, transformationMatrix);

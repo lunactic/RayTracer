@@ -1,4 +1,5 @@
 ﻿using RayTracer.Helper;
+using RayTracer.Samplers;
 using RayTracer.SceneGraph.Accelerate;
 using RayTracer.SceneGraph.Light;
 using RayTracer.SceneGraph.Materials;
@@ -87,13 +88,15 @@ namespace RayTracer.SceneGraph.Objects
             BoundingBox.MaxVector = new Vector3(xMax, yMax, zMax);
         }
 
-        public Vector3 GetSamplePoint(float x, float y)
+        public Vector3 GetSamplePoint(LightSample sample)
         {
             Vector3 samplePoint = P0;
-            Vector3 aScaled = A*x;
-            Vector3 bScaled = B*y;
+            Vector3 aScaled = A*sample.X;
+            Vector3 bScaled = B*sample.Y;
             
             samplePoint = samplePoint+aScaled+bScaled;
+            sample.Normal = normal;
+            sample.Area = area;
             return samplePoint;
         }
 

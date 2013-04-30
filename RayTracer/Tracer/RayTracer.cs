@@ -35,7 +35,7 @@ namespace RayTracer.Tracer
             {
 
                 stopwatch.Start();
-                ISampler sampler = Constants.Sampler;
+                ISampler sampler =  (ISampler)Activator.CreateInstance(Constants.Sampler);
                 if (Constants.IsSamplingOn && Constants.NumberOfSamples > 0)
                 {
                     Console.WriteLine("Using Supersampling with: " + Constants.NumberOfSamples + " samples!");
@@ -63,7 +63,7 @@ namespace RayTracer.Tracer
                         for (int j = 0; j < scene.Film.Height; j++)
                         {
                             Ray ray = scene.Camera.CreateRay(i, j);
-                            Color color = scene.Integrator.Integrate(ray, scene.Objects, scene.Lights, Constants.Sampler);
+                            Color color = scene.Integrator.Integrate(ray, scene.Objects, scene.Lights,sampler);
                             scene.Film.SetPixel(i, j, color);
                         }
                     }
@@ -83,9 +83,8 @@ namespace RayTracer.Tracer
                     {
                         ISampler sampler = new StratifiedSampler();
                         MultiThreadingRenderer renderer = new MultiThreadingRenderer(i, scene.Objects, scene.Lights,
-                                                                                     scene.Camera, scene.Integrator,
-                                                                                     scene.Film,
-                                                                                     Constants.NumberOfThreads, sampler);
+                                                                                     scene.Camera,
+                                                                                     scene.Film);
                         renderer.ThreadDone += HandleThreadDone;
                         Thread t = new Thread(renderer.Render);
                         t.Start();
@@ -98,9 +97,8 @@ namespace RayTracer.Tracer
                     for (int i = 0; i < Constants.NumberOfThreads; i++)
                     {
                         MultiThreadingRenderer renderer = new MultiThreadingRenderer(i, scene.Objects, scene.Lights,
-                                                                                     scene.Camera, scene.Integrator,
-                                                                                     scene.Film,
-                                                                                     Constants.NumberOfThreads, null);
+                                                                                     scene.Camera, 
+                                                                                     scene.Film);
                         renderer.ThreadDone += HandleThreadDone;
                         Thread t = new Thread(renderer.Render);
                         t.Start();

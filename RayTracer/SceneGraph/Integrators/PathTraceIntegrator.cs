@@ -3,7 +3,6 @@ using RayTracer.Samplers;
 using RayTracer.SceneGraph.Light;
 using RayTracer.SceneGraph.Materials;
 using RayTracer.SceneGraph.Objects;
-using RayTracer.SceneGraph.Scenes;
 using RayTracer.Structs;
 using System;
 using System.Collections.Generic;
@@ -15,98 +14,212 @@ namespace RayTracer.SceneGraph.Integrators
 {
     public class PathTraceIntegrator : IIntegrator
     {
+        private IIntersectable scene;
+        private List<ILight> lights;
+        private ISampler sampler;
+        private readonly Random random = new Random();
         public Color Integrate(Ray ray, IIntersectable objects, List<ILight> lights, ISampler sampler)
         {
-            return PathTrace(ray, 0, objects, sampler);
+            scene = objects;
+            this.lights = lights;
+            this.sampler = sampler;
+            return PathTrace(ray);
         }
 
-        private Color PathTrace(Ray ray, int depth, IIntersectable objects, ISampler sampler)
+        public Color PathTrace(Ray ray)
         {
-            HitRecord record = objects.Intersect(ray);
+            //Create new LightSamples for this Pixel
+            List<LightSample> lightSamples = sampler.GetLightSamples();
+            List<Sample> directionSamples = sampler.CreateSamples();
 
+            Vector3 wo;
+            Vector3 wi;
+            Vector3 normal;
+            int depth = 0;
+            Color pixelColor = new Color(0, 0, 0);
+            Color alpha = new Color(1, 1, 1);
+            bool isGeneratedFromRefraction = false;
+
+            HitRecord record = scene.Intersect(ray);
             if (record == null)
-                return new Color(0, 0, 0);
+                return pixelColor;
+            
+            wo = record.RayDirection;            
+            normal = record.SurfaceNormal;
 
-            //Shade The intersection
-            Material mat = record.Material;
-
-            Color pointColor = new Color(0, 0, 0);
-
-            //Russian Roulette
-            float pathSurvive = 1.0f;
-
-            //Russian Roulette
-            if (depth > Constants.MaximumRecursionDepth)
+            float oneMinusQk = 1;
+            while (depth < Constants.MaximalPathLength)
             {
-                Color weight = new Color(0, 0, 0);
-                if (mat is LambertMaterial) weight = mat.Diffuse;
-                if (mat is BlinnPhongMaterial)
-                    weight = new Color(mat.Diffuse.R + mat.Specular.R, mat.Diffuse.G + mat.Specular.G,mat.Diffuse.B + mat.Specular.B);
-                /* TODO IMPLEMEMNT MIRROR AND REFRACTIVE MATERIAL RESPECTIVELY
-                    if (mat is MirrorMaterial) weight = new Color(mat.Ks, mat.Ks, mat.Ks,1.0f);
-                    if(mat is RefractiveMaterial) weight = 
-                 */
-                if (RussianRoulette(weight, ref pathSurvive))
-                    return pointColor;
-            }
+                //Check if we hit a LightSource
+                if ((depth == 0 || isGeneratedFromRefraction) && record.HitObject.Light != null) return record.HitObject.Light.LightColor;
 
-            //Shade according to the Materials
-            if (mat is LambertMaterial)
-            {
-                //Direct Illumination
-                //pointColor += DirectIllumintation(record, ray);
-                //Indirect Illumination
-                //pointColor += survival * diffuseInterreflect(ray,record,depth);
-            }
-            if (mat is BlinnPhongMaterial)
-            {
-                /*Direct Illumination
-                 *   pointColor += directIllumination(record,ray);
-                 * Indirect Illumination
-                 *  if(glossyRussianRoulette(mat.kS,ref.kD, ref rrMult)
-                 *      pointColor += survival * (1.0/(1-1.0/rrMult)) * diffuseInterreflect(ray,record,depth))
-                 *  else
-                 *      pointColor += survival * rrMult * specularInterreflect(ray, record, depth);
-                 *      */
-            }
-            if (mat is MirrorMaterial)
-            {
-                //pointColor += survival*mirrorReflect(ray,record,depth)
-            }
-            if (mat is RefractiveMaterial)
-            {
-                //Refractive shading
-            }
+                //Select one light at random
+                ILight light = Randomizer.PickRandomLight(lights);
+                //Select a random lightsample
+                LightSample sample = Randomizer.PickRandomLightSample(lightSamples);
+                //Sample that light
+                light.Sample(record, sample);
 
-            return new Color(0, 0, 0);
+
+                pixelColor.Append(alpha.Mult(Shade(record, sample)).Div(sample.Pdf));
+
+                //Break with Russian roulette
+                if (depth > 2)
+                {
+                    oneMinusQk = 0.5f;
+                    if (random.NextDouble() > 0.5)
+                        return pixelColor;
+                }
+
+                //Create the next Ray
+                Vector3 direction = Vector3.Zero;
+                Sample directionSample = Randomizer.PickRandomSample(directionSamples);
+                if (record.Material is LambertMaterial || record.Material is BlinnPhongMaterial)
+                {
+                    direction = UniformHemisphereSample(directionSample.X, directionSample.Y, normal);
+                }
+                if (record.Material is MirrorMaterial)
+                {
+                    isGeneratedFromRefraction = true;
+                    direction = record.CreateReflectedRay().Direction;
+                }
+                if (record.Material is RefractiveMaterial)
+                {
+                    isGeneratedFromRefraction = true;
+                    //Pick refraction / reflection path with p=0.5 each
+                    if (random.NextDouble() >= 0.5)
+                    {
+                        direction = record.CreateReflectedRay().Direction;
+                        alpha.Mult(0.5f);
+                    }
+                    else
+                    {
+                        direction = record.CreateRefractedRay().Direction;
+                        alpha = alpha.Mult(0.5f);
+                    }
+                }
+                record = scene.Intersect(new Ray(record.IntersectionPoint, direction));
+
+                if (record == null)
+                    return pixelColor;
+
+                wi = record.RayDirection;
+                //Get BRDF
+                Color brdf = record.Material.GetBrdf(wo, wi, record);
+                float cos = Vector3.Dot(wi, normal);
+                float pW = (float)(cos / Math.PI);
+                alpha = (alpha.Mult(brdf).Mult(cos)).Div(pW * oneMinusQk);
+
+                depth++;
+            }
+            return pixelColor;
         }
 
-        private bool RussianRoulette(Color c, ref float survivalFactor)
+        private Color Shade(HitRecord record, LightSample sample)
         {
-            float p = Math.Max(c.R, Math.Max(c.G, c.B));
-            float survivorMultiplicationFactor = 1.0f / p;
+            Color pixelColor = new Color(0, 0, 0);
+            if (record.Material is LambertMaterial || record.Material is BlinnPhongMaterial)
+            {
+                //Diffuse Shading
+                if (sample.LightColor.Power > 0 && IsVisible(record, sample))
+                {
+                    float cos = Vector3.Dot(sample.Wi, record.SurfaceNormal);
+                    pixelColor.Append(record.Material.Shade(record, sample.Wi).Mult(sample.LightColor).Mult(cos));
+                }
+            }
 
-            Random rand = new Random();
-            if (rand.NextDouble() > p) return true;
-            return false;
+            if (record.Material is MirrorMaterial || record.Material is RefractiveMaterial)
+            {
+                //Mirror Shading
+                if (sample.LightColor.Power > 0 && IsVisible(record, sample))
+                {
+                    float fresnel = Reflectance(record);
+                    pixelColor.Append(record.Material.Shade(record, sample.Wi).Mult(sample.LightColor).Mult(fresnel));
+                }
+            }
 
+            return pixelColor;
         }
 
-        private Color DirectIllumination(HitRecord record, Ray ray, Scene scene)
+        private float Reflectance(HitRecord record)
         {
-            Material mat = record.Material;
-            Color pointColor = new Color(0, 0, 0);
+            Vector3 incident = new Vector3(record.CreateReflectedRay().Direction);
+            Vector3 normal = new Vector3(record.SurfaceNormal);
 
-            foreach (ILight light in scene.Lights)
+            float n1, n2;
+            float cosI = Vector3.Dot(normal, incident);
+            if (cosI < 0)
             {
-                Color intensity;
-                Vector3 lightIncidence;
-
-
+                //Material to Air
+                n1 = record.Material.RefractionIndex;
+                n2 = Refractions.AIR;
+                normal = -normal;
+                cosI = Vector3.Dot(normal, incident);
+            }
+            else
+            {
+                //Air to Material
+                n1 = Refractions.AIR;
+                n2 = record.Material.RefractionIndex;
 
             }
 
-            return new Color(0, 0, 0);
+            double n = n1 / n2;
+            double sinT2 = n * n * (1.0 - cosI * cosI);
+
+            if (sinT2 > 1.0) return 1.0f; //Total internal Reflection
+
+            double cosT = Math.Sqrt(1.0 - sinT2);
+            double rOrth = (n1 * cosI - n2 * cosT) / (n1 * cosI + n2 * cosT);
+            double rPar = (n2 * cosI - n1 * cosT) / (n2 * cosI + n1 * cosT);
+
+            return (float)(rOrth * rOrth + rPar * rPar) / 2.0f;
+
+        }
+
+        private bool IsVisible(HitRecord record, LightSample sample)
+        {
+            Vector3 hitToLight = sample.Wi;
+            Vector3 pos = record.IntersectionPoint;
+            Vector3 offset = record.RayDirection;
+            offset = -offset;
+            offset *= 0.001f;
+            pos += offset;
+            HitRecord lightHit = scene.Intersect(new Ray(pos, hitToLight));
+            Vector3 dist = Vector3.Subtract(sample.Position, pos);
+            return (lightHit == null || lightHit.HitObject.Light != null || lightHit.Distance > dist.Length);
+        }
+
+        private Vector3 UniformHemisphereSample(float eps1, float eps2, Vector3 normal)
+        {
+            float x = (float)(Math.Cos(2 * Math.PI * eps2) * Math.Sqrt(eps1));
+            float y = (float)(Math.Sin(2 * Math.PI * eps2) * Math.Sqrt(eps1));
+            float z = (float)(Math.Sqrt(1 - eps1));
+            if (z < 0)
+                z = -z;
+
+            Vector3 direction = new Vector3(x, y, z);
+            
+            Vector3 tangentBase = normal.Equals(new Vector3(0, 0, 1)) ? new Vector3(0, 1, 0) : new Vector3(0, 0, 1);
+
+            Vector3 xBase = Vector3.Cross(normal, tangentBase);
+            Vector3 yBase = Vector3.Cross(normal, xBase);
+            Vector3 zBase = normal;
+            Matrix3 mat = new Matrix3()
+            {
+                R0C0 = xBase.X,
+                R0C1 = xBase.Y,
+                R0C2 = xBase.Z,
+                R1C0 = yBase.X,
+                R1C1 = yBase.Y,
+                R1C2 = yBase.Z,
+                R2C0 = zBase.X,
+                R2C1 = zBase.Y,
+                R2C2 = zBase.Z,
+            };
+            //Matrix3.Transform(ref mat,ref direction);
+            return direction;
+
         }
     }
 }

@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using RayTracer.Structs;
 using RayTracer.SceneGraph.Light;
+using RayTracer.Samplers;
 
 namespace RayTracer.SceneGraph.Objects
 {
@@ -17,9 +18,8 @@ namespace RayTracer.SceneGraph.Objects
         Material Material { get; set; }
         HitRecord Intersect(Ray ray);
         void BuildBoundingBox();
-        Vector3 GetSamplePoint(float x, float y);
+        Vector3 GetSamplePoint(LightSample sample);
         float GetArea();
-        Vector3 GetSampledNormal(float x, float y);
 
     }
 }

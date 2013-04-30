@@ -97,6 +97,7 @@ namespace RayTracer.Helper
             }
 
             //Normalization
+            /*
             float xTrans = -(xMax+xMin)/2;
 		    float yTrans = -(yMax+yMin)/2;
 		    float zTrans = -(zMax+zMin)/2;
@@ -116,7 +117,7 @@ namespace RayTracer.Helper
                 v[2] = scale * (v[2] + zTrans);
                 vertices[i] = v;
             }
-
+            */
         }
     }
        

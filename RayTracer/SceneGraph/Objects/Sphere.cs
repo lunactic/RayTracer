@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using RayTracer.SceneGraph.Materials;
 using RayTracer.SceneGraph.Light;
+using RayTracer.Samplers;
 
 namespace RayTracer.SceneGraph.Objects
 {
@@ -104,7 +105,7 @@ namespace RayTracer.SceneGraph.Objects
 
 
 
-        public Vector3 GetSamplePoint(float x, float y)
+        public Vector3 GetSamplePoint(LightSample sample)
         {
             throw new NotSupportedException();
         }
@@ -114,9 +115,5 @@ namespace RayTracer.SceneGraph.Objects
             return 0f;
         }
 
-        public Vector3 GetSampledNormal(float x, float y)
-        {
-            throw new NotSupportedException();
-        }
     }
 }

@@ -14,25 +14,7 @@ namespace RayTracer.Tracer
         public static Scene scene;
         static void Main()
         {
-            switch (Constants.SceneIndex)
-            {
-                case 0: scene = new MirrorScene();
-                    break;
-                case 1: scene = new MirrorScene();
-                    break;
-                case 2: scene = new MirrorScene();
-                    break;
-                case 3: scene = new MirrorScene();
-                    break;
-                case 4: scene = new MirrorScene();
-                    break;
-                case 5: scene = new MirrorScene();
-                    break;
-                case 6: scene = new MirrorScene();
-                    break;
-                case 7: scene = new MirrorScene();
-                    break;
-            }
+            scene = (Scene)Activator.CreateInstance(Constants.SceneIndex);
 
             //Create the RayTracer setup you want to use here
             RayTracer tracer = new RayTracer(scene);

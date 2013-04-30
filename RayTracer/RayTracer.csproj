@@ -60,10 +60,76 @@
     <None Include="geometries\bunny70.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="geometries\cbox\meshes\cbox_0.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="geometries\cbox\meshes\cbox_0_full.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="geometries\cbox\meshes\cbox_1.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="geometries\cbox\meshes\cbox_10.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="geometries\cbox\meshes\cbox_11.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="geometries\cbox\meshes\cbox_12.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="geometries\cbox\meshes\cbox_13.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="geometries\cbox\meshes\cbox_14.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="geometries\cbox\meshes\cbox_15.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="geometries\cbox\meshes\cbox_16.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="geometries\cbox\meshes\cbox_2.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="geometries\cbox\meshes\cbox_3.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="geometries\cbox\meshes\cbox_4.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="geometries\cbox\meshes\cbox_5.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="geometries\cbox\meshes\cbox_6.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="geometries\cbox\meshes\cbox_7.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="geometries\cbox\meshes\cbox_8.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="geometries\cbox\meshes\cbox_9.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="geometries\cbox\meshes\plane.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="geometries\Cornell_box.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="geometries\cow.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="geometries\dragon.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="geometries\short_box.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="geometries\tall_box.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="geometries\teapot.obj">
@@ -75,6 +141,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Helper\ObjReader.cs" />
+    <Compile Include="Helper\Randomizer.cs" />
     <Compile Include="Helper\Refractions.cs" />
     <Compile Include="Samplers\ISampler.cs" />
     <Compile Include="Samplers\LightSample.cs" />
@@ -116,12 +183,18 @@
     <Compile Include="SceneGraph\Objects\Sphere.cs" />
     <Compile Include="SceneGraph\Objects\Triangle.cs" />
     <Compile Include="SceneGraph\Ray.cs" />
+    <Compile Include="SceneGraph\Scenes\BasicScene.cs" />
+    <Compile Include="SceneGraph\Scenes\CornellBox.cs" />
+    <Compile Include="SceneGraph\Scenes\CornellObjScene.cs" />
+    <Compile Include="SceneGraph\Scenes\CornellSphere.cs" />
     <Compile Include="SceneGraph\Scenes\MirrorScene.cs" />
+    <Compile Include="SceneGraph\Scenes\RefractionScene.cs" />
     <Compile Include="SceneGraph\Scenes\Scene.cs" />
     <Compile Include="SceneGraph\Tonemapper.cs" />
     <Compile Include="Structs\Color.cs" />
     <Compile Include="Helper\Constants.cs" />
     <Compile Include="Structs\MathHelper.cs" />
+    <Compile Include="Structs\Matrix3.cs" />
     <Compile Include="Structs\Matrix4.cs" />
     <Compile Include="Structs\Vector3.cs" />
     <Compile Include="Structs\Vector4.cs" />
@@ -149,6 +222,9 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="geometries\cbox\cbox.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

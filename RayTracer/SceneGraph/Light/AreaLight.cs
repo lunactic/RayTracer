@@ -17,31 +17,31 @@ namespace RayTracer.SceneGraph.Light
             Shape = shape;
             LightColor = c;
             shape.Light = this;
-            Pdf = (1f/Shape.GetArea());
+            Pdf = (1f / Shape.GetArea());
         }
 
         public void Sample(HitRecord record, LightSample sample)
         {
-            Vector3 position = Shape.GetSamplePoint(sample.X, sample.Y);
-            Vector3 normal = Shape.GetSampledNormal(position.X,position.Y);
+            //position = sampPoint
+            Vector3 position = Shape.GetSamplePoint(sample);
+            Vector3 normal = sample.Normal;
             Vector3 wi = position;
-            wi = wi-record.IntersectionPoint;
-            wi.Normalize();
-            position = position - record.IntersectionPoint;
-            float ldist = position.Length;
+            //wi = incidence
+            wi = wi - record.IntersectionPoint;
+            //wi.Normalize();
+            position = position - record.IntersectionPoint; 
+            //ldist = inlen
+            float ldist = wi.Length;
             Vector3 wiNegated = -wi;
-            float cos1 = Vector3.Dot(record.SurfaceNormal,wi);
-            float cos2 = Vector3.Dot(normal, wiNegated);
-            if (cos2 <= 0) sample.LightColor = new Color(0,0,0);
-            if (cos1 > 0 && cos2 > 0)
-            {
-                float geom = (cos1 * cos2) / (ldist * ldist);
-                sample.LightColor = LightColor.Mult(geom);
-                sample.Normal = normal;
-                sample.Position = position;
-                sample.Wi = wi;
-                sample.Pdf = Pdf;
-            }
+            float cos1 = Math.Max(Vector3.Dot(record.SurfaceNormal, wi), 0);
+            float cos2 = Math.Max(Vector3.Dot(normal, wiNegated), 0);
+            float geom = (cos1 * cos2) / (ldist * ldist);
+            float multFact = geom * Shape.GetArea();
+            sample.LightColor = LightColor.Mult(multFact);
+            sample.Normal = normal;
+            sample.Position = position;
+            sample.Wi = wi;
+            sample.Pdf = (float)(1f / Shape.GetArea());
         }
 
         #region unused

@@ -49,6 +49,7 @@ namespace RayTracer.SceneGraph.Light
             sample.Wi = wi;
             sample.Distance = ldist;
             sample.Position = Position;
+            sample.Pdf = 1;
         }
     }
 }

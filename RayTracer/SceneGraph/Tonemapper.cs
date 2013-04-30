@@ -20,10 +20,6 @@ namespace RayTracer.SceneGraph
             {
                 for (int j = 0; j < film.Height; j++)
                 {
-                    if (i == 167 && j == 22)
-                    {
-                        Debug.Write("BLUBB");
-                    }
                     Structs.Color color = film.GetPixel(i, j);
                     bmp.SetPixel(i,film.Height-1-j,color.GetSystemColor());
                 }

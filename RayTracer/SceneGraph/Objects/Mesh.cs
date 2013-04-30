@@ -7,6 +7,9 @@ using System.Text;
 using System.Threading.Tasks;
 using RayTracer.Structs;
 using RayTracer.Helper;
+using RayTracer.Samplers;
+using RayTracer.SceneGraph.Light;
+using System.Runtime.CompilerServices;
 
 namespace RayTracer.SceneGraph.Objects
 {
@@ -15,16 +18,43 @@ namespace RayTracer.SceneGraph.Objects
 
         public Material Material { get; set; }
         public List<Triangle> Triangles { get; private set; }
+        private ILight light;
+        public ILight Light { get { return light; } set { foreach (Triangle t in Triangles) { t.Light = value; } light = value; } }
+        private float area;
 
-    
         public List<float[]> Vertices { get; private set; }
         public List<float[]> Normals { get; private set; }
+        private List<int> Indices { get; set; }
         public Mesh()
         {
 
             Triangles = new List<Triangle>();
             BoundingBox = new AxisAlignedBoundingBox();
 
+        }
+
+        public Mesh(Material material, int[] indices, params float[] vertices)
+        {
+            Material = material;
+            Triangles = new List<Triangle>();
+            BoundingBox = new AxisAlignedBoundingBox();
+
+            Vertices = new List<float[]>();
+            for (int i = 0; i < vertices.Length; i += 3)
+            {
+                float[] vertex = new float[3];
+                vertex[0] = vertices[i];
+                vertex[1] = vertices[i + 1];
+                vertex[2] = vertices[i + 2];
+                Vertices.Add(vertex);
+            }
+            for (int j = 0; j < indices.Length; j += 3)
+            {
+                Triangles.Add(new Triangle(new Vector3(Vertices[indices[j]][0], Vertices[indices[j]][1], Vertices[indices[j]][2]),
+                                           new Vector3(Vertices[indices[j + 1]][0], Vertices[indices[j + 1]][1], Vertices[indices[j + 1]][2]),
+                                           new Vector3(Vertices[indices[j + 2]][0], Vertices[indices[j + 2]][1], Vertices[indices[j + 2]][2])) { Material = material });
+            }
+            BuildBoundingBox();
         }
 
         public new HitRecord Intersect(Ray ray)
@@ -43,7 +73,6 @@ namespace RayTracer.SceneGraph.Objects
             }
             return hit;
         }
-
 
         public void CreateMeshFromObjectFile(String filename, float scale)
         {
@@ -113,5 +142,54 @@ namespace RayTracer.SceneGraph.Objects
             BoundingBox.MinVector = minVector;
 
         }
+
+        public new Vector3 GetSamplePoint(LightSample sample)
+        {
+            if (Indices == null) CreateIndices();
+            IIntersectable sampleTriangle = Triangles[(int)Math.Floor(new Random().NextDouble() * Triangles.Count)];
+            sample.Normal = ((Triangle)sampleTriangle).Normal;
+            sample.Area = ((Triangle)sampleTriangle).GetArea();
+
+            return sampleTriangle.GetSamplePoint(sample);
+
+        }
+
+        [MethodImpl(MethodImplOptions.Synchronized)]
+        private void CreateIndices()
+        {
+            Indices = new List<int>();
+            float smallestArea = float.PositiveInfinity;
+            int index = 0;
+            for (int i = 0; i < Triangles.Count; i++)
+            {
+                if (Triangles[i].GetArea() < smallestArea)
+                {
+                    smallestArea = Triangles[i].GetArea();
+                    index = i;
+                }
+            }
+            Indices.Add(index);
+            for (int j = 0; j < Triangles.Count; j++)
+            {
+                int k = (int)(Math.Ceiling((Triangles[j].GetArea() / Triangles[index].GetArea())));
+                for (int l = 0; l <= k; l++)
+                {
+                    Indices.Add(j);
+                }
+            }
+        }
+
+        public new float GetArea()
+        {
+            if (area == 0f)
+            {
+                foreach (Triangle t in Triangles)
+                {
+                    area += t.GetArea();
+                }
+            }
+            return area;
+        }
+
     }
 }

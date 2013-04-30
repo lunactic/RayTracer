@@ -45,6 +45,7 @@ namespace RayTracer.SceneGraph.Light
             sample.Position = Direction;
             sample.Wi = Direction;
             sample.Distance = float.PositiveInfinity;
+            sample.Pdf = 1f;
         }
 
         

@@ -4,6 +4,7 @@ using RayTracer.Structs;
 using System;
 using RayTracer.SceneGraph.Materials;
 using RayTracer.SceneGraph.Light;
+using RayTracer.Samplers;
 
 namespace RayTracer.SceneGraph.Objects
 {
@@ -144,27 +145,24 @@ namespace RayTracer.SceneGraph.Objects
         }
 
 
-        public Vector3 GetSamplePoint(float x, float y)
+        public Vector3 GetSamplePoint(LightSample sample)
         {
-            float sqrtX = (float)Math.Sqrt(x);
-            x = 1 - sqrtX;
-            y = y*sqrtX;
+            float sqrtX = (float)Math.Sqrt(sample.X);
+            float x = 1 - sqrtX;
+            float y = sample.Y*sqrtX;
 
             Vector3 aScaled = A*x;
             Vector3 bScaled = B*y;
             Vector3 cScaled = C*(1 - (x + y));
 
+            sample.Normal = Normal;
+            sample.Area = area;
             return aScaled + bScaled + cScaled;
         }
 
         public float GetArea()
         {
             return area;
-        }
-
-        public Vector3 GetSampledNormal(float x, float y)
-        {
-            return Normal;
         }
 
         private float CalculateArea()

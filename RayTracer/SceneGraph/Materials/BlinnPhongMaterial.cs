@@ -1,4 +1,5 @@
-﻿using RayTracer.SceneGraph.Light;
+﻿using RayTracer.Helper;
+using RayTracer.SceneGraph.Light;
 using RayTracer.Structs;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ namespace RayTracer.SceneGraph.Materials
 {
     public class BlinnPhongMaterial : Material
     {
- 
+
         public BlinnPhongMaterial(Color diffuse, Color specular, float shininess)
         {
             Diffuse = diffuse;
@@ -21,8 +22,17 @@ namespace RayTracer.SceneGraph.Materials
         public BlinnPhongMaterial(Color diffuse)
         {
             Diffuse = diffuse;
-            Specular = new Color(1,1,1);
+            Specular = new Color(1, 1, 1);
             Shininess = 32f;
+        }
+
+        public override Color GetBrdf(Vector3 w_o, Vector3 w_i, HitRecord record)
+        {
+            Vector3 normal = record.SurfaceNormal;
+            Color diffuseBrdf = Diffuse.Div((float)Math.PI);
+
+
+            return diffuseBrdf;
         }
     }
 }

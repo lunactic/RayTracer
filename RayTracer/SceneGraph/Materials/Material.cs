@@ -1,4 +1,5 @@
-﻿using RayTracer.SceneGraph.Light;
+﻿using RayTracer.Helper;
+using RayTracer.SceneGraph.Light;
 using RayTracer.Structs;
 using System;
 using System.Collections.Generic;
@@ -59,5 +60,42 @@ namespace RayTracer.SceneGraph.Materials
             pixelColor.Clamp(0f, 1f);
             return pixelColor;
         }
-     }
+
+        protected float Reflectance(HitRecord record)
+        {
+            Vector3 incident = new Vector3(record.CreateReflectedRay().Direction);
+            Vector3 normal = new Vector3(record.SurfaceNormal);
+
+            float n1, n2;
+            float cosI = Vector3.Dot(normal, incident);
+            if (cosI < 0)
+            {
+                //Material to Air
+                n1 = record.Material.RefractionIndex;
+                n2 = Refractions.AIR;
+                normal = -normal;
+                cosI = Vector3.Dot(normal, incident);
+            }
+            else
+            {
+                //Air to Material
+                n1 = Refractions.AIR;
+                n2 = record.Material.RefractionIndex;
+
+            }
+
+            double n = n1 / n2;
+            double sinT2 = n * n * (1.0 - cosI * cosI);
+
+            if (sinT2 > 1.0) return 1.0f; //Total internal Reflection
+
+            double cosT = Math.Sqrt(1.0 - sinT2);
+            double rOrth = (n1 * cosI - n2 * cosT) / (n1 * cosI + n2 * cosT);
+            double rPar = (n2 * cosI - n1 * cosT) / (n2 * cosI + n1 * cosT);
+
+            return (float)(rOrth * rOrth + rPar * rPar) / 2.0f;
+
+        }
+        public abstract Color GetBrdf(Vector3 w_o, Vector3 w_i, HitRecord record);
+    }
 }

@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using RayTracer.Structs;
+using RayTracer.Samplers;
 
 namespace RayTracer.SceneGraph.Objects
 {
@@ -63,17 +64,12 @@ namespace RayTracer.SceneGraph.Objects
         #region unused
         public ILight Light { get; set; }
 
-        public Vector3 GetSamplePoint(float x, float y)
+        public Vector3 GetSamplePoint(LightSample sample)
         {
             throw new NotImplementedException();
         }
 
         public float GetArea()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Vector3 GetSampledNormal(float x, float y)
         {
             throw new NotImplementedException();
         }

@@ -67,7 +67,7 @@ namespace RayTracer.SceneGraph.Integrators
                         for (int i = 0; i < Constants.NumberOfLightSamples; i++)
                         {
                             LightSample sample = lightSamples[(int)(random.NextDouble() * lightSamples.Count)];
-
+                            lightSamples.Remove(sample);
                             light.Sample(record, sample);
                             if (IsVisible(record, sample) && sample.LightColor.Power > 0)
                             {
