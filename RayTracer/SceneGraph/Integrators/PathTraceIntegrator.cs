@@ -195,9 +195,9 @@ namespace RayTracer.SceneGraph.Integrators
             float x = (float)(Math.Cos(2 * Math.PI * eps2) * Math.Sqrt(eps1));
             float y = (float)(Math.Sin(2 * Math.PI * eps2) * Math.Sqrt(eps1));
             float z = (float)(Math.Sqrt(1 - eps1));
-            if (z < 0)
+            /*if (z < 0)
                 z = -z;
-
+            */
             Vector3 direction = new Vector3(x, y, z);
             
             Vector3 tangentBase = normal.Equals(new Vector3(0, 0, 1)) ? new Vector3(0, 1, 0) : new Vector3(0, 0, 1);
@@ -217,7 +217,7 @@ namespace RayTracer.SceneGraph.Integrators
                 R2C1 = zBase.Y,
                 R2C2 = zBase.Z,
             };
-            //Matrix3.Transform(ref mat,ref direction);
+            Matrix3.Transform(ref mat,ref direction);
             return direction;
 
         }

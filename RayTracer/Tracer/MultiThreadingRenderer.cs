@@ -1,6 +1,7 @@
 ﻿using RayTracer.Helper;
 using RayTracer.Samplers;
 using RayTracer.SceneGraph;
+using RayTracer.SceneGraph.Cameras;
 using RayTracer.SceneGraph.Integrators;
 using RayTracer.SceneGraph.Light;
 using RayTracer.SceneGraph.Objects;
@@ -17,7 +18,7 @@ namespace RayTracer.Tracer
     public class MultiThreadingRenderer
     {
         private readonly int threadId;
-        private readonly Camera camera;
+        private readonly ICamera camera;
         private readonly IIntegrator integrator;
         private readonly Film film;
         private readonly ISampler sampler;
@@ -26,10 +27,10 @@ namespace RayTracer.Tracer
 
 
         public event EventHandler ThreadDone;
-        public MultiThreadingRenderer(int i, Aggregate objects,List<ILight> lights , Camera camera,Film film)
+        public MultiThreadingRenderer(int i, Aggregate objects, List<ILight> lights, ICamera camera, Film film)
         {
             threadId = i;
-            this.camera = camera;
+            this.camera = camera.Clone();
             this.integrator = (IIntegrator)Activator.CreateInstance(Constants.Integrator);
             this.film = film;
             this.sampler = (ISampler)Activator.CreateInstance(Constants.Sampler);
@@ -48,8 +49,22 @@ namespace RayTracer.Tracer
                         Color c = new Color(0, 0, 0);
                         foreach (Sample sample in samples)
                         {
-                            Ray ray = camera.CreateRay(i + sample.X, j + sample.Y);
-                            c.Append(integrator.Integrate(ray,objects,lights,sampler));
+                            if (Constants.IsDepthOfFieldCamera)
+                            {
+                                for (int p = 0; p < 25; p++)
+                                {
+                                    Color tmp = new Color(0,0,0);
+                                    Ray ray = camera.CreateRay(i + sample.X, j + sample.Y);
+                                    tmp.Append(integrator.Integrate(ray, objects, lights, sampler));
+                                    //tmp.VoidDiv(25);
+                                    c.Append(tmp);
+                                }
+                            }
+                            else
+                            {
+                                Ray ray = camera.CreateRay(i + sample.X, j + sample.Y);
+                                c.Append(integrator.Integrate(ray, objects, lights, sampler));                             
+                            }
                         }
                         c.VoidDiv(samples.Count);
                         film.SetPixel(i, j, c);

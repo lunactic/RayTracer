@@ -50,7 +50,7 @@ namespace RayTracer.SceneGraph.Objects
             }
             for (int j = 0; j < indices.Length; j += 3)
             {
-                Triangles.Add(new Triangle(new Vector3(Vertices[indices[j]][0], Vertices[indices[j]][1], Vertices[indices[j]][2]),
+                Triangles.Add(new Triangle(new Vector3(Vertices[indices[j    ]][0], Vertices[indices[j    ]][1], Vertices[indices[j    ]][2]),
                                            new Vector3(Vertices[indices[j + 1]][0], Vertices[indices[j + 1]][1], Vertices[indices[j + 1]][2]),
                                            new Vector3(Vertices[indices[j + 2]][0], Vertices[indices[j + 2]][1], Vertices[indices[j + 2]][2])) { Material = material });
             }

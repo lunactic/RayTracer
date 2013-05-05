@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using RayTracer.Structs;
 
-namespace RayTracer.SceneGraph
+namespace RayTracer.SceneGraph.Cameras
 {
-    public class Camera
+    public class PinholeCamera : ICamera
     {
         #region Properties
         public Vector4 Up { get; set; }
@@ -33,7 +33,7 @@ namespace RayTracer.SceneGraph
         #endregion
 
 
-        public Camera()
+        public PinholeCamera()
         {
           
         }
@@ -83,6 +83,22 @@ namespace RayTracer.SceneGraph
 
 
             return new Ray(Eye, direction);
+        }
+
+        public ICamera Clone()
+        {
+            PinholeCamera clone = new PinholeCamera()
+            {
+                Up = Up,
+                Eye = Eye,
+                LookAt = LookAt,
+                FieldOfView = (float)(FieldOfView/2 / Math.PI * 180f),
+                ScreenHeight = ScreenHeight,
+                ScreenWidth = ScreenWidth,
+                
+            };
+            clone.PreProcess();
+            return clone;
         }
     }
 }

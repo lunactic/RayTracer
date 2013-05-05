@@ -1,4 +1,5 @@
 ﻿using RayTracer.Helper;
+using RayTracer.SceneGraph.Cameras;
 using RayTracer.SceneGraph.Integrators;
 using RayTracer.SceneGraph.Light;
 using RayTracer.SceneGraph.Materials;
@@ -19,15 +20,14 @@ namespace RayTracer.SceneGraph.Scenes
             FileName = "Assignment1_Basic.jpg";
             //scene = new Scene { BackgroundColor = Color.Black };
             Integrator = (IIntegrator)Activator.CreateInstance(Constants.Integrator);
-            Camera = new Camera
-            {
-                FieldOfView = 60f,
-                ScreenWidth = 512,
-                ScreenHeight = 512,
-                Eye = new Vector4(0, 0, -2, 1),
-                Up = new Vector4(0, 1, 0, 1),
-                LookAt = new Vector4(0, 0, 0, 1)
-            };
+
+            Camera.FieldOfView = 60f;
+            Camera.ScreenWidth = 512;
+            Camera.ScreenHeight = 512;
+            Camera.Eye = new Vector4(0, 0, -2, 1);
+            Camera.Up = new Vector4(0, 1, 0, 1);
+            Camera.LookAt = new Vector4(0, 0, 0, 1);
+            
             Camera.PreProcess();
 
             Film = new Film(Camera.ScreenWidth, Camera.ScreenHeight);

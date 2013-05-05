@@ -1,4 +1,5 @@
-﻿using RayTracer.SceneGraph.Integrators;
+﻿using RayTracer.SceneGraph.Cameras;
+using RayTracer.SceneGraph.Integrators;
 using RayTracer.SceneGraph.Light;
 using RayTracer.SceneGraph.Materials;
 using RayTracer.SceneGraph.Objects;
@@ -21,7 +22,7 @@ namespace RayTracer.SceneGraph.Scenes
 
 
             // Make camera and film
-            Camera = new Camera()
+            Camera = new PinholeCamera()
             {
                 Eye = new Vector4(278f, 273f, -800f, 1f),
                 LookAt = new Vector4(278f, 273f, 0f, 1f),

@@ -117,6 +117,10 @@
     <None Include="geometries\cbox\meshes\plane.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="geometries\collada\model.dae">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="geometries\Cornell_box.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -125,6 +129,10 @@
     </None>
     <None Include="geometries\dragon.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="geometries\collada\lattice_10_3_b.dae">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
     <None Include="geometries\short_box.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -140,6 +148,8 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Collada\ColladaParser.cs" />
+    <Compile Include="Collada\collada_schema_1_4.cs" />
     <Compile Include="Helper\ObjReader.cs" />
     <Compile Include="Helper\Randomizer.cs" />
     <Compile Include="Helper\Refractions.cs" />
@@ -152,7 +162,9 @@
     <Compile Include="SceneGraph\Accelerate\BspAccelerator.cs" />
     <Compile Include="SceneGraph\Accelerate\BSPNode.cs" />
     <Compile Include="SceneGraph\Accelerate\BspStackItem.cs" />
-    <Compile Include="SceneGraph\Camera.cs" />
+    <Compile Include="SceneGraph\Cameras\DepthOfFieldCamera.cs" />
+    <Compile Include="SceneGraph\Cameras\ICamera.cs" />
+    <Compile Include="SceneGraph\Cameras\PinholeCamera.cs" />
     <Compile Include="SceneGraph\Film.cs" />
     <Compile Include="SceneGraph\HitRecord.cs" />
     <Compile Include="SceneGraph\Integrators\BinaryIntegrator.cs" />
@@ -184,6 +196,7 @@
     <Compile Include="SceneGraph\Objects\Triangle.cs" />
     <Compile Include="SceneGraph\Ray.cs" />
     <Compile Include="SceneGraph\Scenes\BasicScene.cs" />
+    <Compile Include="SceneGraph\Scenes\ColladaScene.cs" />
     <Compile Include="SceneGraph\Scenes\CornellBox.cs" />
     <Compile Include="SceneGraph\Scenes\CornellObjScene.cs" />
     <Compile Include="SceneGraph\Scenes\CornellSphere.cs" />
@@ -205,6 +218,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5">

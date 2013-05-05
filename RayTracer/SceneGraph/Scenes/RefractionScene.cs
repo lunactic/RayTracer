@@ -13,11 +13,11 @@ using RayTracer.Structs;
 
 namespace RayTracer.SceneGraph.Scenes
 {
-    public class MirrorScene : Scene
+    public class RefractionScene : Scene
     {
-        public MirrorScene()
+        public RefractionScene()
         {
-            FileName = "Assignment1_Mirror.jpg";
+            FileName = "Assignment1_Refraction.jpg";
             Integrator = (IIntegrator)Activator.CreateInstance(Constants.Integrator);
             Camera = new PinholeCamera()
             {
@@ -33,10 +33,8 @@ namespace RayTracer.SceneGraph.Scenes
             Film = new Film(Camera.ScreenWidth, Camera.ScreenHeight);
 
             //List of objects
-            Sphere sphere = new Sphere(new BlinnPhongMaterial(new Color(0.8f,0,0), new Color(0.6f,0.6f,0.6f), 30f), new Vector3(0f, 0f, 0f), 0.2f);
-            //Sphere sphere = new Sphere(new LambertMaterial(new Color(0.8f, 0.8f, 0.8f)), new Vector3(0f, 0f, 0f), 0.2f);
-
-            Sphere sphere2 = new Sphere(new MirrorMaterial(0.8f), new Vector3(0.4f, 0.2f, -0.3f), .3f);
+            Sphere sphere1 = new Sphere(new RefractiveMaterial(1.5f), new Vector3(0f, 0f, 0f), 0.4f);
+            Sphere sphere2 = new Sphere(new BlinnPhongMaterial(new Color(0.8f, 0f, 0f), new Color(0.8f, 0.8f, 0.8f), 30f), new Vector3(0.4f, 0.2f, -0.3f), 0.3f);
             Plane p1 = new Plane(1f, new Vector3(0, 1, 0))
             {
                 Name = "P1",
@@ -64,14 +62,9 @@ namespace RayTracer.SceneGraph.Scenes
                 Material = new LambertMaterial(new Color(0.8f, 0.8f, 0.8f))
             };
 
-            Rectangle rect = new Rectangle(new Vector3(-0.2f, .99f, 0f), new Vector3(.5f, 0, 0), new Vector3(0, 0, 0.5f))
-            {
-                Material = new LambertMaterial(new Color(0, 0, 1))
-            };
             Objects = new IntersectableList();
-            
-            Objects.Add(rect);
-            Objects.Add(sphere);
+
+            Objects.Add(sphere1);
             Objects.Add(sphere2);
             Objects.Add(p1);
             Objects.Add(p2);
@@ -80,12 +73,12 @@ namespace RayTracer.SceneGraph.Scenes
             Objects.Add(p5);
 
             Lights = new List<ILight>();
-            ILight light = new PointLight(new Vector3(0.0f, 0.8f, 0.8f), new Color(0.7f, 0.7f, 0.7f));
-            ILight light2 = new PointLight(new Vector3(-0.8f, 0.2f, 0.0f), new Color(.5f, .5f, .5f));
-            ILight light3 = new AreaLight(new Color(12, 12, 12), rect);
-            Lights.Add(light3);
-            //Lights.Add(light2);
-            //Lights.Add(light);
+
+            ILight light1 = new PointLight(new Vector3(0.0f, 0.8f, 0.8f), new Color(0.7f, 0.7f, 0.7f));
+            ILight light2 = new PointLight(new Vector3(-0.8f, 0.2f, 0f), new Color(0.5f, 0.5f, 0.5f));
+            Lights.Add(light1);
+            Lights.Add(light2);    
+
         }
     }
 }

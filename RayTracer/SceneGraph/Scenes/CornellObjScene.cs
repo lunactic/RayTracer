@@ -1,4 +1,5 @@
 ﻿using RayTracer.Helper;
+using RayTracer.SceneGraph.Cameras;
 using RayTracer.SceneGraph.Integrators;
 using RayTracer.SceneGraph.Light;
 using RayTracer.SceneGraph.Materials;
@@ -18,8 +19,8 @@ namespace RayTracer.SceneGraph.Scenes
         {
             FileName = "Assignment3_CornellBox.jpg";
             Integrator = (IIntegrator)Activator.CreateInstance(Constants.Integrator);
-   
-            Camera = new Camera
+
+            Camera = new PinholeCamera()
             {
                 FieldOfView = 39.3077f,
                 ScreenWidth = 512,

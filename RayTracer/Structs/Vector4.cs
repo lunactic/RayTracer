@@ -149,6 +149,7 @@ namespace RayTracer.Structs
             return vec;
         }
         #endregion
+
         #region Add
         public static Vector4 operator +(Vector4 left, Vector4 right)
         {
@@ -160,6 +161,28 @@ namespace RayTracer.Structs
         }
         #endregion
 
+        #region Multiply
+
+        public static Vector4 Multiply(Vector4 vector, float scale)
+        {
+            Multiply(ref vector, scale, out vector);
+            return vector;
+        }
+
+        public static void Multiply(ref Vector4 vector, float scale, out Vector4 result)
+        {
+            result = new Vector4(vector.X * scale, vector.Y * scale, vector.Z * scale, vector.W * scale);
+        }
+        public static Vector4 Multiply(Vector4 vector, Vector4 scale)
+        {
+            Multiply(ref vector, ref scale, out vector);
+            return vector;
+        }
+        public static void Multiply(ref Vector4 vector, ref Vector4 scale, out Vector4 result)
+        {
+            result = new Vector4(vector.X * scale.X, vector.Y * scale.Y, vector.Z * scale.Z, vector.W * scale.W);
+        }
+        #endregion
         #region Normalize
         /// <summary>
         /// Scales the Vector3 to unit length.
