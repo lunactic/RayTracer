@@ -144,7 +144,6 @@ namespace RayTracer.SceneGraph.Objects
 
         }
 
-
         public Vector3 GetSamplePoint(LightSample sample)
         {
             float sqrtX = (float)Math.Sqrt(sample.X);

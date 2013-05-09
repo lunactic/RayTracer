@@ -7,6 +7,7 @@ using RayTracer.Samplers;
 using RayTracer.SceneGraph.Cameras;
 using RayTracer.SceneGraph.Integrators;
 using RayTracer.SceneGraph.Scenes;
+using RayTracer.Tracer;
 
 public enum SampleType
 {
@@ -22,7 +23,7 @@ namespace RayTracer.Helper
         //Recursion for RayTracing
         public static readonly int MaximumRecursionDepth = 3;
         //Path Length for Path Tracing
-        public static readonly int MaximalPathLength = 4;
+        public static readonly int MaximalPathLength = 5;
         
         public static readonly bool IsLightSamplingOn = true;
         public static readonly bool IsSamplingOn = true;
@@ -30,15 +31,24 @@ namespace RayTracer.Helper
 
 
         public static readonly int NumberOfLightSamples = 1;
-        public static readonly int NumberOfSamples = 10;
+        public static readonly int NumberOfSamples = 200;
         public static int NumberOfThreads = 8;
 
-        
+        /*
         public static Type Sampler = typeof (StratifiedSampler);
-        public static Type SceneIndex = typeof(ColladaScene);
-        public static Type Integrator = typeof (RefractionIntegrator);
+        public static Type SceneIndex = typeof(DepthOfFieldScene);
+        public static Type Integrator = typeof (BinaryIntegrator);
         public static Type Camera = typeof (PinholeCamera);
+        public static Type RayTracer = typeof(BasicRayTracer);
+        */
 
+        //PATHTRACE
+        public static Type Sampler = typeof (StratifiedSampler);
+        public static Type SceneIndex = typeof(MirrorScene);
+        public static Type Integrator = typeof (PathTraceIntegrator);
+        public static Type Camera = typeof (PinholeCamera);
+        public static Type RayTracer = typeof(BasicRayTracer);
+        
         public static SampleType SampleType = SampleType.Uniform;
 
     }

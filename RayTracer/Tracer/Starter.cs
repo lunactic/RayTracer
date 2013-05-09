@@ -17,7 +17,7 @@ namespace RayTracer.Tracer
             scene = (Scene)Activator.CreateInstance(Constants.SceneIndex);
 
             //Create the RayTracer setup you want to use here
-            RayTracer tracer = new RayTracer(scene);
+            IRayTracer tracer = (IRayTracer)Activator.CreateInstance(Constants.RayTracer, scene);
             tracer.Render();
         }
     }

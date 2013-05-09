@@ -22,7 +22,8 @@ namespace RayTracer.SceneGraph.Scenes
 
             Camera = new PinholeCamera()
             {
-                FieldOfView = 39.3077f,
+                FieldOfViewX = 39.3077f,
+                FieldOfViewY = 39.3077f,
                 ScreenWidth = 512,
                 ScreenHeight = 512,
                 Eye = new Vector4(278, 273, -800, 1),

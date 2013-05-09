@@ -40,6 +40,5 @@ namespace RayTracer.Samplers
         {
             return lightSamples;
         }
-
     }
 }

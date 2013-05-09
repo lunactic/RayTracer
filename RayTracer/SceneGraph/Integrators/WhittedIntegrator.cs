@@ -17,7 +17,7 @@ namespace RayTracer.SceneGraph.Integrators
  
         private ShadowIntegrator shadowIntegrator;
 
-        public Color Integrate(Ray ray, IIntersectable objects, List<ILight> lights, ISampler sampler)
+        public Color Integrate(Ray ray, IIntersectable objects, List<ILight> lights, ISampler sampler,List<List<Sample>> subPathSamples)
         {
             shadowIntegrator = new ShadowIntegrator();
             Color returnColor = new Color(0,0,0);
@@ -27,20 +27,20 @@ namespace RayTracer.SceneGraph.Integrators
             {
                 if (!(record.Material is MirrorMaterial))
                 {
-                    returnColor.Append(shadowIntegrator.Integrate(ray, objects,lights,sampler));
+                    returnColor.Append(shadowIntegrator.Integrate(ray, objects,lights,sampler,subPathSamples));
                 }
                 if (record.Material is MirrorMaterial && record.Material.Specular.R > 0 && record.Material.Specular.G > 0 && record.Material.Specular.B > 0)
-                    returnColor.Append(Reflection(ray, record, 0, returnColor, objects,lights, sampler));
+                    returnColor.Append(Reflection(ray, record, 0, returnColor, objects,lights, sampler,subPathSamples));
             }
 
             return returnColor;
         }
 
-        private Color Reflection(Ray ray, HitRecord record, int noOfBounce, Color color, IIntersectable objects,List<ILight>lights ,ISampler sampler)
+        private Color Reflection(Ray ray, HitRecord record, int noOfBounce, Color color, IIntersectable objects, List<ILight> lights, ISampler sampler, List<List<Sample>> subPathSamples)
         {
             Color ks = record.Material.Specular;
             if (noOfBounce == Constants.MaximumRecursionDepth)
-                return shadowIntegrator.Integrate(ray,objects,lights, sampler).Mult(ks);
+                return shadowIntegrator.Integrate(ray, objects, lights, sampler, subPathSamples).Mult(ks);
 
             Ray reflectedRay = record.CreateReflectedRay();
             HitRecord reflectRecord = objects.Intersect(reflectedRay);
@@ -48,13 +48,13 @@ namespace RayTracer.SceneGraph.Integrators
             {
                 if (reflectRecord.Material is MirrorMaterial)
                 {
-                    Color c = Reflection(reflectedRay, reflectRecord, ++noOfBounce, color, objects,lights, sampler);
-                    c.Append(shadowIntegrator.Integrate(reflectedRay, objects,lights, sampler).Mult(ks));
+                    Color c = Reflection(reflectedRay, reflectRecord, ++noOfBounce, color, objects, lights, sampler, subPathSamples);
+                    c.Append(shadowIntegrator.Integrate(reflectedRay, objects, lights, sampler, subPathSamples).Mult(ks));
                     return c;
                 }
                 else
                 {
-                    return shadowIntegrator.Integrate(reflectedRay, objects,lights, sampler).Mult(ks);
+                    return shadowIntegrator.Integrate(reflectedRay, objects, lights, sampler, subPathSamples).Mult(ks);
                 }
             }
             return color;

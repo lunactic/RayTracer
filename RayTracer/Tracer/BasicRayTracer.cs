@@ -13,16 +13,17 @@ using RayTracer.Structs;
 using RayTracer.SceneGraph.Objects;
 using RayTracer.SceneGraph.Materials;
 using RayTracer.SceneGraph.Light;
+using RayTracer.SceneGraph.Integrators;
 
 namespace RayTracer.Tracer
 {
-    public class RayTracer
+    public class BasicRayTracer : IRayTracer
     {
         private Scene scene;
         private Stopwatch stopwatch;
         private int finishedThreads;
 
-        public RayTracer(Scene scene)
+        public BasicRayTracer(Scene scene)
         {
             this.scene = scene;
         }
@@ -35,7 +36,15 @@ namespace RayTracer.Tracer
             {
 
                 stopwatch.Start();
-                ISampler sampler =  (ISampler)Activator.CreateInstance(Constants.Sampler);
+                ISampler sampler = (ISampler)Activator.CreateInstance(Constants.Sampler);
+                List<List<Sample>> subPathSamples = new List<List<Sample>>();
+                if (scene.Integrator is PathTraceIntegrator)
+                {
+                    for (int s = 0; s < Constants.MaximalPathLength; s++)
+                    {
+                        subPathSamples.Add(sampler.CreateSamples());
+                    }
+                }
                 if (Constants.IsSamplingOn && Constants.NumberOfSamples > 0)
                 {
                     Console.WriteLine("Using Supersampling with: " + Constants.NumberOfSamples + " samples!");
@@ -49,7 +58,7 @@ namespace RayTracer.Tracer
                             foreach (Sample sample in samples)
                             {
                                 Ray ray = scene.Camera.CreateRay(i + sample.X, j + sample.Y);
-                                c.Append(scene.Integrator.Integrate(ray, scene.Objects, scene.Lights, sampler));
+                                c.Append(scene.Integrator.Integrate(ray, scene.Objects, scene.Lights, sampler, subPathSamples));
                             }
                             c.VoidDiv(samples.Count);
                             scene.Film.SetPixel(i, j, c);
@@ -63,7 +72,7 @@ namespace RayTracer.Tracer
                         for (int j = 0; j < scene.Film.Height; j++)
                         {
                             Ray ray = scene.Camera.CreateRay(i, j);
-                            Color color = scene.Integrator.Integrate(ray, scene.Objects, scene.Lights,sampler);
+                            Color color = scene.Integrator.Integrate(ray, scene.Objects, scene.Lights, sampler, subPathSamples);
                             scene.Film.SetPixel(i, j, color);
                         }
                     }
@@ -97,7 +106,7 @@ namespace RayTracer.Tracer
                     for (int i = 0; i < Constants.NumberOfThreads; i++)
                     {
                         MultiThreadingRenderer renderer = new MultiThreadingRenderer(i, scene.Objects, scene.Lights,
-                                                                                     scene.Camera, 
+                                                                                     scene.Camera,
                                                                                      scene.Film);
                         renderer.ThreadDone += HandleThreadDone;
                         Thread t = new Thread(renderer.Render);

@@ -50,9 +50,39 @@ namespace RayTracer.SceneGraph.Objects
             }
             for (int j = 0; j < indices.Length; j += 3)
             {
-                Triangles.Add(new Triangle(new Vector3(Vertices[indices[j    ]][0], Vertices[indices[j    ]][1], Vertices[indices[j    ]][2]),
-                                           new Vector3(Vertices[indices[j + 1]][0], Vertices[indices[j + 1]][1], Vertices[indices[j + 1]][2]),
-                                           new Vector3(Vertices[indices[j + 2]][0], Vertices[indices[j + 2]][1], Vertices[indices[j + 2]][2])) { Material = material });
+                Triangle t =
+                    new Triangle(new Vector3(Vertices[indices[j]][0], Vertices[indices[j]][1], Vertices[indices[j]][2]),
+                                 new Vector3(Vertices[indices[j + 1]][0], Vertices[indices[j + 1]][1],
+                                             Vertices[indices[j + 1]][2]),
+                                 new Vector3(Vertices[indices[j + 2]][0], Vertices[indices[j + 2]][1],
+                                             Vertices[indices[j + 2]][2])) { Material = material };
+                t.BuildBoundingBox();
+
+                Triangles.Add(t);
+            }
+            BuildBoundingBox();
+        }
+
+        public Mesh(float[] vertices, int[] vertexIndices, float[] normals, int[] normalIndices, Material material)
+        {
+            Triangles = new List<Triangle>();
+            BoundingBox = new AxisAlignedBoundingBox();
+            Material = material;
+
+            for (int i = 0; i < vertexIndices.Length; i += 3)
+            {
+                Vector3 p1 = new Vector3(vertices[vertexIndices[i] * 3], vertices[vertexIndices[i] * 3 + 1], vertices[vertexIndices[i] * 3 + 2]);
+                Vector3 p2 = new Vector3(vertices[vertexIndices[i + 1] * 3], vertices[vertexIndices[i + 1] * 3 + 1], vertices[vertexIndices[i + 1] * 3 + 2]);
+                Vector3 p3 = new Vector3(vertices[vertexIndices[i + 2] * 3], vertices[vertexIndices[i + 2] * 3 + 1], vertices[vertexIndices[i + 2] * 3 + 2]);
+
+                Vector3 n1 = new Vector3(normals[normalIndices[i] * 3], normals[normalIndices[i] * 3 + 1], normals[normalIndices[i] * 3 + 2]);
+                Vector3 n2 = new Vector3(normals[normalIndices[i + 1] * 3], normals[normalIndices[i + 1] * 3 + 1], normals[normalIndices[i + 1] * 3 + 2]);
+                Vector3 n3 = new Vector3(normals[normalIndices[i + 2] * 3], normals[normalIndices[i + 2] * 3 + 1], normals[normalIndices[i + 2] * 3 + 2]);
+
+
+                Triangle t = new Triangle(p1, n1, p2, n2, p3, n3) {Material = material};
+                t.BuildBoundingBox();
+                Triangles.Add(t);
             }
             BuildBoundingBox();
         }

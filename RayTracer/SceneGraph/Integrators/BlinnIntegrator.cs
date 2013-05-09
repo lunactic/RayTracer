@@ -13,7 +13,7 @@ namespace RayTracer.SceneGraph.Integrators
 {
     public class BlinnIntegrator : IIntegrator
     {
-        public Color Integrate(Ray ray, IIntersectable objects, List<ILight> lights, ISampler sampler)
+        public Color Integrate(Ray ray, IIntersectable objects, List<ILight> lights, ISampler sampler,List<List<Sample>> subPathSamples)
         {
             Color returnColor = new Color(0,0,0);
             /*

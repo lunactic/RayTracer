@@ -21,7 +21,8 @@ namespace RayTracer.SceneGraph.Scenes
             Integrator = (IIntegrator)Activator.CreateInstance(Constants.Integrator);
             Camera = new PinholeCamera()
             {
-                FieldOfView = 60f,
+                FieldOfViewX = 30f,
+                FieldOfViewY = 30f,
                 ScreenWidth = 512,
                 ScreenHeight = 512,
                 Eye = new Vector4(0, 0, 2, 1),

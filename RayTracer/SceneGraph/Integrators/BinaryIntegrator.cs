@@ -14,7 +14,7 @@ namespace RayTracer.SceneGraph.Integrators
     public class BinaryIntegrator : IIntegrator
     {
 
-        public Color Integrate(Ray ray, IIntersectable objects, List<ILight> lights, ISampler sampler)
+        public Color Integrate(Ray ray, IIntersectable objects, List<ILight> lights, ISampler sampler, List<List<Sample>> subPathSamples)
         {
             HitRecord record = objects.Intersect(ray);
             if (record != null)

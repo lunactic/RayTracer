@@ -11,6 +11,7 @@
     <AssemblyName>RayTracer</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -23,7 +24,6 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -134,6 +134,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </None>
+    <None Include="geometries\collada\Shadow_Scene_test.dae">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="geometries\short_box.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -149,7 +152,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Collada\ColladaParser.cs" />
-    <Compile Include="Collada\collada_schema_1_4.cs" />
     <Compile Include="Helper\ObjReader.cs" />
     <Compile Include="Helper\Randomizer.cs" />
     <Compile Include="Helper\Refractions.cs" />
@@ -200,6 +202,7 @@
     <Compile Include="SceneGraph\Scenes\CornellBox.cs" />
     <Compile Include="SceneGraph\Scenes\CornellObjScene.cs" />
     <Compile Include="SceneGraph\Scenes\CornellSphere.cs" />
+    <Compile Include="SceneGraph\Scenes\DepthOfFieldScene.cs" />
     <Compile Include="SceneGraph\Scenes\MirrorScene.cs" />
     <Compile Include="SceneGraph\Scenes\RefractionScene.cs" />
     <Compile Include="SceneGraph\Scenes\Scene.cs" />
@@ -211,14 +214,17 @@
     <Compile Include="Structs\Matrix4.cs" />
     <Compile Include="Structs\Vector3.cs" />
     <Compile Include="Structs\Vector4.cs" />
+    <Compile Include="Tracer\IRayTracer.cs" />
     <Compile Include="Tracer\MultiThreadingRenderer.cs" />
-    <Compile Include="Tracer\RayTracer.cs" />
+    <Compile Include="Tracer\BasicRayTracer.cs" />
     <Compile Include="Tracer\Starter.cs" />
+    <Compile Include="Tracer\ThinLensRayTracer.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5">

@@ -18,23 +18,19 @@ namespace RayTracer.SceneGraph.Integrators
         private List<ILight> lights;
         private ISampler sampler;
         private readonly Random random = new Random();
-        public Color Integrate(Ray ray, IIntersectable objects, List<ILight> lights, ISampler sampler)
+        public Color Integrate(Ray ray, IIntersectable objects, List<ILight> lights, ISampler sampler, List<List<Sample>> subPathSamples )
         {
             scene = objects;
             this.lights = lights;
             this.sampler = sampler;
-            return PathTrace(ray);
+            return PathTrace(ray, subPathSamples);
         }
 
-        public Color PathTrace(Ray ray)
+        public Color PathTrace(Ray ray, List<List<Sample>> subPathSamples )
         {
             //Create new LightSamples for this Pixel
             List<LightSample> lightSamples = sampler.GetLightSamples();
-            List<Sample> directionSamples = sampler.CreateSamples();
-
-            Vector3 wo;
-            Vector3 wi;
-            Vector3 normal;
+           
             int depth = 0;
             Color pixelColor = new Color(0, 0, 0);
             Color alpha = new Color(1, 1, 1);
@@ -43,15 +39,12 @@ namespace RayTracer.SceneGraph.Integrators
             HitRecord record = scene.Intersect(ray);
             if (record == null)
                 return pixelColor;
-            
-            wo = record.RayDirection;            
-            normal = record.SurfaceNormal;
-
+      
             float oneMinusQk = 1;
             while (depth < Constants.MaximalPathLength)
             {
                 //Check if we hit a LightSource
-                if ((depth == 0 || isGeneratedFromRefraction) && record.HitObject.Light != null) return record.HitObject.Light.LightColor;
+                if ((depth == 0 || isGeneratedFromRefraction) && record.HitObject.Light != null) pixelColor.Append(record.HitObject.Light.LightColor);
 
                 //Select one light at random
                 ILight light = Randomizer.PickRandomLight(lights);
@@ -70,46 +63,39 @@ namespace RayTracer.SceneGraph.Integrators
                     if (random.NextDouble() > 0.5)
                         return pixelColor;
                 }
-
+                List<Sample> directionSamples = subPathSamples[depth];
                 //Create the next Ray
-                Vector3 direction = Vector3.Zero;
                 Sample directionSample = Randomizer.PickRandomSample(directionSamples);
                 if (record.Material is LambertMaterial || record.Material is BlinnPhongMaterial)
                 {
-                    direction = UniformHemisphereSample(directionSample.X, directionSample.Y, normal);
+                    Vector3 direction = UniformHemisphereSample(directionSample.X, directionSample.Y, record.SurfaceNormal);
+                    record = scene.Intersect(new Ray(record.IntersectionPoint, direction));
+                    if (record == null) break;
+                    alpha = alpha.Mult(record.Material.Diffuse.Div(oneMinusQk));
                 }
                 if (record.Material is MirrorMaterial)
                 {
+                    record = scene.Intersect(record.CreateReflectedRay());
                     isGeneratedFromRefraction = true;
-                    direction = record.CreateReflectedRay().Direction;
+                    
                 }
                 if (record.Material is RefractiveMaterial)
                 {
                     isGeneratedFromRefraction = true;
+                    float fresnel = Reflectance(record);
                     //Pick refraction / reflection path with p=0.5 each
-                    if (random.NextDouble() >= 0.5)
+                    if (random.NextDouble() < fresnel)
                     {
-                        direction = record.CreateReflectedRay().Direction;
-                        alpha.Mult(0.5f);
+                        record = scene.Intersect(record.CreateReflectedRay());
+                        alpha = alpha.Mult(fresnel);
                     }
                     else
                     {
-                        direction = record.CreateRefractedRay().Direction;
-                        alpha = alpha.Mult(0.5f);
+                        record = scene.Intersect(record.CreateRefractedRay());
+                        alpha = alpha.Mult(1-fresnel);
                     }
                 }
-                record = scene.Intersect(new Ray(record.IntersectionPoint, direction));
-
-                if (record == null)
-                    return pixelColor;
-
-                wi = record.RayDirection;
-                //Get BRDF
-                Color brdf = record.Material.GetBrdf(wo, wi, record);
-                float cos = Vector3.Dot(wi, normal);
-                float pW = (float)(cos / Math.PI);
-                alpha = (alpha.Mult(brdf).Mult(cos)).Div(pW * oneMinusQk);
-
+             
                 depth++;
             }
             return pixelColor;
@@ -123,18 +109,7 @@ namespace RayTracer.SceneGraph.Integrators
                 //Diffuse Shading
                 if (sample.LightColor.Power > 0 && IsVisible(record, sample))
                 {
-                    float cos = Vector3.Dot(sample.Wi, record.SurfaceNormal);
-                    pixelColor.Append(record.Material.Shade(record, sample.Wi).Mult(sample.LightColor).Mult(cos));
-                }
-            }
-
-            if (record.Material is MirrorMaterial || record.Material is RefractiveMaterial)
-            {
-                //Mirror Shading
-                if (sample.LightColor.Power > 0 && IsVisible(record, sample))
-                {
-                    float fresnel = Reflectance(record);
-                    pixelColor.Append(record.Material.Shade(record, sample.Wi).Mult(sample.LightColor).Mult(fresnel));
+                    pixelColor.Append(record.Material.Shade(record, sample.Wi).Mult(sample.LightColor));
                 }
             }
 

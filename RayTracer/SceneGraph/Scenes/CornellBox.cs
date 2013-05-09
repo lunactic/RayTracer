@@ -27,7 +27,8 @@ namespace RayTracer.SceneGraph.Scenes
                 Eye = new Vector4(278f, 273f, -800f, 1f),
                 LookAt = new Vector4(278f, 273f, 0f, 1f),
                 Up = new Vector4(0f, 1f, 0f, 1f),
-                FieldOfView = 38.5f,
+                FieldOfViewX = 38.5f,
+                FieldOfViewY = 38.5f,
                 ScreenHeight = 512,
                 ScreenWidth = 512
             };

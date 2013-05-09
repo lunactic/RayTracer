@@ -18,11 +18,12 @@ namespace RayTracer.SceneGraph.Scenes
         {
             FileName = "Assignment_Collada.jpg";
             ColladaParser parser = new ColladaParser();
-            parser.ParseColladaFile("./geometries/collada/model.dae");
+            parser.ParseColladaFile("./geometries/collada/Shadow_Scene_test.dae");
             Integrator = (IIntegrator)Activator.CreateInstance(Constants.Integrator);
-            Camera = new PinholeCamera()
+            /*Camera = new PinholeCamera()
             {
-                FieldOfView = 60f,
+                FieldOfViewX = 60f,
+                FieldOfViewY = 60f,
                 ScreenWidth = 128,
                 ScreenHeight = 128,
                 Eye = new Vector4(0, 0, -50, 1),
@@ -30,18 +31,23 @@ namespace RayTracer.SceneGraph.Scenes
                 LookAt = new Vector4(0, 0, 0, 1)
             };
             Camera.PreProcess();
-
-            Film = new Film(Camera.ScreenWidth, Camera.ScreenHeight);
-
+            */
+        
             Objects = new IntersectableList();
 
-            foreach (Mesh mesh in parser.Meshes)
+            foreach (IIntersectable intersectable in parser.Meshes.Values)
             {
-                Objects.Add(mesh);
+                Objects.Add(intersectable);
             }
 
+            foreach (ICamera camera in parser.Cameras.Values)
+            {
+                Camera = camera;
+            }
+            Film = new Film(Camera.ScreenWidth, Camera.ScreenHeight);
+
             Lights = new List<ILight>();
-            ILight light = new PointLight(new Vector3(0.0f, 10f, 10f), new Color(1,1,1));
+            ILight light = new DirectionalLight(new Vector3(0,0,0), new Color(1,1,1));
             Lights.Add(light);
         }
     }

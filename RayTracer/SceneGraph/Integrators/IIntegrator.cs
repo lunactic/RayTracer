@@ -9,7 +9,7 @@ namespace RayTracer.SceneGraph.Integrators
 {
     public interface IIntegrator
     {
-        Color Integrate(Ray ray, IIntersectable objects,List<ILight> lights , ISampler sampler);
+        Color Integrate(Ray ray, IIntersectable objects,List<ILight> lights , ISampler sampler, List<List<Sample>> subPathSamples );
 
     }
 }

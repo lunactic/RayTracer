@@ -14,7 +14,7 @@ namespace RayTracer.SceneGraph.Integrators
     public class ShadowIntegrator : IIntegrator
     {
 
-        public Color Integrate(Ray ray, IIntersectable objects, List<ILight> lights, ISampler sampler)
+        public Color Integrate(Ray ray, IIntersectable objects, List<ILight> lights, ISampler sampler, List<List<Sample>> subPathSamples)
         {
             HitRecord record = objects.Intersect(ray);
 
@@ -33,11 +33,12 @@ namespace RayTracer.SceneGraph.Integrators
                     HitRecord shadowHit = objects.Intersect(shadowRay);
                     Vector3 distance = Vector3.Subtract(light.Position, hitPos);
 
+                    //DEBUGGING
                     if (shadowHit != null && (shadowHit.Distance > distance.Length))
                     {
                         returnColor.Append(record.HitObject.Material.Shade(record, light.GetLightDirection(record.IntersectionPoint)).Mult(light.GetIncidentColor(record.IntersectionPoint)));
                     }
-
+                 
                 }
 
 

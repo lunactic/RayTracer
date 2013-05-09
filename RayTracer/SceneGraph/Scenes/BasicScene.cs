@@ -21,7 +21,8 @@ namespace RayTracer.SceneGraph.Scenes
             //scene = new Scene { BackgroundColor = Color.Black };
             Integrator = (IIntegrator)Activator.CreateInstance(Constants.Integrator);
 
-            Camera.FieldOfView = 60f;
+            Camera.FieldOfViewX = 30f;
+            Camera.FieldOfViewY = 30f;
             Camera.ScreenWidth = 512;
             Camera.ScreenHeight = 512;
             Camera.Eye = new Vector4(0, 0, -2, 1);
@@ -78,8 +79,8 @@ namespace RayTracer.SceneGraph.Scenes
 
             Lights = new List<ILight>();
 
-            //ILight light = new PointLight(new Vector3(0.0f, 0.8f, 0.8f), new Color(1,1,1));
-            ILight light = new AreaLight(new Color(10, 10, 10), rect);
+            ILight light = new PointLight(new Vector3(0.0f, 0.8f, 0.8f), new Color(1,1,1));
+            //ILight light = new AreaLight(new Color(10, 10, 10), rect);
      
             Lights.Add(light);
 

@@ -23,7 +23,7 @@ namespace RayTracer.Tracer
         private readonly Film film;
         private readonly ISampler sampler;
         private readonly Aggregate objects;
-        private readonly List<ILight> lights; 
+        private readonly List<ILight> lights;
 
 
         public event EventHandler ThreadDone;
@@ -43,6 +43,14 @@ namespace RayTracer.Tracer
             {
                 for (int j = threadId; j < camera.ScreenHeight; j += Constants.NumberOfThreads)
                 {
+                    List<List<Sample>> subPathSamples = new List<List<Sample>>();
+                    if (integrator is PathTraceIntegrator)
+                    {
+                        for (int s = 0; s < Constants.MaximalPathLength; s++)
+                        {
+                            subPathSamples.Add(sampler.CreateSamples());
+                        }
+                    }
                     if (Constants.IsSamplingOn)
                     {
                         List<Sample> samples = sampler.CreateSamples();
@@ -53,9 +61,9 @@ namespace RayTracer.Tracer
                             {
                                 for (int p = 0; p < 25; p++)
                                 {
-                                    Color tmp = new Color(0,0,0);
+                                    Color tmp = new Color(0, 0, 0);
                                     Ray ray = camera.CreateRay(i + sample.X, j + sample.Y);
-                                    tmp.Append(integrator.Integrate(ray, objects, lights, sampler));
+                                    tmp.Append(integrator.Integrate(ray, objects, lights, sampler, subPathSamples));
                                     //tmp.VoidDiv(25);
                                     c.Append(tmp);
                                 }
@@ -63,7 +71,7 @@ namespace RayTracer.Tracer
                             else
                             {
                                 Ray ray = camera.CreateRay(i + sample.X, j + sample.Y);
-                                c.Append(integrator.Integrate(ray, objects, lights, sampler));                             
+                                c.Append(integrator.Integrate(ray, objects, lights, sampler, subPathSamples));
                             }
                         }
                         c.VoidDiv(samples.Count);
@@ -72,7 +80,7 @@ namespace RayTracer.Tracer
                     else
                     {
                         Ray ray = camera.CreateRay(i, j);
-                        Color color = integrator.Integrate(ray,objects,lights,sampler);
+                        Color color = integrator.Integrate(ray, objects, lights, sampler, subPathSamples);
                         film.SetPixel(i, j, color);
                     }
 
