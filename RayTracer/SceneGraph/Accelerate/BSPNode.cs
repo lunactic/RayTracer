@@ -82,12 +82,14 @@ namespace RayTracer.SceneGraph.Accelerate
                 RightNode = new BspNode();
                 foreach (IIntersectable intersectable in Intersectables.GetObjects())
                 {
-                    if (intersectable.BoundingBox.Intersect(leftBb)) leftIntersectables.Intersectables.Add(intersectable);
-                    if (intersectable.BoundingBox.Intersect(rightBb)) rightIntersectables.Intersectables.Add(intersectable);
+                    if (intersectable.BoundingBox.Intersect(leftBb)) leftIntersectables.Add(intersectable);
+                    if (intersectable.BoundingBox.Intersect(rightBb)) rightIntersectables.Add(intersectable);
 
                 }
-                LeftNode.BuildSubTree(leftIntersectables, leftBb, maxTreeDepth, currentTreeDetph + 1);
-                RightNode.BuildSubTree(rightIntersectables, rightBb, maxTreeDepth, currentTreeDetph + 1);
+                if(leftIntersectables.Intersectables != null)
+                    LeftNode.BuildSubTree(leftIntersectables, leftBb, maxTreeDepth, currentTreeDetph + 1);
+                if(rightIntersectables.Intersectables != null)
+                    RightNode.BuildSubTree(rightIntersectables, rightBb, maxTreeDepth, currentTreeDetph + 1);
                 Intersectables = null; //Clear up the intersectables in non leaf nodes to save space
             }
         }

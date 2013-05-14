@@ -20,8 +20,7 @@ namespace RayTracer.Structs
         /// The blue component
         /// </summary>
         public float B;
-
-
+     
         public float Power
         {
             get
@@ -57,6 +56,13 @@ namespace RayTracer.Structs
             R = r;
             G = g;
             B = b;
+        }
+
+        public Color(System.Drawing.Color color)
+        {
+            R = color.R/255f;
+            G = color.G/255f;
+            B = color.B/255f;
         }
 
         public void Append(Color c)

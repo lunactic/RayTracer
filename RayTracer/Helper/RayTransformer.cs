@@ -28,6 +28,8 @@ namespace RayTracer.SceneGraph.Objects
             record.IntersectionPoint = worldIntersectionPoint;
             record.SurfaceNormal = worldNormal;
             record.RayDirection = worldRayDir;
+
+            
         }
 
         public static Ray TransformRayToObject(Ray ray, Matrix4 invTransformationMatrix)

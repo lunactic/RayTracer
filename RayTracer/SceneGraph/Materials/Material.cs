@@ -1,5 +1,6 @@
 ﻿using RayTracer.Helper;
 using RayTracer.SceneGraph.Light;
+using RayTracer.SceneGraph.Objects;
 using RayTracer.Structs;
 using System;
 using System.Collections.Generic;
@@ -17,6 +18,8 @@ namespace RayTracer.SceneGraph.Materials
         public float Shininess { get; set; }
         public float RefractionIndex { get; set; }
         public float Ks { get; set; }
+
+        public Texture Texture { get; set; }
 
         public Material()
         {
@@ -42,8 +45,19 @@ namespace RayTracer.SceneGraph.Materials
 
             if (nDotL > 0)
             {
+                Color diffuse;
+
+                if (Constants.TextureMapping && record.Material.Texture != null && !(record.HitObject is Plane))
+                {
+                    diffuse = Texture.GetColorFromTexCoordinate(record.HitObject.GetTextudeCoordinates(record));
+                }
+                else
+                {
+                    diffuse = Diffuse;
+                }
+
                 //add Diffuse Light
-                pixelColor.Append(Diffuse.Mult(nDotL));
+                pixelColor.Append(diffuse.Mult(nDotL));
                 //Calculate the Blinn halfVector
                 Vector3 h = lightDirection - rayDirection;
                 h.Normalize();
@@ -96,6 +110,7 @@ namespace RayTracer.SceneGraph.Materials
             return (float)(rOrth * rOrth + rPar * rPar) / 2.0f;
 
         }
+
         public abstract Color GetBrdf(Vector3 w_o, Vector3 w_i, HitRecord record);
     }
 }

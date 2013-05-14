@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using RayTracer.SceneGraph.Materials;
 using RayTracer.SceneGraph.Light;
 using RayTracer.Samplers;
+using RayTracer.Helper;
 
 namespace RayTracer.SceneGraph.Objects
 {
@@ -84,8 +85,8 @@ namespace RayTracer.SceneGraph.Objects
                 return null;
 
             Vector3 hitPoint = ray.Origin + (ray.Direction * t);
-            return new HitRecord(t, hitPoint, GetNormal(hitPoint), this, Material, ray.Direction);
 
+            return new HitRecord(t, hitPoint, GetNormal(hitPoint), this, Material, ray.Direction);
 
         }
 
@@ -115,5 +116,19 @@ namespace RayTracer.SceneGraph.Objects
             return 0f;
         }
 
+
+
+        public Vector2 GetTextudeCoordinates(HitRecord record)
+        {
+            //Calculate TextureCoordinates
+            double theta = Math.Acos((record.IntersectionPoint.Y - Center.Y) / Radius);
+            double phi = Math.Atan2(record.IntersectionPoint.Z - Center.Y, record.IntersectionPoint.X - Center.X);
+            phi = (phi < 0 ? phi + 2 * Math.PI : phi);
+            double u = 1 - (phi / (2 * Math.PI));
+            double v = (Math.PI - theta) / Math.PI;
+            Vector2 texCoord = new Vector2((float)u, (float)v);
+
+            return texCoord;
+        }
     }
 }

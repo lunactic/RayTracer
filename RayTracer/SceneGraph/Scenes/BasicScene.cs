@@ -41,7 +41,7 @@ namespace RayTracer.SceneGraph.Scenes
             LambertMaterial white = new LambertMaterial(new Color(1,1,1));
 
             //List of objects
-            Sphere sphere = new Sphere(white, new Vector3(0, 0, .25f), .3f);
+            Sphere sphere = new Sphere(white, new Vector3(0, 0, 0), .3f);
 
 
             Plane p1 = new Plane(1f, new Vector3(0, 1, 0))
@@ -69,7 +69,7 @@ namespace RayTracer.SceneGraph.Scenes
                 Material = blue
             };
             Objects = new IntersectableList();
-            Objects.Add(rect);
+//            Objects.Add(rect);
             Objects.Add(sphere);
             Objects.Add(p1);
             Objects.Add(p2);
@@ -79,7 +79,7 @@ namespace RayTracer.SceneGraph.Scenes
 
             Lights = new List<ILight>();
 
-            ILight light = new PointLight(new Vector3(0.0f, 0.8f, 0.8f), new Color(1,1,1));
+            ILight light = new PointLight(new Vector3(0.0f, 0.8f, -0.8f), new Color(1,1,1));
             //ILight light = new AreaLight(new Color(10, 10, 10), rect);
      
             Lights.Add(light);

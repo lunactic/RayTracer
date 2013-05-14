@@ -26,25 +26,25 @@ namespace RayTracer.SceneGraph.Objects
         /// </summary>
         public Matrix4 TransposedTransformationMatrix { get; set; }
 
+        public Material Material { get; set; }
+
+
         public Instance(IIntersectable intersectable, Matrix4 transMatrix)
         {
             TransformationMatrix = transMatrix;
             Intersectable = intersectable;
             InvTransformationMatrix = Matrix4.Invert(TransformationMatrix);
-            TransposedTransformationMatrix = Matrix4.Transpose(TransformationMatrix);
+            TransposedTransformationMatrix = Matrix4.Transpose(InvTransformationMatrix);
             Material = Intersectable.Material;
+            Add(intersectable);
         }
 
-        public Material Material
-        {
-            get; set;
-        }
-
+     
         public new HitRecord Intersect(Ray ray)
         {
 
             //Transform ray to object coordinate system
-            Ray transfRay = RayTransformer.TransformRayToObject(ray,InvTransformationMatrix);
+            Ray transfRay = RayTransformer.TransformRayToObject(ray, InvTransformationMatrix);
             HitRecord hit = Intersectable.Intersect(transfRay);
 
 
@@ -53,8 +53,9 @@ namespace RayTracer.SceneGraph.Objects
                 if (Material != null)
                     hit.Material = Material;
                 //Transform HitRecrod back to world coordinate system
-                RayTransformer.TransformHitToWorld(hit,TransformationMatrix,TransposedTransformationMatrix);
-           }
+                RayTransformer.TransformHitToWorld(hit, TransformationMatrix, TransposedTransformationMatrix);
+              
+            }
             return hit;
         }
 
@@ -62,7 +63,7 @@ namespace RayTracer.SceneGraph.Objects
         {
             Intersectable.BuildBoundingBox();
         }
-        
+
         public new ILight Light
         {
             get

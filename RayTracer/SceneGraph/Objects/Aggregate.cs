@@ -59,6 +59,7 @@ namespace RayTracer.SceneGraph.Objects
         {
             return Intersectables;
         }
+   
         public abstract void BuildBoundingBox();
 
         #region unused
@@ -75,5 +76,11 @@ namespace RayTracer.SceneGraph.Objects
         }
 
         #endregion
+
+
+        public Vector2 GetTextudeCoordinates(HitRecord record)
+        {
+            throw new NotSupportedException();
+        }
     }
 }

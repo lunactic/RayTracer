@@ -1,0 +1,110 @@
+<?xml version="1.0" ?><COLLADA version="1.5.1">
+  <asset>
+    <contributor>
+      <author>danielrh</author>
+      <authoring_tool>obj2dae</authoring_tool>
+      <source_data>/home/ubuntu/src/beta/server/b3008875d14ed1c06b9554cf8b7455ec/star.obj</source_data>
+    </contributor>
+    <created>2012-01-13T09:46:32</created>
+    <modified>2012-01-13T09:46:32</modified>
+    <unit meter="1.0" name="meter"/>
+    <up_axis>Y_UP</up_axis>
+  </asset>
+  <library_images>
+  </library_images>
+  <library_effects>
+    <effect id="nil_1" name="nil_1">
+      <profile_COMMON>
+        <technique sid="common">
+          <blinn>
+            <emission>
+              <color>0 0 0 1</color>
+            </emission>
+            <ambient>
+              <color>0 0 0 1</color>
+            </ambient>
+            <diffuse>
+              <color>1 1 1 1</color>
+            </diffuse>
+            <specular>
+              <color>1 1 1 1</color>
+            </specular>
+            <shininess>
+              <float>1.0</float>
+            </shininess>
+          </blinn>
+        </technique>
+      </profile_COMMON>
+    </effect>
+  </library_effects>
+  <library_materials>
+    <material id="nil_1-material" name="nil_1">
+      <instance_effect url="#nil_1"/>
+    </material>
+  </library_materials>
+  <library_geometries>
+  <geometry id="homeubuntusrcbetaserverb3008875d14ed1c06b9554cf8b7455ecstardae_1-geometry" name="homeubuntusrcbetaserverb3008875d14ed1c06b9554cf8b7455ecstardae_1">
+    <mesh>
+      <source id="1_1-positions">
+        <float_array count="36" id="1_1-positions-array">
+0.00031 0.997021 0.0 0.617114 -0.0 -1.899281 -1.615626 -0.0 -1.173819 -1.615626 -0.0 1.173819 0.617113 -0.0 1.899281 1.997023 -0.0 -0.0 0.000281 -0.99702 0.0 -1.173388 -0.0 -3.611317 -3.797163 -0.0 -0.0 -1.173388 -0.0 3.611317 3.07197 -0.0 2.231916 3.07197 -0.0 -2.231916         </float_array>
+        <technique_common>
+          <accessor count="12" source="#1_1-positions-array" stride="3">
+            <param name="X" type="float"/>
+            <param name="Y" type="float"/>
+            <param name="Z" type="float"/>
+          </accessor>
+        </technique_common>
+      </source>
+      <source id="1_1-normals">
+        <float_array count="180" id="1_1-normals-array">
+0.335001 0.874658 -0.350355 0.335001 0.874658 -0.350355 0.335001 0.874658 -0.350355 -0.476855 -0.874714 -0.086516 -0.476855 -0.874714 -0.086516 -0.476855 -0.874714 -0.086516 -0.476849 0.874717 -0.086515 -0.476849 0.874717 -0.086515 -0.476849 0.874717 -0.086515 -0.229651 0.874699 -0.426805 -0.229651 0.874699 -0.426805 -0.229651 0.874699 -0.426805 -0.229652 -0.874698 -0.426807 -0.229652 -0.874698 -0.426807 -0.229652 -0.874698 -0.426807 -0.229651 0.874699 0.426805 -0.229651 0.874699 0.426805 -0.229651 0.874699 0.426805 -0.476849 0.874717 0.086515 -0.476849 0.874717 0.086515 -0.476849 0.874717 0.086515 -0.476854 -0.874714 0.086516 -0.476854 -0.874714 0.086516 -0.476854 -0.874714 0.086516 0.335001 0.874658 0.350355 0.335001 0.874658 0.350355 0.335001 0.874658 0.350355 -0.065081 0.874687 0.480299 -0.065081 0.874687 0.480299 -0.065081 0.874687 0.480299 0.436735 -0.874653 -0.210342 0.436735 -0.874653 -0.210342 0.436735 -0.874653 -0.210342 0.43674 0.87465 -0.210345 0.43674 0.87465 -0.210345 0.43674 0.87465 -0.210345 0.43674 0.87465 0.210345 0.43674 0.87465 0.210345 0.43674 0.87465 0.210345 0.436735 -0.874654 0.210342 0.436735 -0.874654 0.210342 0.436735 -0.874654 0.210342 -0.065081 0.874687 -0.480299 -0.065081 0.874687 -0.480299 -0.065081 0.874687 -0.480299 0.334998 -0.87466 -0.350352 0.334998 -0.87466 -0.350352 0.334998 -0.87466 -0.350352 -0.229652 -0.874698 0.426807 -0.229652 -0.874698 0.426807 -0.229652 -0.874698 0.426807 0.334998 -0.87466 0.350352 0.334998 -0.87466 0.350352 0.334998 -0.87466 0.350352 -0.065081 -0.874687 0.4803 -0.065081 -0.874687 0.4803 -0.065081 -0.874687 0.4803 -0.065081 -0.874687 -0.4803 -0.065081 -0.874687 -0.4803 -0.065081 -0.874687 -0.4803         </float_array>
+        <technique_common>
+          <accessor count="60" source="#1_1-normals-array" stride="3">
+            <param name="X" type="float"/>
+            <param name="Y" type="float"/>
+            <param name="Z" type="float"/>
+          </accessor>
+        </technique_common>
+      </source>
+      <source id="1_1-texcoords">
+        <float_array count="26" id="1_1-texcoords-array">
+0.5 0.785714 0.0 0.5 0.2 0.5 0.4 0.5 0.6 0.5 0.8 0.5 1.0 0.5 0.5 0.25 0.1 0.625 0.3 0.625 0.5 0.625 0.7 0.625 0.9 0.625         </float_array>
+        <technique_common>
+          <accessor count="13" source="#1_1-texcoords-array" stride="2">
+            <param name="S" type="float"/>
+            <param name="T" type="float"/>
+          </accessor>
+        </technique_common>
+      </source>
+      <vertices id="1_1-vertices">
+        <input semantic="POSITION" source="#1_1-positions"/>
+      </vertices>
+      <triangles count="20" material="nil_1-material">
+         <input offset="0" semantic="VERTEX" source="#1_1-vertices"/>
+         <input offset="1" semantic="TEXCOORD" source="#1_1-texcoords"/>
+         <input offset="2" semantic="NORMAL" source="#1_1-normals"/>
+      <p>0 0 0 1 1 1 7 8 2 2 2 3 7 8 4 6 7 5 2 2 6 0 0 7 7 8 8 0 0 9 2 2 10 8 9 11 6 7 12 8 9 13 2 2 14 3 3 15 0 0 16 8 9 17 0 0 18 3 3 19 9 10 20 6 7 21 9 10 22 3 3 23 4 4 24 0 0 25 9 10 26 0 0 27 4 4 28 10 11 29 5 5 30 10 11 31 6 7 32 5 5 33 0 0 34 10 11 35 0 0 36 5 5 37 11 12 38 6 7 39 11 12 40 5 5 41 1 6 42 0 0 43 11 12 44 7 8 45 1 1 46 6 7 47 3 3 48 8 9 49 6 7 50 4 4 51 9 10 52 6 7 53 10 11 54 4 4 55 6 7 56 1 6 57 11 12 58 6 7 59       </p>
+      </triangles>
+    </mesh>
+    </geometry>
+  </library_geometries>
+  <library_visual_scenes>
+    <visual_scene id="main_scene_000" name="MainScene">
+      <node id="main_node_000" name="MainNode">
+        <instance_geometry url="#homeubuntusrcbetaserverb3008875d14ed1c06b9554cf8b7455ecstardae_1-geometry">
+          <bind_material>
+          <technique_common>
+            <instance_material symbol="nil_1-material" target="#nil_1-material">
+              <bind_vertex_input input_semantic="TEXCOORD" input_set="0" semantic="CHANNEL0"/>
+            </instance_material>
+          </technique_common>
+          </bind_material>
+        </instance_geometry>
+      </node>
+    </visual_scene>
+  </library_visual_scenes>
+  <scene>
+    <instance_visual_scene url="#main_scene_000"/>
+  </scene>
+</COLLADA>

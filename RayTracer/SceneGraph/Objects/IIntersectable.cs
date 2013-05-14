@@ -19,7 +19,7 @@ namespace RayTracer.SceneGraph.Objects
         HitRecord Intersect(Ray ray);
         void BuildBoundingBox();
         Vector3 GetSamplePoint(LightSample sample);
+        Vector2 GetTextudeCoordinates(HitRecord record);
         float GetArea();
-
     }
 }

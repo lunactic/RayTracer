@@ -25,6 +25,7 @@ namespace RayTracer.SceneGraph.Objects
         public Vector3 P2 { get; set; }
         public Vector3 P3 { get; set; }
 
+
         public Vector3 A { get; set; }
         public Vector3 B { get; set; }
 
@@ -108,6 +109,12 @@ namespace RayTracer.SceneGraph.Objects
         public Vector3 GetSampledNormal(float x, float y)
         {
             return normal;
+        }
+
+
+        public Vector2 GetTextudeCoordinates(HitRecord record)
+        {
+            throw new NotImplementedException();
         }
     }
 }

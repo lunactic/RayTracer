@@ -20,6 +20,7 @@ namespace RayTracer.SceneGraph
         public Vector3 IntersectionPoint { get; set; }
         public IIntersectable HitObject { get; set; }
         public float Distance { get; set; }
+ 
         public HitRecord()
         {
             Distance = float.MaxValue;

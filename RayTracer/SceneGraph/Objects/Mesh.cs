@@ -15,8 +15,17 @@ namespace RayTracer.SceneGraph.Objects
 {
     public class Mesh : Aggregate, IIntersectable
     {
-
-        public Material Material { get; set; }
+        private Material material;
+     
+        public Material Material
+        {
+            get { return material; }
+            set
+            {
+                this.material = value;
+                foreach (Triangle t in Triangles) { t.Material = value; }
+            }
+        }
         public List<Triangle> Triangles { get; private set; }
         private ILight light;
         public ILight Light { get { return light; } set { foreach (Triangle t in Triangles) { t.Light = value; } light = value; } }
@@ -25,6 +34,7 @@ namespace RayTracer.SceneGraph.Objects
         public List<float[]> Vertices { get; private set; }
         public List<float[]> Normals { get; private set; }
         private List<int> Indices { get; set; }
+        private List<float[]> TextureCoordinates { get; set; }
         public Mesh()
         {
 
@@ -63,7 +73,7 @@ namespace RayTracer.SceneGraph.Objects
             BuildBoundingBox();
         }
 
-        public Mesh(float[] vertices, int[] vertexIndices, float[] normals, int[] normalIndices, Material material)
+        public Mesh(float[] vertices, int[] vertexIndices, float[] normals, int[] normalIndices, float[] texCoords, int[] texCoordIndices, Material material)
         {
             Triangles = new List<Triangle>();
             BoundingBox = new AxisAlignedBoundingBox();
@@ -75,14 +85,43 @@ namespace RayTracer.SceneGraph.Objects
                 Vector3 p2 = new Vector3(vertices[vertexIndices[i + 1] * 3], vertices[vertexIndices[i + 1] * 3 + 1], vertices[vertexIndices[i + 1] * 3 + 2]);
                 Vector3 p3 = new Vector3(vertices[vertexIndices[i + 2] * 3], vertices[vertexIndices[i + 2] * 3 + 1], vertices[vertexIndices[i + 2] * 3 + 2]);
 
-                Vector3 n1 = new Vector3(normals[normalIndices[i] * 3], normals[normalIndices[i] * 3 + 1], normals[normalIndices[i] * 3 + 2]);
-                Vector3 n2 = new Vector3(normals[normalIndices[i + 1] * 3], normals[normalIndices[i + 1] * 3 + 1], normals[normalIndices[i + 1] * 3 + 2]);
-                Vector3 n3 = new Vector3(normals[normalIndices[i + 2] * 3], normals[normalIndices[i + 2] * 3 + 1], normals[normalIndices[i + 2] * 3 + 2]);
+                Vector3 n1 = Vector3.Zero;
+                Vector3 n2 = Vector3.Zero;
+                Vector3 n3 = Vector3.Zero;
 
+                Vector2 t1 = Vector2.Zero;
+                Vector2 t2 = Vector2.Zero;
+                Vector2 t3 = Vector2.Zero;
+                //TODO: CHECK IF NORMALS/VERTEX INDICES ARE PRESENT
+                if (normals != null)
+                {
+                    n1 = new Vector3(normals[normalIndices[i] * 3], normals[normalIndices[i] * 3 + 1], normals[normalIndices[i] * 3 + 2]);
+                    n2 = new Vector3(normals[normalIndices[i + 1] * 3], normals[normalIndices[i + 1] * 3 + 1], normals[normalIndices[i + 1] * 3 + 2]);
+                    n3 = new Vector3(normals[normalIndices[i + 2] * 3], normals[normalIndices[i + 2] * 3 + 1], normals[normalIndices[i + 2] * 3 + 2]);
+                }
+                if (texCoords != null)
+                {
+                    t1 = new Vector2(texCoords[texCoordIndices[i] * 2], texCoords[texCoordIndices[i] * 2 + 1]);
+                    t2 = new Vector2(texCoords[texCoordIndices[i + 1] * 2], texCoords[texCoordIndices[i + 1] * 2 + 1]);
+                    t3 = new Vector2(texCoords[texCoordIndices[i + 2] * 2], texCoords[texCoordIndices[i + 2] * 2 + 1]);
+                }
+                Triangle t;
+                if (normals != null && texCoords != null)
+                {
+                    t = new Triangle(p1, n1, t1, p2, n2, t2, p3, n3, t3) { Material = material };
+                }
+                else if (normals != null && texCoords == null)
+                {
+                    t = new Triangle(p1, n1, p2, n2, p3, n3) { Material = material };
 
-                Triangle t = new Triangle(p1, n1, p2, n2, p3, n3) {Material = material};
+                }
+                else
+                {
+                    t = new Triangle(p1, p2, p3);
+                }
                 t.BuildBoundingBox();
                 Triangles.Add(t);
+                Add(t);
             }
             BuildBoundingBox();
         }
@@ -119,37 +158,70 @@ namespace RayTracer.SceneGraph.Objects
             {
                 float[] point;
 
-                point = vertices[face[0, 0] - 1];
-                Vector3 p1 = new Vector3(point[0], point[1], point[2]);
-                point = vertices[face[1, 0] - 1];
-                Vector3 p2 = new Vector3(point[0], point[1], point[2]);
-                point = vertices[face[2, 0] - 1];
-                Vector3 p3 = new Vector3(point[0], point[1], point[2]);
+                Vector3 p1 = Vector3.Zero;
+                Vector3 p2 = Vector3.Zero;
+                Vector3 p3 = Vector3.Zero;
 
-                if (normals.Count > 0)
+                Vector3 n1 = Vector3.Zero;
+                Vector3 n2 = Vector3.Zero;
+                Vector3 n3 = Vector3.Zero;
+
+                Vector2 t1 = Vector2.Zero;
+                Vector2 t2 = Vector2.Zero;
+                Vector2 t3 = Vector2.Zero;
+
+                point = vertices[face[0, 0] - 1];
+                p1 = new Vector3(point[0], point[1], point[2]);
+                point = vertices[face[1, 0] - 1];
+                p2 = new Vector3(point[0], point[1], point[2]);
+                point = vertices[face[2, 0] - 1];
+                p3 = new Vector3(point[0], point[1], point[2]);
+
+                bool hasNormals = normals.Count > 0;
+                bool hasTexCoords = texCoords.Count > 0;
+
+                if (hasNormals)
                 {
                     float[] normal;
                     normal = normals[face[0, 2] - 1];
-                    Vector3 n1 = new Vector3(normal[0], normal[1], normal[2]);
+                    n1 = new Vector3(normal[0], normal[1], normal[2]);
                     normal = normals[face[1, 2] - 1];
-                    Vector3 n2 = new Vector3(normal[0], normal[1], normal[2]);
+                    n2 = new Vector3(normal[0], normal[1], normal[2]);
                     normal = normals[face[2, 2] - 1];
-                    Vector3 n3 = new Vector3(normal[0], normal[1], normal[2]);
-                    Triangle t = new Triangle(p1, n1, p2, n2, p3, n3) { Material = Material };
-                    t.BuildBoundingBox();
-                    Triangles.Add(t);
+                    n3 = new Vector3(normal[0], normal[1], normal[2]);
+                }
+                if (hasTexCoords)
+                {
+                    float[] texCoord;
+                    texCoord = texCoords[face[0, 1] - 1];
+                    t1 = new Vector2(texCoord[0], texCoord[1]);
+                    texCoord = texCoords[face[1, 1] - 1];
+                    t2 = new Vector2(texCoord[0], texCoord[1]);
+                    texCoord = texCoords[face[2, 1] - 1];
+                    t3 = new Vector2(texCoord[0], texCoord[1]);
+                }
+                Triangle t;
+                if (hasNormals && hasTexCoords)
+                {
+                    t = new Triangle(p1, n1, t1, p2, n2, t2, p3, n3, t3);
+                }
+                else if (hasNormals && !hasTexCoords)
+                {
+                    t = new Triangle(p1, n1, p2, n2, p3, n3);
                 }
                 else
                 {
-                    Triangle t = new Triangle(p1, p2, p3) { Material = Material };
-                    t.BuildBoundingBox();
-                    Triangles.Add(t);
-
+                    t = new Triangle(p1, p2, p3);
                 }
+                t.BuildBoundingBox();
+                Triangles.Add(t);
+                Add(t);
+ 
             }
             BuildBoundingBox();
         }
 
+        
         public override void BuildBoundingBox()
         {
             Vector3 minVector = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);

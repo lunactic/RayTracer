@@ -25,30 +25,34 @@ namespace RayTracer.Helper
         //Path Length for Path Tracing
         public static readonly int MaximalPathLength = 5;
         
-        public static readonly bool IsLightSamplingOn = true;
-        public static readonly bool IsSamplingOn = true;
+        public static readonly bool IsLightSamplingOn = false;
+        public static readonly bool IsSamplingOn = false;
         public static readonly bool IsDepthOfFieldCamera = false;
 
 
         public static readonly int NumberOfLightSamples = 1;
-        public static readonly int NumberOfSamples = 200;
-        public static int NumberOfThreads = 8;
+        public static readonly int NumberOfSamples = 10;
+        public static int NumberOfThreads = 1;
 
-        /*
+
+        public static bool TextureMapping = true;
+
+        //Collada
         public static Type Sampler = typeof (StratifiedSampler);
-        public static Type SceneIndex = typeof(DepthOfFieldScene);
-        public static Type Integrator = typeof (BinaryIntegrator);
+        public static Type SceneIndex = typeof(TextureScene);
+        public static Type Integrator = typeof (WhittedIntegrator);
         public static Type Camera = typeof (PinholeCamera);
         public static Type RayTracer = typeof(BasicRayTracer);
-        */
+        
 
         //PATHTRACE
+        /*
         public static Type Sampler = typeof (StratifiedSampler);
         public static Type SceneIndex = typeof(MirrorScene);
         public static Type Integrator = typeof (PathTraceIntegrator);
         public static Type Camera = typeof (PinholeCamera);
         public static Type RayTracer = typeof(BasicRayTracer);
-        
+        */
         public static SampleType SampleType = SampleType.Uniform;
 
     }

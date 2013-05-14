@@ -81,5 +81,11 @@ namespace RayTracer.SceneGraph.Objects
         {
             return 0f;
         }
+
+
+        public Vector2 GetTextudeCoordinates(HitRecord record)
+        {
+            throw new NotSupportedException();
+        }
     }
 }
