@@ -32,14 +32,14 @@ namespace RayTracer.Helper
 
         public static readonly int NumberOfLightSamples = 1;
         public static readonly int NumberOfSamples = 10;
-        public static int NumberOfThreads = 1;
+        public static int NumberOfThreads = 4;
 
 
         public static bool TextureMapping = true;
 
         //Collada
         public static Type Sampler = typeof (StratifiedSampler);
-        public static Type SceneIndex = typeof(TextureScene);
+        public static Type SceneIndex = typeof(KdTreeScene);
         public static Type Integrator = typeof (WhittedIntegrator);
         public static Type Camera = typeof (PinholeCamera);
         public static Type RayTracer = typeof(BasicRayTracer);

@@ -14,11 +14,18 @@ namespace RayTracer.SceneGraph.Objects
 {
     public abstract class Aggregate : IIntersectable
     {
+
         public List<IIntersectable> Intersectables { get; set; }
-      
+
+
+        public Aggregate()
+        {
+            Intersectables = new List<IIntersectable>();
+        }
+
+
         public void Add(IIntersectable intersectable)
         {
-            if(Intersectables == null) Intersectables = new List<IIntersectable>();
             Intersectables.Add(intersectable);
         }
 
@@ -54,13 +61,22 @@ namespace RayTracer.SceneGraph.Objects
             }
         }
 
-
         public List<IIntersectable> GetObjects()
         {
             return Intersectables;
         }
    
         public abstract void BuildBoundingBox();
+
+        public int GetNumberOfComponents()
+        {
+            int res = 0;
+            foreach (IIntersectable inters in Intersectables)
+            {
+                res += inters.GetNumberOfComponents();
+            }
+            return res;
+        }
 
         #region unused
         public ILight Light { get; set; }

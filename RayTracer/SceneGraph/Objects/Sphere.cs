@@ -130,5 +130,9 @@ namespace RayTracer.SceneGraph.Objects
 
             return texCoord;
         }
+        public int GetNumberOfComponents()
+        {
+            return 1;
+        }
     }
 }

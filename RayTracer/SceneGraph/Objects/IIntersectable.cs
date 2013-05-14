@@ -21,5 +21,6 @@ namespace RayTracer.SceneGraph.Objects
         Vector3 GetSamplePoint(LightSample sample);
         Vector2 GetTextudeCoordinates(HitRecord record);
         float GetArea();
+        int GetNumberOfComponents();
     }
 }

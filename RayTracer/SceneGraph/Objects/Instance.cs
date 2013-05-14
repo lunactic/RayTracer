@@ -85,6 +85,9 @@ namespace RayTracer.SceneGraph.Objects
         {
             return Intersectable.GetArea();
         }
-
+        public int GetNumberOfComponents()
+        {
+            return Intersectable.GetNumberOfComponents();
+        }
     }
 }

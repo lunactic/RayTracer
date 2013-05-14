@@ -205,7 +205,10 @@ namespace RayTracer.SceneGraph.Objects
             return (float) (0.5f*Math.Sqrt(ab.Length*ab.Length*ac.Length*ac.Length - Math.Pow(Vector3.Dot(ab, ac), 2)));
         }
 
-
+        public int GetNumberOfComponents()
+        {
+            return 1;
+        }
         public Vector2 GetTextudeCoordinates(HitRecord record)
         {
             return InterpolatedTextureCoordinate;

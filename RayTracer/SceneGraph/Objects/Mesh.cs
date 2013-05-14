@@ -117,7 +117,7 @@ namespace RayTracer.SceneGraph.Objects
                 }
                 else
                 {
-                    t = new Triangle(p1, p2, p3);
+                    t = new Triangle(p1, p2, p3) {Material = material };
                 }
                 t.BuildBoundingBox();
                 Triangles.Add(t);
@@ -213,6 +213,7 @@ namespace RayTracer.SceneGraph.Objects
                 {
                     t = new Triangle(p1, p2, p3);
                 }
+                t.Material = Material;
                 t.BuildBoundingBox();
                 Triangles.Add(t);
                 Add(t);

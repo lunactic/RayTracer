@@ -18,9 +18,8 @@ namespace RayTracer.SceneGraph.Accelerate
         public BspNode RootNode { get; private set; }
         public IBoundingBox BoundingBox { get; set; }
         public Material Material { get; set; }
-        public Matrix4 TransformationMatrix { get; set; }
-        public Matrix4 InvTransformationMatrix { get; set; }
-        public Matrix4 TransposedTransformationMatrix { get; set; }
+
+        private Aggregate aggregate;
 
         private int maxTreeDepth;
 
@@ -39,7 +38,6 @@ namespace RayTracer.SceneGraph.Accelerate
             maxTreeDepth = (int)Math.Ceiling(8 + (1.3 * Math.Log(objects.Intersectables.Count)));
 
             RootNode = new BspNode();
-
 
             //Kick off the recursive tree construction
             RootNode.BuildSubTree(objects, BoundingBox, maxTreeDepth, 0);
@@ -160,8 +158,6 @@ namespace RayTracer.SceneGraph.Accelerate
             #endregion
         }
 
-
-
         public Vector3 GetNormal(Vector3 hitPosition)
         {
             throw new NotImplementedException();
@@ -171,7 +167,6 @@ namespace RayTracer.SceneGraph.Accelerate
         {
             throw new NotSupportedException();
         }
-
 
         public Vector3 GetSamplePoint(LightSample sample)
         {
@@ -183,11 +178,14 @@ namespace RayTracer.SceneGraph.Accelerate
             return 0f;
         }
 
-
-
         public Vector2 GetTextudeCoordinates(HitRecord record)
         {
             throw new NotSupportedException();
+        }
+
+        public int GetNumberOfComponents()
+        {
+            return aggregate.GetNumberOfComponents();
         }
     }
 }

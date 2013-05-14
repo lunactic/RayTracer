@@ -32,7 +32,7 @@ namespace RayTracer.SceneGraph.Accelerate
             Intersectables = intersectables;
             BoundingBox = boundingBox;
 
-            if (Intersectables.Intersectables.Count <= 5 || currentTreeDetph == maxTreeDepth)
+            if (Intersectables.GetNumberOfComponents() <= 5 || currentTreeDetph == maxTreeDepth)
             {
                 IsLeaf = true;
 
@@ -44,24 +44,24 @@ namespace RayTracer.SceneGraph.Accelerate
                 //Find the maximal Axis
                 Axis = 0;
 
-                float max = BoundingBox.Dimension.X;
+                /*float max = BoundingBox.Dimension.X;
                 if (BoundingBox.Dimension.Y > max)
                     Axis = 1;
                 if (BoundingBox.Dimension.Z > max)
                     Axis = 2;
-                
-                //Axis = currentTreeDetph%3;
-                PlanePos = BoundingBox.MaxVector[Axis] - (BoundingBox.MaxVector[Axis] - BoundingBox.MinVector[Axis])/2;
+                */
+                Axis = currentTreeDetph % 3;
+                PlanePos = BoundingBox.MaxVector[Axis] - (BoundingBox.MaxVector[Axis] - BoundingBox.MinVector[Axis]) / 2;
                 IBoundingBox leftBb = new AxisAlignedBoundingBox();
                 IBoundingBox rightBb = new AxisAlignedBoundingBox();
 
                 switch (Axis)
                 {
                     case 0:
-                        leftBb.MinVector = new Vector3(PlanePos,BoundingBox.MinVector.Y,BoundingBox.MinVector.Z);
+                        leftBb.MinVector = new Vector3(PlanePos, BoundingBox.MinVector.Y, BoundingBox.MinVector.Z);
                         leftBb.MaxVector = new Vector3(BoundingBox.MaxVector);
                         rightBb.MinVector = new Vector3(BoundingBox.MinVector);
-                        rightBb.MaxVector = new Vector3(PlanePos,BoundingBox.MaxVector.Y,BoundingBox.MaxVector.Z);
+                        rightBb.MaxVector = new Vector3(PlanePos, BoundingBox.MaxVector.Y, BoundingBox.MaxVector.Z);
                         break;
                     case 1:
                         leftBb.MinVector = new Vector3(BoundingBox.MinVector.X, PlanePos, BoundingBox.MinVector.Z);
@@ -77,19 +77,16 @@ namespace RayTracer.SceneGraph.Accelerate
                         break;
                 }
 
-              
+
                 LeftNode = new BspNode();
                 RightNode = new BspNode();
                 foreach (IIntersectable intersectable in Intersectables.GetObjects())
                 {
                     if (intersectable.BoundingBox.Intersect(leftBb)) leftIntersectables.Add(intersectable);
                     if (intersectable.BoundingBox.Intersect(rightBb)) rightIntersectables.Add(intersectable);
-
                 }
-                if(leftIntersectables.Intersectables != null)
-                    LeftNode.BuildSubTree(leftIntersectables, leftBb, maxTreeDepth, currentTreeDetph + 1);
-                if(rightIntersectables.Intersectables != null)
-                    RightNode.BuildSubTree(rightIntersectables, rightBb, maxTreeDepth, currentTreeDetph + 1);
+                LeftNode.BuildSubTree(leftIntersectables, leftBb, maxTreeDepth, currentTreeDetph + 1);
+                RightNode.BuildSubTree(rightIntersectables, rightBb, maxTreeDepth, currentTreeDetph + 1);
                 Intersectables = null; //Clear up the intersectables in non leaf nodes to save space
             }
         }

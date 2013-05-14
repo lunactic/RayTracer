@@ -87,5 +87,9 @@ namespace RayTracer.SceneGraph.Objects
         {
             throw new NotSupportedException();
         }
+        public int GetNumberOfComponents()
+        {
+            return 1;
+        }
     }
 }

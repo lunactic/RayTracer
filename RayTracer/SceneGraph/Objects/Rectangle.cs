@@ -111,7 +111,10 @@ namespace RayTracer.SceneGraph.Objects
             return normal;
         }
 
-
+        public int GetNumberOfComponents()
+        {
+            return 1;
+        }
         public Vector2 GetTextudeCoordinates(HitRecord record)
         {
             throw new NotImplementedException();
