@@ -44,7 +44,7 @@ namespace RayTracer.SceneGraph.Scenes
             PerlinNoise.Initialize();
 
             Sphere sphere = new Sphere(new LambertMaterial(new Color(1, 0, 0)), new Vector3(0, 0, 2f), 1f);
-            sphere.Material.Noise = Noise.Bumb;
+            sphere.Material.Noise = Noise.Turbulence;
             //Sphere sphere = new Sphere(new MirrorMaterial(10f), new Vector3(0, 0, 2f), 1f);
 
             Objects = new IntersectableList();

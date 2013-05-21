@@ -97,7 +97,7 @@ namespace RayTracer.SceneGraph.Cameras
             float rV = (b + (t - b) * (y + 0.5f) / ScreenHeight);
 
             Vector4 cameraRay = new Vector4(rU, rV, -1, 0);
-            Vector3 direction = Vector4.Transform(cameraRay, transformationMatrix);
+            Vector3 direction = transformationMatrix.Transform(cameraRay);
             direction = direction - Eye;
 
             return new Ray(Eye, direction);

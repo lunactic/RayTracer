@@ -16,14 +16,14 @@ namespace RayTracer.SceneGraph.Objects
         {
             
             Vector4 intersectionPoint = new Vector4(record.IntersectionPoint) { W = 1 };
-            Vector3 worldIntersectionPoint = Vector4.Transform(intersectionPoint, transformationMatrix);
+            Vector3 worldIntersectionPoint = transformationMatrix.Transform(intersectionPoint);
 
 
             Vector4 normal = new Vector4(record.SurfaceNormal);
-            Vector3 worldNormal = Vector4.Transform(normal, transTransformationMatrix);
+            Vector3 worldNormal = transTransformationMatrix.Transform(normal);
             worldNormal.Normalize();
 
-            Vector4 rayDir = Vector4.Transform(new Vector4(record.RayDirection), transformationMatrix);
+            Vector4 rayDir = transformationMatrix.Transform(new Vector4(record.RayDirection));
             Vector3 worldRayDir = rayDir;
             record.IntersectionPoint = worldIntersectionPoint;
             record.SurfaceNormal = worldNormal;

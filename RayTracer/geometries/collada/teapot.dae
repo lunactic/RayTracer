@@ -17,7 +17,7 @@
   </asset>
   <library_images>
     <image id="Map #3-image" name="Map #3">
-      <init_from>file://C:\Users\lunactic\Documents\3dsMax\sceneassets\images\Concrete.Precast Structural Concrete.Smooth.bump.jpg</init_from>
+      <init_from>file://C:\Textures\bump.jpg</init_from>
     </image>
   </library_images>
   <library_materials>

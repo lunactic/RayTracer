@@ -39,7 +39,7 @@ namespace RayTracer.Helper
 
         //Collada
         public static Type Sampler = typeof (StratifiedSampler);
-        public static Type SceneIndex = typeof(TextureScene);
+        public static Type SceneIndex = typeof(SkyBoxScene);
         public static Type Integrator = typeof (WhittedIntegrator);
         public static Type Camera = typeof (PinholeCamera);
         public static Type RayTracer = typeof(BasicRayTracer);

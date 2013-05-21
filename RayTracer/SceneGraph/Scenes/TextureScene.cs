@@ -26,7 +26,7 @@ namespace RayTracer.SceneGraph.Scenes
             //List of objects
             //Sphere sphere = new Sphere(textureMaterial, new Vector3(0, 0, 0), .3f);
             ColladaParser parser = new ColladaParser();
-            parser.ParseColladaFile("./geometries/collada/desk.dae");
+            parser.ParseColladaFile("./geometries/collada/teapot.dae");
 
             Camera = parser.Cameras.Values.First();
             Camera.PreProcess();
