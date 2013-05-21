@@ -16,7 +16,7 @@ namespace RayTracer.SceneGraph.Objects
     public class Mesh : Aggregate, IIntersectable
     {
         private Material material;
-     
+
         public Material Material
         {
             get { return material; }
@@ -39,7 +39,6 @@ namespace RayTracer.SceneGraph.Objects
         {
 
             Triangles = new List<Triangle>();
-            BoundingBox = new AxisAlignedBoundingBox();
 
         }
 
@@ -47,8 +46,7 @@ namespace RayTracer.SceneGraph.Objects
         {
             Material = material;
             Triangles = new List<Triangle>();
-            BoundingBox = new AxisAlignedBoundingBox();
-
+         
             Vertices = new List<float[]>();
             for (int i = 0; i < vertices.Length; i += 3)
             {
@@ -76,7 +74,6 @@ namespace RayTracer.SceneGraph.Objects
         public Mesh(float[] vertices, int[] vertexIndices, float[] normals, int[] normalIndices, float[] texCoords, int[] texCoordIndices, Material material)
         {
             Triangles = new List<Triangle>();
-            BoundingBox = new AxisAlignedBoundingBox();
             Material = material;
 
             for (int i = 0; i < vertexIndices.Length; i += 3)
@@ -92,7 +89,6 @@ namespace RayTracer.SceneGraph.Objects
                 Vector2 t1 = Vector2.Zero;
                 Vector2 t2 = Vector2.Zero;
                 Vector2 t3 = Vector2.Zero;
-                //TODO: CHECK IF NORMALS/VERTEX INDICES ARE PRESENT
                 if (normals != null)
                 {
                     n1 = new Vector3(normals[normalIndices[i] * 3], normals[normalIndices[i] * 3 + 1], normals[normalIndices[i] * 3 + 2]);
@@ -110,14 +106,14 @@ namespace RayTracer.SceneGraph.Objects
                 {
                     t = new Triangle(p1, n1, t1, p2, n2, t2, p3, n3, t3) { Material = material };
                 }
-                else if (normals != null && texCoords == null)
+                else if (normals != null)
                 {
                     t = new Triangle(p1, n1, p2, n2, p3, n3) { Material = material };
 
                 }
                 else
                 {
-                    t = new Triangle(p1, p2, p3) {Material = material };
+                    t = new Triangle(p1, p2, p3) { Material = material };
                 }
                 t.BuildBoundingBox();
                 Triangles.Add(t);
@@ -205,7 +201,7 @@ namespace RayTracer.SceneGraph.Objects
                 {
                     t = new Triangle(p1, n1, t1, p2, n2, t2, p3, n3, t3);
                 }
-                else if (hasNormals && !hasTexCoords)
+                else if (hasNormals)
                 {
                     t = new Triangle(p1, n1, p2, n2, p3, n3);
                 }
@@ -217,16 +213,16 @@ namespace RayTracer.SceneGraph.Objects
                 t.BuildBoundingBox();
                 Triangles.Add(t);
                 Add(t);
- 
+
             }
             BuildBoundingBox();
         }
 
-        
+
         public override void BuildBoundingBox()
         {
             Vector3 minVector = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
-            Vector3 maxVector = new Vector3(float.MinValue, float.MinValue, float.MinValue);
+            Vector3 maxVector = new Vector3(float.Epsilon, float.Epsilon, float.Epsilon);
 
             foreach (Triangle t in Triangles)
             {
@@ -241,9 +237,9 @@ namespace RayTracer.SceneGraph.Objects
                 maxVector.Z = Math.Max(maxVector.Z, box.MaxVector.Z);
 
             }
-            BoundingBox.MaxVector = maxVector;
-            BoundingBox.MinVector = minVector;
 
+            BoundingBox = new AxisAlignedBoundingBox(minVector,maxVector);
+ 
         }
 
         public new Vector3 GetSamplePoint(LightSample sample)

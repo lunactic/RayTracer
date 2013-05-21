@@ -265,7 +265,7 @@ namespace RayTracer.Structs
 
         #endregion
 
-    #region public void Scale()
+        #region public void Scale()
 
         /// <summary>
         /// Scales the current Vector2 by the given amounts.
@@ -732,7 +732,17 @@ namespace RayTracer.Structs
 
         #endregion
 
-    
+        #region Interpolate
+
+        public static Vector2 Interpolate(Vector2 t1, float alpha)
+        {
+            Vector2 res = new Vector2(0, 0);
+            res.X = (1 - alpha) * res.X + alpha * t1.X;
+            res.Y = (1 - alpha) * res.Y + alpha * t1.Y;
+            return res;
+        }
+        #endregion
+
         #region Operators
 
         /// <summary>

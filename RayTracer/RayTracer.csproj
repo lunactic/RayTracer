@@ -118,11 +118,24 @@
     <None Include="geometries\cbox\meshes\plane.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="geometries\collada\desk.DAE">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="geometries\collada\Heart_2.dae">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="geometries\collada\kegel.dae">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="geometries\collada\model.dae">
       <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="geometries\collada\reference.dae">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="geometries\collada\teapot.dae">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="geometries\collada\test_Pyramids.dae">
@@ -149,6 +162,10 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="geometries\collada\heart.dae">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="geometries\collada\google_glass.DAE">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </None>
@@ -202,7 +219,9 @@
     <Compile Include="SceneGraph\Materials\BlinnPhongMaterial.cs" />
     <Compile Include="SceneGraph\Materials\MirrorMaterial.cs" />
     <Compile Include="Helper\RayTransformer.cs" />
+    <Compile Include="SceneGraph\Materials\PerlinNoise.cs" />
     <Compile Include="SceneGraph\Materials\RefractiveMaterial.cs" />
+    <Compile Include="SceneGraph\Materials\SkyBox.cs" />
     <Compile Include="SceneGraph\Materials\Texture.cs" />
     <Compile Include="SceneGraph\Objects\Aggregate.cs" />
     <Compile Include="SceneGraph\Accelerate\IBoundingBox.cs" />
@@ -223,6 +242,7 @@
     <Compile Include="SceneGraph\Scenes\MirrorScene.cs" />
     <Compile Include="SceneGraph\Scenes\RefractionScene.cs" />
     <Compile Include="SceneGraph\Scenes\Scene.cs" />
+    <Compile Include="SceneGraph\Scenes\SkyBoxScene.cs" />
     <Compile Include="SceneGraph\Scenes\TextureScene.cs" />
     <Compile Include="SceneGraph\Tonemapper.cs" />
     <Compile Include="Structs\Color.cs" />
@@ -268,6 +288,39 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Textures\shabby_chic.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Textures\SkyBox_dunes\dunes_back.JPG">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Textures\SkyBox_dunes\dunes_front.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Textures\SkyBox_dunes\dunes_left.JPG">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Textures\SkyBox_dunes\dunes_right.JPG">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Textures\SkyBox_dunes\dunes_top.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Textures\SkyBox_farm\skybox_country_paths_back.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Textures\SkyBox_farm\skybox_country_paths_bottom.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Textures\SkyBox_farm\skybox_country_paths_front.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Textures\SkyBox_farm\skybox_country_paths_left.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Textures\SkyBox_farm\skybox_country_paths_right.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Textures\SkyBox_farm\skybox_country_paths_top.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Textures\star.jpg">

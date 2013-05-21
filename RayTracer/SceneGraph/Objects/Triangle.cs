@@ -50,7 +50,6 @@ namespace RayTracer.SceneGraph.Objects
 
             Normal = Vector3.Cross(edge1, edge2);
             Normal.Normalize();
-            BoundingBox = new AxisAlignedBoundingBox();
             BuildBoundingBox();
             area = CalculateArea();
         }
@@ -69,7 +68,7 @@ namespace RayTracer.SceneGraph.Objects
             hasVertexNormals = true;
             Normal = Vector3.Cross(edge1, edge2);
             Normal.Normalize();
-            BoundingBox = new AxisAlignedBoundingBox();
+            BuildBoundingBox();
             area = CalculateArea();
         }
 
@@ -91,7 +90,7 @@ namespace RayTracer.SceneGraph.Objects
             hasTexCoords = true;
             Normal = Vector3.Cross(edge1, edge2);
             Normal.Normalize();
-            BoundingBox = new AxisAlignedBoundingBox();
+            BuildBoundingBox();
             area = CalculateArea();
         }
 
@@ -127,24 +126,23 @@ namespace RayTracer.SceneGraph.Objects
             if (gamma < 0 || (beta + gamma) > 1) return null;
             float alpha = 1 - beta - gamma;
             Vector3 normal = Normal;
-            if (t > Constants.Epsilon)
+            if (hasVertexNormals)
             {
-                if (hasVertexNormals)
-                {
-                    Vector3 n1Interpolated = N1 * alpha;
-                    Vector3 n2Interpolated = N2 * beta;
-                    Vector3 n3Interpolated = N3 * gamma;
+                Vector3 n1Interpolated = N1 * alpha;
+                Vector3 n2Interpolated = N2 * beta;
+                Vector3 n3Interpolated = N3 * gamma;
 
-                    normal = n1Interpolated + n2Interpolated + n3Interpolated;
+                normal = n1Interpolated + n2Interpolated + n3Interpolated;
 
-                }
-                if (hasTexCoords)
-                {
-                    Vector2 t1Interpolated = Tex1 * alpha;
-                    Vector2 t2Interpolated = Tex2 * beta;
-                    Vector2 t3Interpolated = Tex3 * gamma;
-                    InterpolatedTextureCoordinate = t1Interpolated + t2Interpolated + t3Interpolated;
-                }
+            }
+            if (hasTexCoords)
+            {
+
+                Vector2 t1Interpolated = Vector2.Interpolate(Tex1, alpha);
+                Vector2 t2Interpolated = Vector2.Interpolate(Tex2, beta);
+                Vector2 t3Interpolated = Vector2.Interpolate(Tex3, gamma);
+                InterpolatedTextureCoordinate = t1Interpolated + t2Interpolated + t3Interpolated;
+
             }
 
             return new HitRecord(t, hitPoint, normal, this, Material, rayDir);
@@ -152,29 +150,69 @@ namespace RayTracer.SceneGraph.Objects
 
         public void BuildBoundingBox()
         {
-            //Set A to be min/max to reduce testing
-            Vector3 minVector = A;
-            Vector3 maxVector = A;
+            #region mine
+            //Vector3 minVector = new Vector3(float.MaXValue,float.MaXValue,float.MaXValue);
+            //Vector3 maXVector = new Vector3(float.MinValue,float.MinValue,float.MinValue);
+            //Set A to be min/maX to reduce testing
+            /*Vector3 minVector = A;
+            Vector3 maXVector = A;*/
 
+            //Check A
+            /*
+            if (A.X < minVector.X) minVector.X = A.X;
+            if (A.Y < minVector.Y) minVector.Y = A.Y;
+            if (A.Z < minVector.Z) minVector.Z = A.Z;
+            if (A.X > maXVector.X) maXVector.X = A.X;
+            if (A.Y > maXVector.Y) maXVector.Y = A.Y;
+            if (A.Z > maXVector.Z) maXVector.Z = A.Z;
             //check B
-            if (B.X <= minVector.X) minVector.X = B.X;
-            if (B.Y <= minVector.Y) minVector.Y = B.Y;
-            if (B.Z <= minVector.Z) minVector.Z = B.Z;
-            if (B.X >= maxVector.X) maxVector.X = B.X;
-            if (B.Y >= maxVector.Y) maxVector.Y = B.Y;
-            if (B.Z >= maxVector.Z) maxVector.Z = B.Z;
-
+            if (B.X < minVector.X) minVector.X = B.X;
+            if (B.Y < minVector.Y) minVector.Y = B.Y;
+            if (B.Z < minVector.Z) minVector.Z = B.Z;
+            if (B.X > maXVector.X) maXVector.X = B.X;
+            if (B.Y > maXVector.Y) maXVector.Y = B.Y;
+            if (B.Z > maXVector.Z) maXVector.Z = B.Z;
             //check C
-            if (C.X <= minVector.X) minVector.X = C.X;
-            if (C.Y <= minVector.Y) minVector.Y = C.Y;
-            if (C.Z <= minVector.Z) minVector.Z = C.Z;
-            if (C.X >= maxVector.X) maxVector.X = C.X;
-            if (C.Y >= maxVector.Y) maxVector.Y = C.Y;
-            if (C.Z >= maxVector.Z) maxVector.Z = C.Z;
+            if (C.X < minVector.X) minVector.X = C.X;
+            if (C.Y < minVector.Y) minVector.Y = C.Y;
+            if (C.Z < minVector.Z) minVector.Z = C.Z;
+            if (C.X > maXVector.X) maXVector.X = C.X;
+            if (C.Y > maXVector.Y) maXVector.Y = C.Y;
+            if (C.Z > maXVector.Z) maXVector.Z = C.Z;
+            */
+            #endregion
+
+            float xMin = float.MaxValue, yMin = float.MaxValue, zMin = float.MaxValue;
+            float xMax = float.Epsilon, yMax = float.Epsilon, zMax = float.Epsilon;
+            // VerteX A
+            xMin = A.X < xMin ? A.X : xMin;
+            yMin = A.Y < yMin ? A.Y : yMin;
+            zMin = A.Z < zMin ? A.Z : zMin;
+            xMax = A.X > xMax ? A.X : xMax;
+            yMax = A.Y > yMax ? A.Y : yMax;
+            zMax = A.Z > zMax ? A.Z : zMax;
+
+            // VerteX B
+            xMin = B.X < xMin ? B.X : xMin;
+            yMin = B.Y < yMin ? B.Y : yMin;
+            zMin = B.Z < zMin ? B.Z : zMin;
+            xMax = B.X > xMax ? B.X : xMax;
+            yMax = B.Y > yMax ? B.Y : yMax;
+            zMax = B.Z > zMax ? B.Z : zMax;
+
+            // VerteX C
+            xMin = C.X < xMin ? C.X : xMin;
+            yMin = C.Y < yMin ? C.Y : yMin;
+            zMin = C.Z < zMin ? C.Z : zMin;
+            xMax = C.X > xMax ? C.X : xMax;
+            yMax = C.Y > yMax ? C.Y : yMax;
+            zMax = C.Z > zMax ? C.Z : zMax;
 
 
-            BoundingBox.MinVector = minVector;
-            BoundingBox.MaxVector = maxVector;
+            Vector3 minVector = new Vector3(xMin,yMin,zMin);
+            Vector3 maXVector = new Vector3(xMax,yMax,zMax);
+
+            BoundingBox = new AxisAlignedBoundingBox(minVector, maXVector);
 
         }
 
@@ -182,11 +220,11 @@ namespace RayTracer.SceneGraph.Objects
         {
             float sqrtX = (float)Math.Sqrt(sample.X);
             float x = 1 - sqrtX;
-            float y = sample.Y*sqrtX;
+            float y = sample.Y * sqrtX;
 
-            Vector3 aScaled = A*x;
-            Vector3 bScaled = B*y;
-            Vector3 cScaled = C*(1 - (x + y));
+            Vector3 aScaled = A * x;
+            Vector3 bScaled = B * y;
+            Vector3 cScaled = C * (1 - (x + y));
 
             sample.Normal = Normal;
             sample.Area = area;
@@ -202,7 +240,7 @@ namespace RayTracer.SceneGraph.Objects
         {
             Vector3 ab = Vector3.Add(A, B);
             Vector3 ac = Vector3.Add(A, C);
-            return (float) (0.5f*Math.Sqrt(ab.Length*ab.Length*ac.Length*ac.Length - Math.Pow(Vector3.Dot(ab, ac), 2)));
+            return (float)(0.5f * Math.Sqrt(ab.Length * ab.Length * ac.Length * ac.Length - Math.Pow(Vector3.Dot(ab, ac), 2)));
         }
 
         public int GetNumberOfComponents()

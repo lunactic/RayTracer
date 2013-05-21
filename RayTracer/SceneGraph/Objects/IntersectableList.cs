@@ -23,7 +23,7 @@ namespace RayTracer.SceneGraph.Objects
         public override void BuildBoundingBox()
         {
             Vector3 minVector = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
-            Vector3 maxVector = new Vector3(float.MinValue, float.MinValue, float.MinValue);
+            Vector3 maxVector = new Vector3(float.Epsilon, float.Epsilon, float.Epsilon);
 
             foreach (IIntersectable intersectable in Intersectables)
             {
@@ -38,20 +38,20 @@ namespace RayTracer.SceneGraph.Objects
                     maxVector.Z = Math.Max(maxVector.Z, box.MaxVector.Z);
                 }
             }
-            BoundingBox = new AxisAlignedBoundingBox { MinVector = minVector, MaxVector = maxVector };
+            BoundingBox = new AxisAlignedBoundingBox(minVector,maxVector);
         }
 
         public new HitRecord Intersect(Ray ray)
         {
-            BuildBoundingBox();
-            if (BoundingBox.Intersect(ray) == null) return null;
-
+            //BuildBoundingBox();
+            //if (BoundingBox.Intersect(ray) == null) return null;
             HitRecord hit = null;
             foreach (var intersectable in Intersectables)
             {
                 HitRecord tempHit = intersectable.Intersect(ray);
                 if (tempHit != null)
-                    if (hit == null) hit = tempHit;
+                    if (hit == null) 
+                        hit = tempHit;
                     //else if (tempHit.Distance < hit.Distance) hit = tempHit;
                     else if (Constants.IsLightSamplingOn)
                     {

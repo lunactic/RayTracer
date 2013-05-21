@@ -44,7 +44,6 @@ namespace RayTracer.SceneGraph.Objects
             area = a.Length * b.Length;
             normal = Vector3.Cross(a, b);
             normal.Normalize();
-            BoundingBox = new AxisAlignedBoundingBox();
             BuildBoundingBox();
         }
 
@@ -85,8 +84,8 @@ namespace RayTracer.SceneGraph.Objects
             float zMax = Math.Max(P0.Z, Math.Max(P1.Z, Math.Max(P2.Z, P3.Z)));
 
 
-            BoundingBox.MinVector = new Vector3(xMin, yMin, zMin);
-            BoundingBox.MaxVector = new Vector3(xMax, yMax, zMax);
+
+            BoundingBox = new AxisAlignedBoundingBox(new Vector3(xMin, yMin, zMin),new Vector3(xMax, yMax, zMax));
         }
 
         public Vector3 GetSamplePoint(LightSample sample)

@@ -37,8 +37,8 @@ namespace RayTracer.SceneGraph.Objects
             Vector4 dir = new Vector4(ray.Direction);
             Vector4 orig = new Vector4(ray.Origin) { W = 1 };
 
-            Vector4 transfDir = Vector4.Transform(dir, invTransformationMatrix);
-            Vector4 transfOrig = Vector4.Transform(orig, invTransformationMatrix);
+            Vector4 transfDir = invTransformationMatrix.Transform(dir);
+            Vector4 transfOrig = invTransformationMatrix.Transform(orig);
 
             return new Ray(transfOrig, transfDir);
         }

@@ -28,7 +28,6 @@ namespace RayTracer.SceneGraph.Objects
             Material = material;
             Center = center;
             Radius = radius;
-            BoundingBox = new AxisAlignedBoundingBox();
             BuildBoundingBox();
         }
 
@@ -100,8 +99,7 @@ namespace RayTracer.SceneGraph.Objects
 
         public void BuildBoundingBox()
         {
-            BoundingBox.MinVector = new Vector3(-Radius, -Radius, -Radius);
-            BoundingBox.MaxVector = new Vector3(Radius, Radius, Radius);
+            BoundingBox = new AxisAlignedBoundingBox(new Vector3(Center.X - Radius, Center.Y - Radius, Center.Z - Radius), new Vector3(Center.X + Radius, Center.Y + Radius, Center.Z + Radius));
         }
 
 

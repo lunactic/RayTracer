@@ -19,11 +19,11 @@ namespace RayTracer.Helper
            
             float xMin, xMax, yMin, yMax, zMin, zMax;
             xMin = float.MaxValue;
-            xMax = float.MinValue;
+            xMax = float.Epsilon;
             yMin = float.MaxValue;
-            yMax = float.MinValue;
+            yMax = float.Epsilon;
             zMin = float.MaxValue;
-            zMax = float.MinValue;
+            zMax = float.Epsilon;
 
             String line = null;
 

@@ -12,9 +12,9 @@ namespace RayTracer.SceneGraph.Cameras
         float AspectRation { get; set; }
         int ScreenWidth { get; set; }
         int ScreenHeight { get; set; }
-        Vector4 Up { get; set; }
-        Vector4 Eye { get; set; }
-        Vector4 LookAt { get; set; }
+        Vector3 Up { get; set; }
+        Vector3 Eye { get; set; }
+        Vector3 LookAt { get; set; }
         float FieldOfViewX { get; set; }
         float FieldOfViewY { get; set; }
         void PreProcess();

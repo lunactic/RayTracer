@@ -11,14 +11,14 @@ namespace RayTracer.SceneGraph.Cameras
 {
     public class DepthOfFieldCamera : ICamera
     {
-        public Vector4 Up { get; set; }
-        public Vector4 Eye { get; set; }
-        public Vector4 LookAt { get; set; }
-        public Vector4 LookDirection { get; set; }
+        public Vector3 Up { get; set; }
+        public Vector3 Eye { get; set; }
+        public Vector3 LookAt { get; set; }
+        public Vector3 LookDirection { get; set; }
 
-        public Vector4 u { get; set; }
-        public Vector4 v { get; set; }
-        public Vector4 w { get; set; }
+        public Vector3 u { get; set; }
+        public Vector3 v { get; set; }
+        public Vector3 w { get; set; }
 
         public float t { get; set; }
         public float b { get; set; }
@@ -69,16 +69,16 @@ namespace RayTracer.SceneGraph.Cameras
             FieldOfViewY = (float)(FieldOfViewY * 2 * Math.PI / 180f);
             w = Eye - LookAt;
             w.Normalize();
-            u = new Vector4(Vector3.Cross(Up, w));
+            u = Vector3.Cross(Up, w);
             u.Normalize();
-            v = new Vector4(Vector3.Cross(w, u));
+            v = Vector3.Cross(w, u);
 
             transformationMatrix = new Matrix4()
             {
-                Row0 = u,
-                Row1 = v,
-                Row2 = w,
-                Row3 = Eye
+                Row0 = new Vector4(u),
+                Row1 = new Vector4(v),
+                Row2 = new Vector4(w),
+                Row3 = new Vector4(Eye) { W = 1 }
             };
 
             t = (float)Math.Tan(FieldOfViewX);
@@ -97,7 +97,7 @@ namespace RayTracer.SceneGraph.Cameras
             float rV = (b + (t - b) * (y + 0.5f) / ScreenHeight);
 
             Vector4 cameraRay = new Vector4(rU, rV, -1, 0);
-            Vector4 direction = Vector4.Transform(cameraRay, transformationMatrix);
+            Vector3 direction = Vector4.Transform(cameraRay, transformationMatrix);
             direction = direction - Eye;
 
             return new Ray(Eye, direction);

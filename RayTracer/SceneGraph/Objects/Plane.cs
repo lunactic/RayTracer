@@ -38,7 +38,6 @@ namespace RayTracer.SceneGraph.Objects
             Normal = normal;
             Normal.Normalize();
             Offset = offset;
-            BoundingBox = new AxisAlignedBoundingBox();
             BuildBoundingBox();
         }
 
@@ -68,8 +67,9 @@ namespace RayTracer.SceneGraph.Objects
 
         public void BuildBoundingBox()
         {
-            BoundingBox.MinVector = new Vector3(float.NegativeInfinity,float.NegativeInfinity,float.NegativeInfinity);
-            BoundingBox.MaxVector = new Vector3(float.PositiveInfinity,float.PositiveInfinity,float.PositiveInfinity);
+
+            BoundingBox = new AxisAlignedBoundingBox(new Vector3(float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity), new Vector3(float.PositiveInfinity, float.PositiveInfinity, float.PositiveInfinity));
+
         }
 
         public Vector3 GetSamplePoint(LightSample sample)

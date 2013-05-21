@@ -10,12 +10,14 @@ namespace RayTracer.SceneGraph.Cameras
     public class PinholeCamera : ICamera
     {
         #region Properties
-        public Vector4 Up { get; set; }
-        public Vector4 Eye { get; set; }
-        public Vector4 LookAt { get; set; }
-        public Vector4 LookDirection { get; private set; }
+        public Vector3 Up { get; set; }
+        public Vector3 Eye { get; set; }
+        public Vector3 LookAt { get; set; }
+        //Use if both are given
         public float FieldOfViewX { get; set; }
         public float FieldOfViewY { get; set; }
+        //Use if only one is given
+        public float FieldOfView { get; set; }
 
         public int ScreenWidth { get; set; }
         public int ScreenHeight { get; set; }
@@ -28,9 +30,9 @@ namespace RayTracer.SceneGraph.Cameras
 
         #region fields
 
-        private Vector4 u;
-        private Vector4 v;
-        private Vector4 w;
+        private Vector3 u;
+        private Vector3 v;
+        private Vector3 w;
         private float t;
         private float b;
         private float r;
@@ -42,38 +44,53 @@ namespace RayTracer.SceneGraph.Cameras
         public PinholeCamera()
         {
             AspectRation = float.NaN;
+            FieldOfViewX = float.NaN;
+            FieldOfViewY = float.NaN;
         }
 
         public void PreProcess()
         {
             if (float.IsNaN(AspectRation))
             {
-                AspectRation = ScreenWidth / ScreenHeight;                
+                AspectRation = ScreenWidth / ScreenHeight;
             }
 
-            LookDirection = LookAt - Eye;
-            LookDirection.Normalize();
-            FieldOfViewX = (float)(FieldOfViewX * 2 * Math.PI / 180f);
-            FieldOfViewY = (float)(FieldOfViewY * 2 * Math.PI / 180f);
+            if (!float.IsNaN(FieldOfViewX))
+            {
+                FieldOfViewX = (float)(FieldOfViewX * 2 * Math.PI / 180f);
+                FieldOfViewY = (float)(FieldOfViewY * 2 * Math.PI / 180f);
+            }
+            else
+            {
+                FieldOfView = (float)(FieldOfView * 2 * Math.PI / 180f);
+            }
             w = Eye - LookAt;
             w.Normalize();
-            u = new Vector4(Vector3.Cross(Up, w));
+            u = Vector3.Cross(Up, w);
             u.Normalize();
-            v = new Vector4(Vector3.Cross(w, u));
+            v = Vector3.Cross(w, u);
 
             transformationMatrix = new Matrix4()
                 {
-                    Row0 = u,
-                    Row1 = v,
-                    Row2 = w,
-                    Row3 = Eye
+                    Row0 = new Vector4(u),
+                    Row1 = new Vector4(v),
+                    Row2 = new Vector4(w),
+                    Row3 = new Vector4(Eye) { W = 1 }
                 };
-
-            t = (float)Math.Tan(FieldOfViewX);
-            b = -1 * t;
-            r = (float)Math.Tan(FieldOfViewY / AspectRation);
-            l = -1 * r;
-
+            if (!float.IsNaN(FieldOfViewX))
+            {
+                t = (float)Math.Tan(FieldOfViewX);
+                b = -1 * t;
+                r = (float)Math.Tan(FieldOfViewY / AspectRation);
+                l = -1 * r;
+            }
+            else
+            {
+                t = (float)Math.Tan(FieldOfView / 2);
+                b = -1 * t;
+                r = AspectRation * t;
+                l = -1 * r;
+            }
         }
 
         /// <summary>
@@ -90,7 +107,7 @@ namespace RayTracer.SceneGraph.Cameras
             float rV = (b + (t - b) * (y + 0.5f) / ScreenHeight);
 
             Vector4 cameraRay = new Vector4(rU, rV, -1, 0);
-            Vector4 direction = Vector4.Transform(cameraRay, transformationMatrix);
+            Vector3 direction = Vector4.Transform(cameraRay, transformationMatrix);
             direction = direction - Eye;
 
             return new Ray(Eye, direction);

@@ -23,10 +23,10 @@ namespace RayTracer.SceneGraph.Accelerate
             get { return Vector3.Subtract(MaxVector, MinVector); }
         }
 
-        public AxisAlignedBoundingBox()
+        public AxisAlignedBoundingBox(Vector3 minVector,Vector3 maxVector)
         {
-            MinVector = Vector3.Zero;
-            MaxVector = Vector3.Zero;
+            MinVector = minVector;
+            MaxVector = maxVector;
         }
 
         /// <summary>

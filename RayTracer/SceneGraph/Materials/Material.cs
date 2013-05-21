@@ -10,6 +10,14 @@ using System.Threading.Tasks;
 
 namespace RayTracer.SceneGraph.Materials
 {
+    /// <summary>
+    /// The implementations for the procedural noise are taken from here: http://www.codermind.com/articles/Raytracer-in-C++-Part-III-Textures.html
+    /// </summary>
+    public enum Noise
+    {
+        Turbulence, Marble, Bumb, None
+    }
+
     public abstract class Material
     {
         public Color Specular { get; set; }
@@ -18,29 +26,51 @@ namespace RayTracer.SceneGraph.Materials
         public float Shininess { get; set; }
         public float RefractionIndex { get; set; }
         public float Ks { get; set; }
-
+        public Noise Noise { get; set; }
         public Texture Texture { get; set; }
 
         public Material()
         {
-            Specular = new Color(0,0,0);
-            Diffuse = new Color(0,0,0);
-            Ambient = new Color(0,0,0);
+            Specular = new Color(0, 0, 0);
+            Diffuse = new Color(0, 0, 0);
+            Ambient = new Color(0, 0, 0);
             Shininess = 0f;
             RefractionIndex = 1f;
             Ks = 1;
+            Noise = Noise.None;
         }
 
         public Color Shade(HitRecord record, Vector3 lightDirection)
         {
-           
-            Color pixelColor = new Color(0,0,0);
+
+           Color pixelColor = new Color(0, 0, 0);
             Vector3 rayDirection = record.RayDirection;
             rayDirection.Normalize();
             Vector3 normal = record.SurfaceNormal;
             normal.Normalize();
 
-           
+            float noiseCoefficient = 0f;
+
+            switch (Noise)
+            {
+                case Noise.Turbulence:
+                    noiseCoefficient = Turbulence(record.IntersectionPoint);
+                    break;
+                case Noise.Marble:
+                    noiseCoefficient = Marble(record.IntersectionPoint);
+                    break;
+                case Noise.Bumb:
+                    noiseCoefficient = 1f;
+                    normal = Bump(record.IntersectionPoint, normal);
+                    break;
+                case Noise.None:
+                    noiseCoefficient = 1f;
+                    break;
+                default:
+                    noiseCoefficient = 1f;
+                    break;
+            }
+
             float nDotL = Vector3.Dot(normal, lightDirection);
 
             if (nDotL > 0)
@@ -57,7 +87,8 @@ namespace RayTracer.SceneGraph.Materials
                 }
 
                 //add Diffuse Light
-                pixelColor.Append(diffuse.Mult(nDotL));
+                pixelColor.Append(diffuse.Mult(nDotL).Mult(noiseCoefficient));
+                pixelColor.Append(pixelColor.Mult(1f - noiseCoefficient));
                 //Calculate the Blinn halfVector
                 Vector3 h = lightDirection - rayDirection;
                 h.Normalize();
@@ -73,6 +104,42 @@ namespace RayTracer.SceneGraph.Materials
             pixelColor.Append(Ambient);
             pixelColor.Clamp(0f, 1f);
             return pixelColor;
+        }
+
+        private Vector3 Bump(Vector3 hitPoint, Vector3 normal)
+        {
+            float noiseCoefX = (float)PerlinNoise.Noise(0.1 * hitPoint.X, 0.1 * hitPoint.Y, 0.1 * hitPoint.Z);
+            float noiseCoefY = (float)PerlinNoise.Noise(0.1 * hitPoint.Y, 0.1 * hitPoint.Z, 0.1 * hitPoint.X);
+            float noiseCoefZ = (float)PerlinNoise.Noise(0.1 * hitPoint.Z, 0.1 * hitPoint.X, 0.1 * hitPoint.Y);
+
+            normal.X += noiseCoefX;
+            normal.Y += noiseCoefY;
+            normal.Z += noiseCoefZ;
+
+            return normal;
+        }
+
+
+        private float Marble(Vector3 hitPoint)
+        {
+            float noiseCoefficient = Turbulence(hitPoint);
+
+            noiseCoefficient = (float)(0.5f * (Math.Sin(hitPoint.X + hitPoint.Y) + noiseCoefficient) + 0.5f);
+
+            return noiseCoefficient;
+        }
+
+        private float Turbulence(Vector3 hitPoint)
+        {
+            float noiseCoefficient = 0;
+            for (int i = 1; i < 10; i++)
+            {
+                noiseCoefficient += (1.0f / i) *
+                                    Math.Abs(
+                                        (float)
+                                        (PerlinNoise.Noise(i * hitPoint.X, i * hitPoint.Y, i*hitPoint.Z)));
+            }
+            return noiseCoefficient;
         }
 
         protected float Reflectance(HitRecord record)

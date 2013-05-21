@@ -300,6 +300,7 @@ namespace RayTracer.Structs
             }
         }
         #endregion
+
         #region CreateRotation[XYZ]
 
         /// <summary>
@@ -431,6 +432,23 @@ namespace RayTracer.Structs
             CreateTranslation(ref vector, out result);
             return result;
         }
+
+        public Vector4 Transform(Vector4 vec)
+        {
+
+            Vector4 res;
+
+            float x, y, z;
+            x = M11 * vec.X + M12 * vec.Y + M13 * vec.Z + M14 * vec.W;
+            y = M21 * vec.X + M22 * vec.Y + M23 * vec.Z + M24 * vec.W;
+            z = M31 * vec.X + M32 * vec.Y + M33 * vec.Z + M34 * vec.W;
+            res.W = M41 * vec.X + M42 * vec.Y + M43 * vec.Z + M44 * vec.W;
+            res.X = x;
+            res.Y = y;
+            res.Z = z;
+            return res;
+        }
+
         #endregion
 
         #region Transpose

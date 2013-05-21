@@ -34,10 +34,11 @@ namespace RayTracer.SceneGraph.Integrators
                     Vector3 distance = Vector3.Subtract(light.Position, hitPos);
 
                     //DEBUGGING
-                    if (shadowHit != null && (shadowHit.Distance > distance.Length))
+                    /*if (shadowHit != null && (shadowHit.Distance > distance.Length))
                     {
                         returnColor.Append(record.HitObject.Material.Shade(record, light.GetLightDirection(record.IntersectionPoint)).Mult(light.GetIncidentColor(record.IntersectionPoint)));
-                    }
+                    }*/
+                    returnColor.Append(record.HitObject.Material.Shade(record, light.GetLightDirection(record.IntersectionPoint)).Mult(light.GetIncidentColor(record.IntersectionPoint)));
                  
                 }
 

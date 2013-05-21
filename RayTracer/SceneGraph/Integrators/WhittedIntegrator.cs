@@ -27,12 +27,16 @@ namespace RayTracer.SceneGraph.Integrators
             {
                 if (!(record.Material is MirrorMaterial))
                 {
-                    returnColor.Append(shadowIntegrator.Integrate(ray, objects,lights,sampler,subPathSamples));
+                    returnColor.Append(shadowIntegrator.Integrate(ray, objects, lights, sampler, subPathSamples));
                 }
                 if (record.Material is MirrorMaterial && record.Material.Specular.R > 0 && record.Material.Specular.G > 0 && record.Material.Specular.B > 0)
-                    returnColor.Append(Reflection(ray, record, 0, returnColor, objects,lights, sampler,subPathSamples));
+                    returnColor.Append(Reflection(ray, record, 0, returnColor, objects, lights, sampler, subPathSamples));
             }
-
+            else
+            {
+                if (SkyBox.IsSkyBoxLoaded())
+                    returnColor = SkyBox.GetSkyBoxColor(ray);
+            }
             return returnColor;
         }
 
