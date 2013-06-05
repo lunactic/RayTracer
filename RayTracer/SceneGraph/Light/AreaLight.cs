@@ -22,26 +22,31 @@ namespace RayTracer.SceneGraph.Light
 
         public void Sample(HitRecord record, LightSample sample)
         {
-            //position = sampPoint
+
             Vector3 position = Shape.GetSamplePoint(sample);
-            Vector3 normal = sample.Normal;
+            sample.Position = position;
+
             Vector3 wi = position;
-            //wi = incidence
             wi = wi - record.IntersectionPoint;
-            //wi.Normalize();
-            position = position - record.IntersectionPoint; 
-            //ldist = inlen
+
+            sample.Pdf = (float)(1f / Math.PI * sample.Area);
+
+            
             float ldist = wi.Length;
+            sample.Distance = ldist;
+            wi.Normalize();
+            sample.Wi = wi;
+
             Vector3 wiNegated = -wi;
-            float cos1 = Math.Max(Vector3.Dot(record.SurfaceNormal, wi), 0);
-            float cos2 = Math.Max(Vector3.Dot(normal, wiNegated), 0);
+            Vector3 recordNormal = record.SurfaceNormal;
+            Vector3 lightNormal = sample.Normal;
+
+            float cos1 = Math.Min(Math.Max(Vector3.Dot(recordNormal, wi), 0), 1);
+            float cos2 = Math.Min(Math.Max(Vector3.Dot(lightNormal, wiNegated), 0), 1);
             float geom = (cos1 * cos2) / (ldist * ldist);
             float multFact = geom * Shape.GetArea();
-            sample.LightColor = LightColor.Mult(multFact);
-            sample.Normal = normal;
-            sample.Position = position;
-            sample.Wi = wi;
-            sample.Pdf = (float)(1f / Shape.GetArea());
+            sample.LightColor = LightColor.Mult(geom);
+          
         }
 
         #region unused

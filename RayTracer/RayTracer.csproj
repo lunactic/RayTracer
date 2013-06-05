@@ -118,7 +118,13 @@
     <None Include="geometries\cbox\meshes\plane.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="geometries\collada\deathstar.DAE">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="geometries\collada\desk.DAE">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="geometries\collada\fighter.DAE">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="geometries\collada\Heart_2.dae">
@@ -284,6 +290,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="geometries\cbox\cbox.xml" />
+    <Content Include="Textures\Bumpmap\orange.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Textures\earth.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -321,6 +330,24 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Textures\SkyBox_farm\skybox_country_paths_top.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Textures\Skybox_stars\backmo.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Textures\Skybox_stars\botmo.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Textures\Skybox_stars\frontmo.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Textures\Skybox_stars\leftmo.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Textures\Skybox_stars\rightmo.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Textures\Skybox_stars\topmo.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Textures\star.jpg">

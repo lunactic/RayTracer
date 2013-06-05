@@ -14,7 +14,7 @@ namespace RayTracer.SceneGraph.Integrators
     public class ShadowIntegrator : IIntegrator
     {
 
-        public Color Integrate(Ray ray, IIntersectable objects, List<ILight> lights, ISampler sampler, List<List<Sample>> subPathSamples)
+        public Color Integrate(Ray ray, IIntersectable objects, List<ILight> lights, ISampler sampler, List<List<Sample>> subPathSamples, LightSample lightSample)
         {
             HitRecord record = objects.Intersect(ray);
 

@@ -20,13 +20,21 @@ namespace RayTracer.SceneGraph.Scenes
         public TextureScene()
         {
             FileName = "Assignment4_Texture.jpg";
-            //scene = new Scene { BackgroundColor = Color.Black };
             Integrator = (IIntegrator)Activator.CreateInstance(Constants.Integrator);
+
+            Texture back = new Texture("./Textures/Skybox_stars/backmo.jpg",false);
+            Texture bottom = new Texture("./Textures/Skybox_stars/botmo.jpg", false);
+            Texture front = new Texture("./Textures/Skybox_stars/frontmo.jpg", false);
+            Texture left = new Texture("./Textures/Skybox_stars/leftmo.jpg", false);
+            Texture right = new Texture("./Textures/Skybox_stars/rightmo.jpg", false);
+            Texture top = new Texture("./Textures/Skybox_stars/topmo.jpg", false);
+            
+            SkyBox.LoadSkybox(left,right,top,bottom,front,back);
 
             //List of objects
             //Sphere sphere = new Sphere(textureMaterial, new Vector3(0, 0, 0), .3f);
             ColladaParser parser = new ColladaParser();
-            parser.ParseColladaFile("./geometries/collada/teapot.dae");
+            parser.ParseColladaFile("./geometries/collada/deathstar.dae",1024);
 
             Camera = parser.Cameras.Values.First();
             Camera.PreProcess();

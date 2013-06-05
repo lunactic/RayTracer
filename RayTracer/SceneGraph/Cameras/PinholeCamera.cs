@@ -25,7 +25,7 @@ namespace RayTracer.SceneGraph.Cameras
 
         public float Apperture { get; set; }
         public float D { get; set; }
-
+        public Matrix4 TransformationMatrix { get; private set; }
         #endregion
 
         #region fields
@@ -37,7 +37,6 @@ namespace RayTracer.SceneGraph.Cameras
         private float b;
         private float r;
         private float l;
-        private Matrix4 transformationMatrix;
         #endregion
 
 
@@ -70,12 +69,12 @@ namespace RayTracer.SceneGraph.Cameras
             u.Normalize();
             v = Vector3.Cross(w, u);
 
-            transformationMatrix = new Matrix4()
+            TransformationMatrix = new Matrix4()
                 {
-                    Row0 = new Vector4(u),
-                    Row1 = new Vector4(v),
-                    Row2 = new Vector4(w),
-                    Row3 = new Vector4(Eye) { W = 1 }
+                    Column0 = new Vector4(u),
+                    Column1 = new Vector4(v),
+                    Column2 = new Vector4(w),
+                    Column3 = new Vector4(Eye) { W = 1 }
                 };
             if (!float.IsNaN(FieldOfViewX))
             {
@@ -108,7 +107,7 @@ namespace RayTracer.SceneGraph.Cameras
 
             Vector4 cameraRay = new Vector4(rU, rV, -1, 0);
 
-            Vector3 direction = transformationMatrix.Transform(cameraRay);
+            Vector3 direction = TransformationMatrix.Transform(cameraRay);
             direction = direction - Eye;
 
             return new Ray(Eye, direction);
@@ -123,12 +122,19 @@ namespace RayTracer.SceneGraph.Cameras
                 LookAt = LookAt,
                 FieldOfViewX = (float)(FieldOfViewX / 2 / Math.PI * 180f),
                 FieldOfViewY = (float)(FieldOfViewY / 2 / Math.PI * 180f),
+                FieldOfView = (float)(FieldOfView / 2 / Math.PI * 180f),
                 ScreenHeight = ScreenHeight,
                 ScreenWidth = ScreenWidth,
 
             };
             clone.PreProcess();
             return clone;
+        }
+
+
+        public Ray CreateRay(float x, float y, List<Samplers.Sample> appertureSamples)
+        {
+            throw new NotImplementedException();
         }
     }
 }

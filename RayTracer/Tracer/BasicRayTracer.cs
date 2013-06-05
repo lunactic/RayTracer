@@ -34,17 +34,8 @@ namespace RayTracer.Tracer
             stopwatch.Reset();
             if (Constants.NumberOfThreads == 1) //One Thread
             {
-
                 stopwatch.Start();
                 ISampler sampler = (ISampler)Activator.CreateInstance(Constants.Sampler);
-                List<List<Sample>> subPathSamples = new List<List<Sample>>();
-                if (scene.Integrator is PathTraceIntegrator)
-                {
-                    for (int s = 0; s < Constants.MaximalPathLength; s++)
-                    {
-                        subPathSamples.Add(sampler.CreateSamples());
-                    }
-                }
                 if (Constants.IsSamplingOn && Constants.NumberOfSamples > 0)
                 {
                     Console.WriteLine("Using Supersampling with: " + Constants.NumberOfSamples + " samples!");
@@ -53,15 +44,35 @@ namespace RayTracer.Tracer
                     {
                         for (int j = 0; j < scene.Film.Height; j++)
                         {
+                            Color pixelColor = new Color(0, 0, 0);
+                            List<List<Sample>> subPathSamples = new List<List<Sample>>();
+                            List<LightSample> lightSamples = new List<LightSample>();
                             List<Sample> samples = sampler.CreateSamples();
-                            Color c = new Color(0, 0, 0);
-                            foreach (Sample sample in samples)
+                            if (scene.Integrator is PathTraceIntegrator)
                             {
-                                Ray ray = scene.Camera.CreateRay(i + sample.X, j + sample.Y);
-                                c.Append(scene.Integrator.Integrate(ray, scene.Objects, scene.Lights, sampler, subPathSamples));
+                                lightSamples = sampler.GetLightSamples(Constants.MaximalPathLength);
+                                for (int s = 0; s < Constants.MaximalPathLength; s++)
+                                {
+                                    subPathSamples.Add(sampler.CreateSamples());
+                                }
+                                foreach (Sample sample in samples)
+                                {
+                                    Ray ray = scene.Camera.CreateRay(i + sample.X, j + sample.Y);
+                                    pixelColor.Append(scene.Integrator.Integrate(ray, scene.Objects, scene.Lights, sampler, subPathSamples,Randomizer.PickRandomLightSample(lightSamples)));
+                                }
                             }
-                            c.VoidDiv(samples.Count);
-                            scene.Film.SetPixel(i, j, c);
+                            else
+                            {
+                                lightSamples = sampler.GetLightSamples();
+                                foreach (Sample sample in samples)
+                                {
+                                    Ray ray = scene.Camera.CreateRay(i + sample.X, j + sample.Y);
+                                    pixelColor.Append(scene.Integrator.Integrate(ray, scene.Objects, scene.Lights, sampler, subPathSamples, Randomizer.PickRandomLightSample(lightSamples))); 
+                                }
+                            }
+                       
+                            pixelColor.VoidDiv(samples.Count);
+                            scene.Film.SetPixel(i, j, pixelColor);
                         }
                     }
                 }
@@ -72,7 +83,7 @@ namespace RayTracer.Tracer
                         for (int j = 0; j < scene.Film.Height; j++)
                         {
                             Ray ray = scene.Camera.CreateRay(i, j);
-                            Color color = scene.Integrator.Integrate(ray, scene.Objects, scene.Lights, sampler, subPathSamples);
+                            Color color = scene.Integrator.Integrate(ray, scene.Objects, scene.Lights,null,null,null);
                             scene.Film.SetPixel(i, j, color);
                         }
                     }

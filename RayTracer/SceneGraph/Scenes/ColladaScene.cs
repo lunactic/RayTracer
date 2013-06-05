@@ -18,7 +18,7 @@ namespace RayTracer.SceneGraph.Scenes
         {
             FileName = "Assignment_Collada.jpg";
             ColladaParser parser = new ColladaParser();
-            parser.ParseColladaFile("./geometries/collada/heart.dae");
+            parser.ParseColladaFile("./geometries/collada/reference.dae",1024);
             Integrator = (IIntegrator)Activator.CreateInstance(Constants.Integrator);
             /*Camera = new PinholeCamera()
             {
@@ -69,26 +69,22 @@ namespace RayTracer.SceneGraph.Scenes
                 Material = blue
             };
             Objects = new IntersectableList();
-
+            /*
             Objects.Add(p1);
             Objects.Add(p2);
             Objects.Add(p3);
             Objects.Add(p4);
             Objects.Add(p5);
-
+            */
             Lights = new List<ILight>();
 
-            ILight light = new PointLight(new Vector3(0.0f, 0.8f, 0.8f), new Color(1, 1, 1));
-            Lights.Add(light);
+            foreach (ILight light in parser.Lights.Values)
+            {
+                Lights.Add(light);
+            }
             foreach (IIntersectable intersectable in parser.Meshes.Values)
             {
-                Matrix4 m = Matrix4.Scale(0.1f);
-                Matrix4 rot = Matrix4.CreateRotationX(45f);
-
-                Matrix4 res = Matrix4.Mult(m, rot);
-
-                Instance i = new Instance(intersectable, res);
-                Objects.Add(i);
+                Objects.Add(intersectable);
             }
 
             
@@ -96,6 +92,7 @@ namespace RayTracer.SceneGraph.Scenes
             foreach (ICamera camera in parser.Cameras.Values)
             {
                 Camera = camera;
+                Camera.PreProcess();
             }
 
             if (Camera == null || float.IsNaN(Camera.AspectRation))

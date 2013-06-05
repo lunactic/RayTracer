@@ -2,8 +2,8 @@
 <COLLADA version="1.4.1">
   <asset><contributor><author></author><authoring_tool>FBX COLLADA exporter</authoring_tool><comments></comments></contributor><created>2013-05-15T13:47:35Z</created><keywords></keywords><modified>2013-05-15T13:47:35Z</modified><revision></revision><subject></subject><title></title><unit meter="1.000000" name="centimeter"></unit><up_axis>Y_UP</up_axis></asset>
   <library_images>
-    <image id="Map #3-image" name="Map #3"><init_from>file://C:\Users\Mike\Documents\3dsMax\sceneassets\images\JP_Brick01_Bump.jpg</init_from></image>
-    <image id="Map #1-image" name="Map #1"><init_from>file://C:\Users\Mike\Documents\3dsMax\sceneassets\images\Concrete.Precast Structural Concrete.Smooth.jpg</init_from></image>
+    <image id="Map #3-image" name="Map #3"><init_from>file://C:\Users\lunactic\Documents\3dsMax\sceneassets\images\JP_Brick01_Bump.jpg</init_from></image>
+    <image id="Map #1-image" name="Map #1"><init_from>file://C:\Users\lunactic\Documents\3dsMax\sceneassets\images\Concrete.Precast Structural Concrete.Smooth.jpg</init_from></image>
   </library_images>
   <library_materials>
     <material id="Material_Plane" name="Material_Plane">

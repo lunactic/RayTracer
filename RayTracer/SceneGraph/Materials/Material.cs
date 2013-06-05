@@ -27,7 +27,8 @@ namespace RayTracer.SceneGraph.Materials
         public float RefractionIndex { get; set; }
         public float Ks { get; set; }
         public Noise Noise { get; set; }
-        public Texture Texture { get; set; }
+        public Texture ColorTexture { get; set; }
+        public Texture BumpTexture { get; set; }
 
         public Material()
         {
@@ -40,14 +41,13 @@ namespace RayTracer.SceneGraph.Materials
             Noise = Noise.None;
         }
 
-        public Color Shade(HitRecord record, Vector3 lightDirection)
+        public Color Shade(HitRecord record, Vector3 wi)
         {
 
-           Color pixelColor = new Color(0, 0, 0);
-            Vector3 rayDirection = record.RayDirection;
-            rayDirection.Normalize();
+            Color pixelColor = new Color(0, 0, 0);
             Vector3 normal = record.SurfaceNormal;
             normal.Normalize();
+            wi.Normalize();
 
             float noiseCoefficient = 0f;
 
@@ -71,15 +71,26 @@ namespace RayTracer.SceneGraph.Materials
                     break;
             }
 
-            float nDotL = Vector3.Dot(normal, lightDirection);
+            if (BumpTexture != null)
+            {
+                Color displacementColor = BumpTexture.GetColorFromTexCoordinate(record.HitObject.GetTextudeCoordinates(record));
+                Vector3 displacementNormal = normal;
+                displacementNormal.X = ((displacementColor.R * 2) - 1);
+                displacementNormal.Y = ((displacementColor.G * 2) - 1);
+                displacementNormal.Z = displacementColor.B;
+                normal = (Vector3.Dot(displacementNormal, normal) < 0) ? -displacementNormal : displacementNormal;
+            }
+
+            float nDotL = Vector3.Dot(normal, wi);
 
             if (nDotL > 0)
             {
                 Color diffuse;
 
-                if (Constants.TextureMapping && record.Material.Texture != null && !(record.HitObject is Plane))
+                if (Constants.TextureMapping && ColorTexture != null && !(record.HitObject is Plane))
                 {
-                    diffuse = Texture.GetColorFromTexCoordinate(record.HitObject.GetTextudeCoordinates(record));
+                    diffuse = ColorTexture.GetColorFromTexCoordinate(record.HitObject.GetTextudeCoordinates(record));
+
                 }
                 else
                 {
@@ -90,7 +101,8 @@ namespace RayTracer.SceneGraph.Materials
                 pixelColor.Append(diffuse.Mult(nDotL).Mult(noiseCoefficient));
                 pixelColor.Append(pixelColor.Mult(1f - noiseCoefficient));
                 //Calculate the Blinn halfVector
-                Vector3 h = lightDirection - rayDirection;
+                Vector3 h = wi;
+                h = Vector3.Add(h, wi);
                 h.Normalize();
 
 
@@ -137,7 +149,7 @@ namespace RayTracer.SceneGraph.Materials
                 noiseCoefficient += (1.0f / i) *
                                     Math.Abs(
                                         (float)
-                                        (PerlinNoise.Noise(i * hitPoint.X, i * hitPoint.Y, i*hitPoint.Z)));
+                                        (PerlinNoise.Noise(i * hitPoint.X, i * hitPoint.Y, i * hitPoint.Z)));
             }
             return noiseCoefficient;
         }
@@ -178,6 +190,5 @@ namespace RayTracer.SceneGraph.Materials
 
         }
 
-        public abstract Color GetBrdf(Vector3 w_o, Vector3 w_i, HitRecord record);
     }
 }

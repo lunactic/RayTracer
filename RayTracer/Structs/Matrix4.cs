@@ -108,7 +108,7 @@ namespace RayTracer.Structs
         public Vector4 Column0
         {
             get { return new Vector4(Row0.X, Row1.X, Row2.X, Row3.X); }
-            set { Row0.X = value.X; Row1.X = value.X; Row2.X = value.X; Row3.X = value.X; }
+            set { Row0.X = value.X; Row1.X = value.Y; Row2.X = value.Z; Row3.X = value.W; }
         }
 
         /// <summary>
@@ -117,7 +117,7 @@ namespace RayTracer.Structs
         public Vector4 Column1
         {
             get { return new Vector4(Row0.Y, Row1.Y, Row2.Y, Row3.Y); }
-            set { Row0.Y = value.Y; Row1.Y = value.Y; Row2.Y = value.Y; Row3.Y = value.Y; }
+            set { Row0.Y = value.X; Row1.Y = value.Y; Row2.Y = value.Z; Row3.Y = value.W; }
         }
 
         /// <summary>
@@ -126,7 +126,7 @@ namespace RayTracer.Structs
         public Vector4 Column2
         {
             get { return new Vector4(Row0.Z, Row1.Z, Row2.Z, Row3.Z); }
-            set { Row0.Z = value.Z; Row1.Z = value.Z; Row2.Z = value.Z; Row3.X = value.Z; }
+            set { Row0.Z = value.X; Row1.Z = value.Y; Row2.Z = value.Z; Row3.Z = value.W; }
         }
 
         /// <summary>
@@ -135,7 +135,7 @@ namespace RayTracer.Structs
         public Vector4 Column3
         {
             get { return new Vector4(Row0.W, Row1.W, Row2.W, Row3.W); }
-            set { Row0.W = value.W; Row1.W = value.W; Row2.W = value.W; Row3.W = value.W; }
+            set { Row0.W = value.X; Row1.W = value.Y; Row2.W = value.Z; Row3.W = value.W; }
         }
 
         #endregion

@@ -25,14 +25,5 @@ namespace RayTracer.SceneGraph.Materials
             Specular = new Color(1, 1, 1);
             Shininess = 32f;
         }
-
-        public override Color GetBrdf(Vector3 w_o, Vector3 w_i, HitRecord record)
-        {
-            Vector3 normal = record.SurfaceNormal;
-            Color diffuseBrdf = Diffuse.Div((float)Math.PI);
-
-
-            return diffuseBrdf;
-        }
     }
 }

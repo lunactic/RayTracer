@@ -34,6 +34,7 @@ namespace RayTracer.Structs
     {
         #region Fields & Access
 
+        #region single fields
         /// <summary>Row 0, Column 0</summary>
         public float R0C0;
 
@@ -60,6 +61,7 @@ namespace RayTracer.Structs
 
         /// <summary>Row 2, Column 2</summary>
         public float R2C2;
+        #endregion
 
         /// <summary>Gets the component at the given row and column in the matrix.</summary>
         /// <param name="row">The row of the matrix.</param>
@@ -177,6 +179,62 @@ namespace RayTracer.Structs
         }
 
 
+        /// <summary>
+        /// The first column of this matrix
+        /// </summary>
+        public Vector3 Column0
+        {
+            get { return new Vector3(this[0,0], this[1,0], this[2,0]); }
+            set { R0C0 = value.X; R1C0 = value.Y; R2C0 = value.Z; }
+        }
+
+        /// <summary>
+        /// The second column of this matrix
+        /// </summary>
+        public Vector3 Column1
+        {
+            get { return new Vector3(this[0, 1], this[1, 1], this[2, 1]); }
+            set { this.R0C1 = value.X; this.R1C1 = value.Y; this.R2C1 = value.Z; }
+        }
+
+        /// <summary>
+        /// The third column of this matrix
+        /// </summary>
+        public Vector3 Column2
+        {
+            get { return new Vector3(this[0, 2], this[1, 2], this[2, 2]); }
+            set { this.R0C2 = value.X; this.R1C2 = value.Y; this.R2C2 = value.Z; }
+        }
+
+
+
+
+        /// <summary>
+        /// The first row of this matrix
+        /// </summary>
+        public Vector3 Row0
+        {
+            get { return new Vector3(this[0, 0], this[0, 1], this[0, 2]); }
+            set { this.R0C0 = value.X; this.R0C1 = value.Y; this.R0C2 = value.Z; }
+        }
+
+        /// <summary>
+        /// The second row of this matrix
+        /// </summary>
+        public Vector3 Row1
+        {
+            get { return new Vector3(this[1, 0], this[1, 1], this[1, 2]); }
+            set { this.R1C0 = value.X; this.R1C1 = value.Y; this.R1C2 = value.Z; }
+        }
+
+        /// <summary>
+        /// The third row of this matrix
+        /// </summary>
+        public Vector3 Row2
+        {
+            get { return new Vector3(this[2, 0], this[2, 1], this[2, 2]); }
+            set { this.R2C0 = value.X; this.R2C1 = value.Y; this.R2C2 = value.Z; }
+        }
         /// <summary>Converts the matrix into an array of doubles.</summary>
         /// <param name="matrix">The matrix to convert.</param>
         /// <returns>An array of doubles for the matrix.</returns>
@@ -621,6 +679,7 @@ namespace RayTracer.Structs
             vector.X = x;
             vector.Y = y;
         }
+
         public static void Transform(ref Matrix3 matrix, ref Vector3 vector)
         {
             float x = matrix.R0C0 * vector.X + matrix.R0C1 * vector.Y + matrix.R0C2 * vector.Z;

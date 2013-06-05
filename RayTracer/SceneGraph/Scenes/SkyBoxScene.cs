@@ -23,7 +23,7 @@ namespace RayTracer.SceneGraph.Scenes
             Camera.FieldOfViewY = 30f;
             Camera.ScreenWidth = 512;
             Camera.ScreenHeight = 512;
-            Camera.Eye = new Vector4(0, 0, -2, 1);
+            Camera.Eye = new Vector4(0, 0, 2, 1);
             Camera.Up = new Vector4(0, 1, 0, 1);
             Camera.LookAt = new Vector4(0, 0, 0, 1);
 
@@ -32,26 +32,31 @@ namespace RayTracer.SceneGraph.Scenes
 
             Film = new Film(Camera.ScreenWidth, Camera.ScreenHeight);
 
-            Texture top = new Texture("./Textures/SkyBox_farm/skybox_country_paths_top.jpg");
-            Texture back = new Texture("./Textures/SkyBox_farm/skybox_country_paths_back.jpg");
-            Texture front = new Texture("./Textures/SkyBox_farm/skybox_country_paths_front.jpg");
-            Texture left = new Texture("./Textures/SkyBox_farm/skybox_country_paths_left.jpg");
-            Texture right = new Texture("./Textures/SkyBox_farm/skybox_country_paths_right.jpg");
-            Texture bottom = new Texture("./Textures/SkyBox_farm/skybox_country_paths_bottom.jpg");
+            Texture top = new Texture("./Textures/SkyBox_farm/skybox_country_paths_top.jpg",false);
+            Texture back = new Texture("./Textures/SkyBox_farm/skybox_country_paths_back.jpg",false);
+            Texture front = new Texture("./Textures/SkyBox_farm/skybox_country_paths_front.jpg",false);
+            Texture left = new Texture("./Textures/SkyBox_farm/skybox_country_paths_left.jpg",false);
+            Texture right = new Texture("./Textures/SkyBox_farm/skybox_country_paths_right.jpg",false);
+            Texture bottom = new Texture("./Textures/SkyBox_farm/skybox_country_paths_bottom.jpg",false);
             
             //SkyBox.LoadSkybox(left, right, top, bottom, front, back);
 
             PerlinNoise.Initialize();
-
-            Sphere sphere = new Sphere(new LambertMaterial(new Color(1, 0, 0)), new Vector3(0, 0, 2f), 1f);
+            
+            Sphere sphere = new Sphere(new LambertMaterial(new Color(1f, 0.647f, 0)), new Vector3(0, 0, 0f), 0.5f);
+            //Sphere sphere2 = new Sphere(new LambertMaterial(new Color(1f, 0f, 0f)), new Vector3(0.5f, 0f, 0f), 0.2f);
             sphere.Material.Noise = Noise.Turbulence;
+            
+            Texture orange = new Texture("./Textures/Bumpmap/orange.jpg", true);
+            //sphere.Material.BumpTexture = orange;
             //Sphere sphere = new Sphere(new MirrorMaterial(10f), new Vector3(0, 0, 2f), 1f);
 
             Objects = new IntersectableList();
             Lights = new List<ILight>();
 
             Objects.Add(sphere);
-            ILight light = new DirectionalLight(new Vector3(0f, 0, -1f), new Color(1, 1, 1));
+            //Objects.Add(sphere2);
+            ILight light = new PointLight(new Vector3(0f, 1, 2.6f), new Color(3f, 3f, 3f));
             Lights.Add(light);
             
         }

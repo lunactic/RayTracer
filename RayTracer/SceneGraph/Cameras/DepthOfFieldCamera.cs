@@ -15,6 +15,7 @@ namespace RayTracer.SceneGraph.Cameras
         public Vector3 Eye { get; set; }
         public Vector3 LookAt { get; set; }
         public Vector3 LookDirection { get; set; }
+        public Matrix4 TransformationMatrix { get; private set; }
 
         public Vector3 u { get; set; }
         public Vector3 v { get; set; }
@@ -33,74 +34,86 @@ namespace RayTracer.SceneGraph.Cameras
 
         public float FieldOfViewY { get; set; }
         public float FieldOfViewX { get; set; }
-
+        public float FieldOfView { get; set; }
         public float AspectRation { get; set; }
 
-        private List<Sample> pixelSamples;
-        private Matrix4 transformationMatrix;
+        Random rand = new Random();
         public DepthOfFieldCamera()
         {
-             pixelSamples = ((ISampler)Activator.CreateInstance(Constants.Sampler)).CreateSamples(); //x_samples
-            
+            AspectRation = float.NaN;
+            FieldOfViewX = float.NaN;
+            Apperture = 0.5f;
+
         }
 
         public void PreProcess()
         {
-            /*
-            LookDirection = LookAt - Eye;
-            LookDirection.Normalize(); //cam_f
-            v = new Vector4(Vector3.Cross(LookDirection, Up));
-            Vector3 vv = v;
-            vv.Normalize();
-            v = new Vector4(vv);
-            w = new Vector4(Vector3.Cross(v, LookDirection));
-            Vector3 ww = w;
-            ww.Normalize();
-            w = new Vector4(ww); //cam_u
-            */
+
             if (float.IsNaN(AspectRation))
             {
                 AspectRation = ScreenWidth / ScreenHeight;
             }
 
-            LookDirection = LookAt - Eye;
-            LookDirection.Normalize();
-            FieldOfViewX = (float)(FieldOfViewX * 2 * Math.PI / 180f);
-            FieldOfViewY = (float)(FieldOfViewY * 2 * Math.PI / 180f);
+            if (!float.IsNaN(FieldOfViewX))
+            {
+                FieldOfViewX = (float)(FieldOfViewX * 2 * Math.PI / 180f);
+                FieldOfViewY = (float)(FieldOfViewY * 2 * Math.PI / 180f);
+            }
+            else
+            {
+                FieldOfView = (float)(FieldOfView * 2 * Math.PI / 180f);
+            }
             w = Eye - LookAt;
             w.Normalize();
             u = Vector3.Cross(Up, w);
             u.Normalize();
             v = Vector3.Cross(w, u);
 
-            transformationMatrix = new Matrix4()
+            TransformationMatrix = new Matrix4()
             {
                 Row0 = new Vector4(u),
                 Row1 = new Vector4(v),
                 Row2 = new Vector4(w),
                 Row3 = new Vector4(Eye) { W = 1 }
             };
-
-            t = (float)Math.Tan(FieldOfViewX);
-            b = -1 * t;
-            r = (float)Math.Tan(FieldOfViewY / AspectRation);
-            l = -1 * r;
+            if (!float.IsNaN(FieldOfViewX))
+            {
+                t = (float)Math.Tan(FieldOfViewX);
+                b = -1 * t;
+                r = (float)Math.Tan(FieldOfViewY / AspectRation);
+                l = -1 * r;
+            }
+            else
+            {
+                t = (float)(Math.Tan(FieldOfView / 2f));
+                b = -1 * t;
+                r = AspectRation * t;
+                l = -1 * r;
+            }
         }
 
-        public Ray CreateRay(float x, float y)
+        public Ray CreateRay(float x, float y, List<Sample> appertureSamples)
         {
-            //#define VectorMA(a, s, b, c)	(c[0]=a[0]+(s)*b[0],c[1]=a[1]+(s)*b[1],c[2]=a[2]+(s)*b[2])
-            //VectorMA(start, cam.aperature*xl_samples[s], cam_r, start);
-           
             //Calculate Ray in pixel coordinates
             float rU = (l + (r - l) * (x + 0.5f) / ScreenWidth);
             float rV = (b + (t - b) * (y + 0.5f) / ScreenHeight);
-
             Vector4 cameraRay = new Vector4(rU, rV, -1, 0);
-            Vector3 direction = transformationMatrix.Transform(cameraRay);
-            direction = direction - Eye;
 
-            return new Ray(Eye, direction);
+            Vector3 lensRadiusX = Vector3.Cross(LookAt, Up) * (Apperture / 2f);
+            Vector3 lensRadiusY = Up * (Apperture / 2f);
+            Sample appertureSample = Randomizer.PickRandomSample(appertureSamples);
+            Vector3 lensPos = Eye - lensRadiusX * appertureSample.X + lensRadiusY * appertureSample.Y;
+            
+
+            #region new approach
+            float ft = D / cameraRay.Z;
+            Vector3 focusPoint = Eye - cameraRay * ft;
+
+            Vector3 direction = TransformationMatrix.Transform(new Vector4(focusPoint));
+
+            return new Ray(lensPos, direction);
+
+            #endregion
 
         }
 
@@ -110,7 +123,13 @@ namespace RayTracer.SceneGraph.Cameras
         }
 
 
- 
-        
+
+
+
+
+        public Ray CreateRay(float x, float y)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

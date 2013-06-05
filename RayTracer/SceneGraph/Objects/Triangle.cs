@@ -150,69 +150,36 @@ namespace RayTracer.SceneGraph.Objects
 
         public void BuildBoundingBox()
         {
-            #region mine
-            //Vector3 minVector = new Vector3(float.MaXValue,float.MaXValue,float.MaXValue);
-            //Vector3 maXVector = new Vector3(float.MinValue,float.MinValue,float.MinValue);
-            //Set A to be min/maX to reduce testing
-            /*Vector3 minVector = A;
-            Vector3 maXVector = A;*/
-
+            Vector3 minVector = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
+            Vector3 maxVector = new Vector3(float.Epsilon, float.Epsilon, float.Epsilon);
+            
             //Check A
-            /*
+            
             if (A.X < minVector.X) minVector.X = A.X;
             if (A.Y < minVector.Y) minVector.Y = A.Y;
             if (A.Z < minVector.Z) minVector.Z = A.Z;
-            if (A.X > maXVector.X) maXVector.X = A.X;
-            if (A.Y > maXVector.Y) maXVector.Y = A.Y;
-            if (A.Z > maXVector.Z) maXVector.Z = A.Z;
+            if (A.X > maxVector.X) maxVector.X = A.X;
+            if (A.Y > maxVector.Y) maxVector.Y = A.Y;
+            if (A.Z > maxVector.Z) maxVector.Z = A.Z;
             //check B
             if (B.X < minVector.X) minVector.X = B.X;
             if (B.Y < minVector.Y) minVector.Y = B.Y;
             if (B.Z < minVector.Z) minVector.Z = B.Z;
-            if (B.X > maXVector.X) maXVector.X = B.X;
-            if (B.Y > maXVector.Y) maXVector.Y = B.Y;
-            if (B.Z > maXVector.Z) maXVector.Z = B.Z;
+            if (B.X > maxVector.X) maxVector.X = B.X;
+            if (B.Y > maxVector.Y) maxVector.Y = B.Y;
+            if (B.Z > maxVector.Z) maxVector.Z = B.Z;
             //check C
             if (C.X < minVector.X) minVector.X = C.X;
             if (C.Y < minVector.Y) minVector.Y = C.Y;
             if (C.Z < minVector.Z) minVector.Z = C.Z;
-            if (C.X > maXVector.X) maXVector.X = C.X;
-            if (C.Y > maXVector.Y) maXVector.Y = C.Y;
-            if (C.Z > maXVector.Z) maXVector.Z = C.Z;
-            */
-            #endregion
-
-            float xMin = float.MaxValue, yMin = float.MaxValue, zMin = float.MaxValue;
-            float xMax = float.Epsilon, yMax = float.Epsilon, zMax = float.Epsilon;
-            // VerteX A
-            xMin = A.X < xMin ? A.X : xMin;
-            yMin = A.Y < yMin ? A.Y : yMin;
-            zMin = A.Z < zMin ? A.Z : zMin;
-            xMax = A.X > xMax ? A.X : xMax;
-            yMax = A.Y > yMax ? A.Y : yMax;
-            zMax = A.Z > zMax ? A.Z : zMax;
-
-            // VerteX B
-            xMin = B.X < xMin ? B.X : xMin;
-            yMin = B.Y < yMin ? B.Y : yMin;
-            zMin = B.Z < zMin ? B.Z : zMin;
-            xMax = B.X > xMax ? B.X : xMax;
-            yMax = B.Y > yMax ? B.Y : yMax;
-            zMax = B.Z > zMax ? B.Z : zMax;
-
-            // VerteX C
-            xMin = C.X < xMin ? C.X : xMin;
-            yMin = C.Y < yMin ? C.Y : yMin;
-            zMin = C.Z < zMin ? C.Z : zMin;
-            xMax = C.X > xMax ? C.X : xMax;
-            yMax = C.Y > yMax ? C.Y : yMax;
-            zMax = C.Z > zMax ? C.Z : zMax;
+            if (C.X > maxVector.X) maxVector.X = C.X;
+            if (C.Y > maxVector.Y) maxVector.Y = C.Y;
+            if (C.Z > maxVector.Z) maxVector.Z = C.Z;
+           
+            
 
 
-            Vector3 minVector = new Vector3(xMin,yMin,zMin);
-            Vector3 maXVector = new Vector3(xMax,yMax,zMax);
-
-            BoundingBox = new AxisAlignedBoundingBox(minVector, maXVector);
+            BoundingBox = new AxisAlignedBoundingBox(minVector, maxVector);
 
         }
 
@@ -228,7 +195,8 @@ namespace RayTracer.SceneGraph.Objects
 
             sample.Normal = Normal;
             sample.Area = area;
-            return aScaled + bScaled + cScaled;
+            Vector3 samplePoint = aScaled + bScaled + cScaled;
+            return samplePoint;
         }
 
         public float GetArea()

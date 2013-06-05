@@ -35,7 +35,10 @@ namespace RayTracer.Samplers
             }
            
         }
-
+        public List<LightSample> GetLightSamples(int pathLength)
+        {
+            return lightSamples;
+        }
         public List<LightSample> GetLightSamples()
         {
             return lightSamples;

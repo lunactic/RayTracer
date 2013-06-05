@@ -18,7 +18,7 @@ namespace RayTracer.Tracer
         private Scene scene;
         private Stopwatch stopwatch;
         private int finishedThreads;
-
+        Random rand = new Random();
         public ThinLensRayTracer(Scene scene)
         {
             this.scene = scene;
@@ -26,27 +26,23 @@ namespace RayTracer.Tracer
 
         public void Render()
         {
-            DepthOfFieldCamera cam = scene.Camera as DepthOfFieldCamera;
+            DepthOfFieldCamera cam = ((DepthOfFieldCamera)scene.Camera);
+ 
             for (int i = 0; i < scene.Film.Width; i++)
             {
                 for (int j = 0; j < scene.Film.Height; j++)
                 {
-                    ISampler sampler = (ISampler)Activator.CreateInstance(Constants.Sampler);
-                    List<Sample> lensSamples = sampler.CreateSamples(); //xl_samples
-                    //s = number of samples
-                    Color c = new Color(0, 0, 0);
-                         
-                    for (int s = 0; s < lensSamples.Count; s++)
+                    Color pixelColor = new Color(0, 0, 0);
+                    List<Sample> appertureSamples = ((ISampler)Activator.CreateInstance(Constants.Sampler)).CreateSamples();
+                    for (int s = 0; s < 24; s++)
                     {
-                        lensSamples[s].X -= 0.5f;
-                        lensSamples[s].Y -= 0.5f;
-      
-                        Ray ray = scene.Camera.CreateRay(cam.Apperture * lensSamples[s].X, cam.Apperture * lensSamples[s].Y);
+                        Ray ray = cam.CreateRay(i, j, appertureSamples);
+             
+                        pixelColor.Append(scene.Integrator.Integrate(ray, scene.Objects, scene.Lights, null, null, null));
 
-                        c.Append(scene.Integrator.Integrate(ray, scene.Objects, scene.Lights, sampler,null));
                     }
-                    c.VoidDiv(10f);
-                    scene.Film.SetPixel(i, j, c);
+                    pixelColor.VoidDiv(24f);
+                    scene.Film.SetPixel(i, j, pixelColor);
                 }
             }
             Tonemapper.SaveImage("C:\\Test\\" + scene.FileName, scene.Film);

@@ -11,5 +11,6 @@ namespace RayTracer.Samplers
     {
         List<Sample> CreateSamples();
         List<LightSample> GetLightSamples();
-   }
+        List<LightSample> GetLightSamples(int pathLength);
+    }
 }

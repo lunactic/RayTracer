@@ -39,51 +39,53 @@ namespace RayTracer.Tracer
         }
         public void Render()
         {
-            for (int i = 0; i < camera.ScreenWidth; i++)
+            if (sampler != null)
             {
-                for (int j = threadId; j < camera.ScreenHeight; j += Constants.NumberOfThreads)
+                for (int i = 0; i < camera.ScreenWidth; i++)
                 {
-                    List<List<Sample>> subPathSamples = new List<List<Sample>>();
-                    if (integrator is PathTraceIntegrator)
+                    for (int j = threadId; j < camera.ScreenHeight; j += Constants.NumberOfThreads)
                     {
-                        for (int s = 0; s < Constants.MaximalPathLength; s++)
-                        {
-                            subPathSamples.Add(sampler.CreateSamples());
-                        }
-                    }
-                    if (Constants.IsSamplingOn)
-                    {
+                        Color pixelColor = new Color(0, 0, 0);
+                        List<List<Sample>> subPathSamples = new List<List<Sample>>();
                         List<Sample> samples = sampler.CreateSamples();
-                        Color c = new Color(0, 0, 0);
-                        foreach (Sample sample in samples)
+                        List<LightSample> lightSamples = new List<LightSample>();
+                        if (integrator is PathTraceIntegrator)
                         {
-                            if (Constants.IsDepthOfFieldCamera)
+                            lightSamples = sampler.GetLightSamples(Constants.MaximalPathLength);
+                            for (int s = 0; s < Constants.MaximalPathLength; s++)
                             {
-                                for (int p = 0; p < 25; p++)
-                                {
-                                    Color tmp = new Color(0, 0, 0);
-                                    Ray ray = camera.CreateRay(i + sample.X, j + sample.Y);
-                                    tmp.Append(integrator.Integrate(ray, objects, lights, sampler, subPathSamples));
-                                    //tmp.VoidDiv(25);
-                                    c.Append(tmp);
-                                }
+                                subPathSamples.Add(sampler.CreateSamples());
                             }
-                            else
+                            foreach (Sample sample in samples)
                             {
                                 Ray ray = camera.CreateRay(i + sample.X, j + sample.Y);
-                                c.Append(integrator.Integrate(ray, objects, lights, sampler, subPathSamples));
+                                pixelColor.Append(integrator.Integrate(ray, objects, lights, sampler, subPathSamples, Randomizer.PickRandomLightSample(lightSamples)));
                             }
                         }
-                        c.VoidDiv(samples.Count);
-                        film.SetPixel(i, j, c);
+                        else
+                        {
+                            lightSamples = sampler.GetLightSamples();
+                            foreach (Sample sample in samples)
+                            {
+                                Ray ray = camera.CreateRay(i + sample.X, j + sample.Y);
+                                pixelColor.Append(integrator.Integrate(ray, objects, lights, sampler, subPathSamples, Randomizer.PickRandomLightSample(lightSamples)));
+                            }
+                        }
+                        pixelColor.VoidDiv(samples.Count);
+                        film.SetPixel(i, j, pixelColor);
                     }
-                    else
+                }
+            }
+            else
+            {
+                for (int i = 0; i < camera.ScreenWidth; i++)
+                {
+                    for (int j = threadId; j < camera.ScreenHeight; j += Constants.NumberOfThreads)
                     {
                         Ray ray = camera.CreateRay(i, j);
-                        Color color = integrator.Integrate(ray, objects, lights, sampler, subPathSamples);
-                        film.SetPixel(i, j, color);
+                        Color pixelColor = integrator.Integrate(ray, objects, lights, null, null, null);
+                        film.SetPixel(i,j,pixelColor);
                     }
-
                 }
             }
             ThreadDone(this, new EventArgs());

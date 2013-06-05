@@ -30,9 +30,10 @@ namespace RayTracer.Collada
         private Dictionary<string, string> materialSymbolToId = new Dictionary<string, string>();
 
         private float scale;
-
-        public void ParseColladaFile(String filename)
+        private int width;
+        public void ParseColladaFile(String filename, int width)
         {
+            this.width = width;
             Cameras = new Dictionary<string, ICamera>();
             Meshes = new Dictionary<string, IIntersectable>();
             Lights = new Dictionary<string, ILight>();
@@ -133,9 +134,10 @@ namespace RayTracer.Collada
 
         private void ParseGeometries(IEnumerable<XElement> geometryNodes, IEnumerable<XElement> visualSceneNodes)
         {
-
+            int i = 0;
             foreach (var geometry in geometryNodes.Elements("geometry"))
             {
+
                 String geometryId = geometry.Attribute("id").Value;
                 Dictionary<String, float[]> floatArrays = new Dictionary<string, float[]>();
                 Dictionary<String, String> positionToVertex = new Dictionary<string, string>();
@@ -162,6 +164,7 @@ namespace RayTracer.Collada
 
                             //Rotation
                             translationMatrix = Matrix4.CreateRotationX((float)-Math.PI / 2);
+                            transformationMatrix = Matrix4.Mult(transformationMatrix, translationMatrix);
                             foreach (var rotation in node.Elements("rotate"))
                             {
                                 if (rotation.Attribute("sid").Value.Equals("rotateX"))
@@ -199,14 +202,14 @@ namespace RayTracer.Collada
                 //Parse the Float Arrays
                 foreach (var source in geometry.Element("mesh").Elements("source"))
                 {
-                    String key = source.Attribute("id").Value;
+                    String key = source.Attribute("id").Value.Replace("#","");
                     float[] values = ParseFloatArray(source.Element("float_array").Value);
                     floatArrays.Add(key, values);
                 }
                 //Get the vertices
                 foreach (var source in geometry.Element("mesh").Elements("vertices"))
                 {
-                    String vertexID = source.Attribute("id").Value;
+                    String vertexID = source.Attribute("id").Value.Replace("#","");
                     foreach (var element in source.Elements("input"))
                     {
                         if (element.Attribute("semantic").Value.Equals("POSITION"))
@@ -227,7 +230,6 @@ namespace RayTracer.Collada
 
                 if (geometry.Element("mesh").Elements("triangles").Count() > 0)
                 {
-                    int i = 0;
                     foreach (var source in geometry.Element("mesh").Elements("triangles"))
                     {
                         int triangleCount = Convert.ToInt32(source.Attribute("count").Value);
@@ -254,8 +256,12 @@ namespace RayTracer.Collada
                                                                   select item.Attribute("offset").Value;
 
                         String normalArrayName = normalArrayNames.FirstOrDefault();
+                        if (!string.IsNullOrEmpty(normalArrayName)) normalArrayName = normalArrayName.Replace("#", "");
                         String vertexArrayName = vertexArrayNames.FirstOrDefault();
+                        if (!string.IsNullOrEmpty(vertexArrayName)) vertexArrayName = vertexArrayName.Replace("#", "");
                         String texCordArrayName = texCordArrayNames.FirstOrDefault();
+                        if (!string.IsNullOrEmpty(texCordArrayName)) texCordArrayName = texCordArrayName.Replace("#", "");
+                        
                         int normalOffset = -1;
                         int vertexOffset = -1;
                         int texCoordOffset = -1;
@@ -270,23 +276,24 @@ namespace RayTracer.Collada
                         String indices = source.Element("p").Value;
 
                         int count = 0;
+                        count += vertexArrayNames.Count();
+                        count += normalArrayNames.Count();
+                        count += texCordArrayNames.Count();
+                        
                         if (!string.IsNullOrEmpty(normalArrayName))
                         {
                             int.TryParse(normalArrayOffsets.First(), out normalOffset);
                             normals = floatArrays[normalArrayName];
-                            count++;
                         }
                         if (!string.IsNullOrEmpty(vertexArrayName))
                         {
                             int.TryParse(vertexArrayOffsets.First(), out vertexOffset);
                             vertices = floatArrays[positionToVertex[vertexArrayName]];
-                            count++;
                         }
                         if (!string.IsNullOrEmpty(texCordArrayName))
                         {
                             int.TryParse(texCordArrayOffsets.First(), out texCoordOffset);
                             texCoords = floatArrays[texCordArrayName];
-                            count++;
                         }
                         if (!string.IsNullOrEmpty(normalArrayName))
                             normalIndices = ParseTriangleIndices(indices, normalOffset, count, triangleCount);
@@ -299,12 +306,11 @@ namespace RayTracer.Collada
                       
                         mat = Materials[materialName];
 
-
                         Mesh m = new Mesh(vertices, vertexIndices, normals, normalIndices, texCoords, texCoordIndices, mat);
                         BspAccelerator acc = new BspAccelerator();
                         acc.Construct(m);
                         Instance instance = new Instance(acc, transformationMatrix);
-                        Meshes.Add(geometryId, instance);
+                        Meshes.Add(geometryId + "_"+i, instance);
                         i++;
                     }
                 }
@@ -321,10 +327,12 @@ namespace RayTracer.Collada
             {
                 String id = camera.Attribute("id").Value;
                 String target = "";
-                float xfov, aspect;
-                float.TryParse(camera.Element("optics").Element("technique_common").Element("perspective").Element("xfov").Value, out xfov);
+                float xfov = float.NaN, aspect;
+                if (camera.Element("optics").Element("technique_common").Element("perspective").Element("xfov") != null)
+                    float.TryParse(camera.Element("optics").Element("technique_common").Element("perspective").Element("xfov").Value, out xfov);
+                if (camera.Element("optics").Element("technique_common").Element("perspective").Element("yfov") != null)
+                    float.TryParse(camera.Element("optics").Element("technique_common").Element("perspective").Element("yfov").Value, out xfov);
                 float.TryParse(camera.Element("optics").Element("technique_common").Element("perspective").Element("aspect_ratio").Value, out aspect);
-                int width = 800;
                 int height = (int)(width / aspect);
                 //float yfov = xfov / aspect;
 
@@ -403,9 +411,9 @@ namespace RayTracer.Collada
                             {
                                 if (image.Attribute("id").Value.Equals(subNode.Element("diffuse").Element("texture").Attribute("texture").Value))
                                 {
-                                    Texture texture = new Texture(image.Element("init_from").Value.Replace("file://", ""));
+                                    Texture texture = new Texture(image.Element("init_from").Value.Replace("file://", ""),false);
                                     Material mat = new LambertMaterial(new Color(0, 0, 0));
-                                    mat.Texture = texture;
+                                    mat.ColorTexture = texture;
                                     Materials.Add(materialName, mat);
                                 }
                             }
@@ -427,9 +435,9 @@ namespace RayTracer.Collada
                             {
                                 if (image.Attribute("id").Value.Equals(subNode.Element("diffuse").Element("texture").Attribute("texture").Value))
                                 {
-                                    Texture texture = new Texture(image.Element("init_from").Value.Replace("file://", ""));
+                                    Texture texture = new Texture(image.Element("init_from").Value.Replace("file://", ""),false);
                                     Material mat = new LambertMaterial(new Color(0, 0, 0));
-                                    mat.Texture = texture;
+                                    mat.ColorTexture = texture;
                                     Materials.Add(materialName, mat);
                                 }
                             }
@@ -452,9 +460,9 @@ namespace RayTracer.Collada
                             {
                                 if (image.Attribute("id").Value.Equals(subNode.Element("diffuse").Element("texture").Attribute("texture").Value))
                                 {
-                                    Texture texture = new Texture(image.Element("init_from").Value.Replace("file://", ""));
+                                    Texture texture = new Texture(image.Element("init_from").Value.Replace("file://", ""),false);
                                     Material mat = new LambertMaterial(new Color(0, 0, 0));
-                                    mat.Texture = texture;
+                                    mat.ColorTexture = texture;
                                     Materials.Add(materialName, mat);
                                 }
                             }

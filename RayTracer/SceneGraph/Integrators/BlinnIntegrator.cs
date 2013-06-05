@@ -13,7 +13,7 @@ namespace RayTracer.SceneGraph.Integrators
 {
     public class BlinnIntegrator : IIntegrator
     {
-        public Color Integrate(Ray ray, IIntersectable objects, List<ILight> lights, ISampler sampler,List<List<Sample>> subPathSamples)
+        public Color Integrate(Ray ray, IIntersectable objects, List<ILight> lights, ISampler sampler, List<List<Sample>> subPathSamples, LightSample lightSample)
         {
             Color returnColor = new Color(0,0,0);
             /*
@@ -25,7 +25,7 @@ namespace RayTracer.SceneGraph.Integrators
             {
                 foreach (ILight light in lights)
                 {
-                    returnColor.Append(record.Material.Shade(record,light.GetLightDirection(record.IntersectionPoint)).Mult(light.GetIncidentColor(record.IntersectionPoint)));
+                    returnColor.Append(record.Material.Shade(record, light.GetLightDirection(record.IntersectionPoint)).Mult(light.GetIncidentColor(record.IntersectionPoint)));
                 }
             }
             return returnColor;

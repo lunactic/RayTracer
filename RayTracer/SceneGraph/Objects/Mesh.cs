@@ -44,9 +44,10 @@ namespace RayTracer.SceneGraph.Objects
 
         public Mesh(Material material, int[] indices, params float[] vertices)
         {
-            Material = material;
             Triangles = new List<Triangle>();
-         
+
+            Material = material;
+
             Vertices = new List<float[]>();
             for (int i = 0; i < vertices.Length; i += 3)
             {
@@ -238,44 +239,16 @@ namespace RayTracer.SceneGraph.Objects
 
             }
 
-            BoundingBox = new AxisAlignedBoundingBox(minVector,maxVector);
- 
+            BoundingBox = new AxisAlignedBoundingBox(minVector, maxVector);
+
         }
 
         public new Vector3 GetSamplePoint(LightSample sample)
         {
-            if (Indices == null) CreateIndices();
-            IIntersectable sampleTriangle = Triangles[(int)Math.Floor(new Random().NextDouble() * Triangles.Count)];
-            sample.Normal = ((Triangle)sampleTriangle).Normal;
-            sample.Area = ((Triangle)sampleTriangle).GetArea();
-
+            Triangle sampleTriangle = Triangles[(int)Math.Floor(new Random().NextDouble() * Triangles.Count)];
+            
             return sampleTriangle.GetSamplePoint(sample);
 
-        }
-
-        [MethodImpl(MethodImplOptions.Synchronized)]
-        private void CreateIndices()
-        {
-            Indices = new List<int>();
-            float smallestArea = float.PositiveInfinity;
-            int index = 0;
-            for (int i = 0; i < Triangles.Count; i++)
-            {
-                if (Triangles[i].GetArea() < smallestArea)
-                {
-                    smallestArea = Triangles[i].GetArea();
-                    index = i;
-                }
-            }
-            Indices.Add(index);
-            for (int j = 0; j < Triangles.Count; j++)
-            {
-                int k = (int)(Math.Ceiling((Triangles[j].GetArea() / Triangles[index].GetArea())));
-                for (int l = 0; l <= k; l++)
-                {
-                    Indices.Add(j);
-                }
-            }
         }
 
         public new float GetArea()

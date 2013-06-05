@@ -36,7 +36,7 @@ namespace RayTracer.Samplers
         {   
             List<LightSample> lightSamples = new List<LightSample>();
      
-            int gridW = (int)Math.Floor(Math.Sqrt(Constants.NumberOfSamples * Constants.NumberOfLightSamples));
+            int gridW = (int)Math.Ceiling(Math.Sqrt(Constants.NumberOfSamples * Constants.NumberOfLightSamples));
             int gridH = gridW;
             float stratW = 1f / gridW;
             float stratH = stratW;
@@ -51,7 +51,24 @@ namespace RayTracer.Samplers
             return lightSamples;
         }
 
+        public List<LightSample> GetLightSamples(int pathLength)
+        {
+            List<LightSample> lightSamples = new List<LightSample>();
 
+            int gridW = (int)Math.Ceiling(Math.Sqrt(Constants.NumberOfSamples * Constants.NumberOfLightSamples*pathLength));
+            int gridH = gridW;
+            float stratW = 1f / gridW;
+            float stratH = stratW;
+
+            for (float w = 0; w < 1; w += stratW)
+            {
+                for (float h = 0; h < 1; h += stratH)
+                {
+                    lightSamples.Add(new LightSample(w + (float)random.NextDouble() / gridW, h + (float)random.NextDouble() / gridH));
+                }
+            }
+            return lightSamples;
+        }
 
     }
 }
